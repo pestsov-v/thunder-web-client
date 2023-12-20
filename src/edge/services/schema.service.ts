@@ -1,5 +1,5 @@
 import { injectable, inject } from '@Edge/Package';
-import { MetadataKeys } from 'Edge/Common';
+import { MetadataKeys } from '@Edge/Common';
 import { EdgeSymbols } from '@EdgeSymbols';
 
 import { AbstractService } from './abstract.service';
@@ -29,9 +29,9 @@ export class SchemaService extends AbstractService implements ISchemaService {
   protected init(): boolean {
     this._schemaLoader.init();
     Reflect.defineMetadata(MetadataKeys.SchemaLoader, this._schemaLoader, Reflect);
-    import('../../schema');
+
+    import('../../schema/index');
     this._SCHEMA = this._schemaLoader.schema;
-    this._clear();
 
     return true;
   }
@@ -39,10 +39,6 @@ export class SchemaService extends AbstractService implements ISchemaService {
   protected destroy(): void {
     this._SCHEMA = undefined;
 
-    this._clear();
-  }
-
-  private _clear(): void {
     this._schemaLoader.destroy();
 
     Reflect.deleteMetadata(MetadataKeys.SchemaLoader, Reflect);

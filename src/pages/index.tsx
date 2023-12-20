@@ -1,3 +1,13 @@
+import dynamic from 'next/dynamic';
+
 export default function Home(props: any) {
-  return <div>asdsad</div>;
+  const Router = dynamic(() => import('./test.component'), {
+    ssr: false,
+  });
+
+  return (
+    <div>
+      <Router />
+    </div>
+  );
 }

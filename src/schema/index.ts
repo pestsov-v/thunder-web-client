@@ -1,1 +1,1 @@
-export const s = {};
+import './sys-admin/sys-admin.application';

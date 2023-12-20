@@ -1,4 +1,5 @@
-import { NSchemaService } from '../services';
+import type { NSchemaService } from '../services';
+import type { RouterStructure } from '@Vendor/Types';
 
 export interface ISchemaLoader {
   readonly isDefine: boolean;
@@ -7,4 +8,5 @@ export interface ISchemaLoader {
   init(): void;
   destroy(): void;
   setDomain(name: string): void;
+  setRouter(domain: string, routes: RouterStructure<string>): void;
 }
