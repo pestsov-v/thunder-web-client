@@ -7,7 +7,7 @@ export const useDomain = (name: string) => {
   const [domain, setDomain] = useState<NSchemaService.Domain>();
 
   useEffect(() => {
-    const loader = container.get<ISchemaService>(EdgeSymbols.SchemaLoader);
+    const loader = container.get<ISchemaService>(EdgeSymbols.SchemaService);
     const domain = loader.schema.get(name);
     setDomain(domain);
   }, [name]);
@@ -18,7 +18,7 @@ export const useDomain = (name: string) => {
 const TextComponent = () => {
   const { domain } = useDomain('SysUsers');
 
-  return <div>${JSON.stringify(domain)}</div>;
+  return <div>${JSON.stringify(domain ? Array.from(domain.routes) : {})}</div>;
 };
 
 export default TextComponent;
