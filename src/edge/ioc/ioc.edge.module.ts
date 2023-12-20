@@ -2,12 +2,13 @@ import { ContainerModule } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
 import { Initiator } from '../initiator';
 import { SchemaLoader } from '../loaders';
-import { LocalizationService, SchemaService } from '../services';
+import { GetawayService, LocalizationService, SchemaService } from '../services';
 
 import type { IInitiator, ILocalizationService, ISchemaLoader, ISchemaService } from '@Edge/Types';
 
 export const EdgeModule = new ContainerModule((bind) => {
   // Services
+  bind(EdgeSymbols.GetawayService).to(GetawayService).inSingletonScope();
   bind<ISchemaService>(EdgeSymbols.SchemaService).to(SchemaService).inSingletonScope();
   bind<ILocalizationService>(EdgeSymbols.LocalizationService)
     .to(LocalizationService)
