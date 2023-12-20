@@ -1,8 +1,8 @@
 import { injectable } from '@Edge/Package';
 
-import type { ISchemaLoader, NSchemaService } from '@Edge/Types';
-import type { RouterStructure } from '@Vendor/Types';
 import type { HttpMethod } from '@Utility/Types';
+import type { DictionaryStructure, RouterStructure } from '@Vendor/Types';
+import type { ISchemaLoader, NSchemaService } from '@Edge/Types';
 
 @injectable()
 export class SchemaLoader implements ISchemaLoader {
@@ -33,6 +33,7 @@ export class SchemaLoader implements ISchemaLoader {
     if (!domain) {
       this.schema.set(name, {
         routes: new Map<string, NSchemaService.Route>(),
+        dictionaries: new Map<string, NSchemaService.Dictionary>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
@@ -65,6 +66,28 @@ export class SchemaLoader implements ISchemaLoader {
           });
         }
       }
+    }
+  }
+
+  public setDictionaries(
+    domain: string,
+    dictionaries:
+      | DictionaryStructure<string, NSchemaService.Dictionary>
+      | DictionaryStructure<string, NSchemaService.Dictionary>[]
+  ): void {
+    const dStorage = this.schema.get(domain);
+    if (!dStorage) {
+      this.setDomain(domain);
+      this.setDictionaries(domain, dictionaries);
+      return;
+    }
+
+    if (Array.isArray(dictionaries)) {
+      dictionaries.forEach((dictionary) => {
+        dStorage.dictionaries.set(dictionary.language, dictionary.dictionary);
+      });
+    } else {
+      dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
     }
   }
 }

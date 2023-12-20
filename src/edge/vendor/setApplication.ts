@@ -14,6 +14,9 @@ export const setApplication = (structures: CollectorStructure[]): void => {
       if (documents.router) {
         edgeSchemaLoader.setRouter(structure.domain, documents.router);
       }
+      if (documents.dictionaries) {
+        edgeSchemaLoader.setDictionaries(structure.domain, documents.dictionaries);
+      }
     }
   });
 };

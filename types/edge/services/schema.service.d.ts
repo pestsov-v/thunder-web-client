@@ -16,8 +16,11 @@ export namespace NSchemaService {
     isPrivateOrganization?: boolean;
   };
 
+  export type Dictionary = Record<string, Dictionary | string>;
+
   export type Domain = {
     routes: Map<string, Route>;
+    dictionaries: Map<string, Dictionary>;
   };
   export type Schema = Map<string, Domain>;
 }
