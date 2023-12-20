@@ -4,11 +4,16 @@
   "description": "Web-client for thunder platform",
   "main": "index.js",
   "scripts": {
-    "next:dev": "echo \"Error: no test specified\" && exit 1"
+    "next:dev": "ts-node -r tsconfig-paths/register --files ./src/server/server.ts"
   },
   "keywords": [],
   "author": "Vladyslav Pestsov<vladyslav.pestsov@gmail.com>",
   "license": "ISC",
+  "dependencies": {
+    "next": "14.0.3",
+    "react": "^18",
+    "react-dom": "^18"
+  },
   "devDependencies": {
     "typescript": "^5.3.3"
   }
