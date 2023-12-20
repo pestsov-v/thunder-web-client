@@ -30,12 +30,14 @@ export namespace NSchemaService {
   };
 
   export type ControllerHandler = <R = void>(agents: Agents, context: Context) => Promise<R>;
+  export type WsListener = ControllerHandler<void>;
 
   export type Domain = {
     routes: Map<string, Route>;
     dictionaries: Map<string, Dictionary>;
     views: Map<string, View>;
     controllers: Map<string, ControllerHandler>;
+    wsListeners: Map<string, WsListener>;
   };
   export type Schema = Map<string, Domain>;
 }

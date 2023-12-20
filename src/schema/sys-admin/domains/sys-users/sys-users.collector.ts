@@ -1,5 +1,6 @@
 import { domainNames } from '../../common/domain-names';
 import { SysUsersRouter } from './sys-users.router';
+import { SysUsersWsListener } from '@Schema/sys-admin/domains/sys-users/sys-users.ws-listener';
 import { SysUsersController } from '@Schema/sys-admin/domains/sys-users/sys-users.controller';
 import {
   SysUsersDatasetView,
@@ -18,6 +19,7 @@ export const SysUsersCollector: CollectorStructure = {
   documents: {
     controller: SysUsersController,
     router: SysUsersRouter,
+    wsListeners: SysUsersWsListener,
     dictionaries: [SysUsersDictionaryEn, SysUsersDictionaryRu, SysUsersDictionaryUa],
     views: [SysUsersDatasetView, SysUsersProfileView],
   },

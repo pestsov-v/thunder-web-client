@@ -20,8 +20,12 @@ export const setApplication = (structures: CollectorStructure[]): void => {
       if (documents.views) {
         edgeSchemaLoader.setViews(structure.domain, documents.views);
       }
-      if (documents.controller)
+      if (documents.controller) {
         edgeSchemaLoader.setControllers(structure.domain, documents.controller);
+      }
+      if (documents.wsListeners) {
+        edgeSchemaLoader.setWsListeners(structure.domain, documents.wsListeners);
+      }
     }
   });
 };

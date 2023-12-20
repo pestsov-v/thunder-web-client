@@ -16,6 +16,17 @@ export class SessionService extends AbstractService implements ISessionService {
     super();
   }
 
+  private get _socket(): WebSocket {
+    if (!this._SOCKET) {
+      throw new Error('Websocket connection not initialize.');
+    }
+
+    return this._SOCKET;
+  }
+
+  public get one() {
+    return true;
+  }
   protected init(): boolean {
     this._SOCKET = new WebSocket('ws://localhost:11043');
 
@@ -35,13 +46,5 @@ export class SessionService extends AbstractService implements ISessionService {
   protected destroy(): void {
     this._socket.close();
     this._SOCKET = undefined;
-  }
-
-  private get _socket(): WebSocket {
-    if (!this._SOCKET) {
-      throw new Error('Websocket connection not initialize.');
-    }
-
-    return this._SOCKET;
   }
 }
