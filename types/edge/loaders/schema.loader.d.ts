@@ -3,6 +3,7 @@ import type {
   AliasDictionaryStructure,
   AliasDictionaryStructures,
   AliasViewStructure,
+  ControllerStructure,
   RouterStructure,
 } from '@Vendor/Types';
 import { AliasViewStructures } from '@Vendor/Types';
@@ -20,4 +21,5 @@ export interface ISchemaLoader {
     dictionaries: AliasDictionaryStructure | AliasDictionaryStructures
   ): void;
   setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void;
+  setControllers(domain: string, controllers: ControllerStructure<string>): void;
 }

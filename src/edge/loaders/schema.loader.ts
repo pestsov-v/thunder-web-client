@@ -5,6 +5,7 @@ import type {
   AliasDictionaryStructures,
   AliasViewStructure,
   AliasViewStructures,
+  ControllerStructure,
   DictionaryStructure,
   RouterStructure,
 } from '@Vendor/Types';
@@ -41,6 +42,7 @@ export class SchemaLoader implements ISchemaLoader {
         routes: new Map<string, NSchemaService.Route>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
+        controllers: new Map<string, NSchemaService.ControllerHandler>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
@@ -98,6 +100,25 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
+  public setControllers(domain: string, controllers: ControllerStructure<string>) {
+    const dStorage = this.schema.get(domain);
+    if (!dStorage) {
+      this.setDomain(domain);
+      this.setControllers(domain, controllers);
+      return;
+    }
+
+    for (const cName in controllers) {
+      const controller = controllers[cName];
+      const isExist = dStorage.controllers.get(cName);
+      if (!isExist) {
+        dStorage.controllers.set(cName, controller);
+      } else {
+        throw new Error(`Controller with "${cName}" has been exists.`);
+      }
+    }
+  }
+
   public setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void {
     const dStorage = this.schema.get(domain);
     if (!dStorage) {
@@ -108,10 +129,10 @@ export class SchemaLoader implements ISchemaLoader {
 
     if (Array.isArray(views)) {
       views.forEach((view) => {
-        dStorage.views.set(view.name, view.view);
+        dStorage.views.set(view.name, view.View);
       });
     } else {
-      dStorage.views.set(views.name, views.view);
+      dStorage.views.set(views.name, views.View);
     }
   }
 }

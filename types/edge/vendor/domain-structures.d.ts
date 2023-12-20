@@ -1,6 +1,6 @@
 import type { EnvironmentKind, HttpMethod, UnknownObject } from '@Utility/Types';
-import { NSchemaService } from '@Edge/Types';
-import { FC } from 'react';
+import type { NSchemaService } from '@Edge/Types';
+import type { FC } from 'react';
 
 export type RouterStructure<T extends string> = {
   [key in T]: {
@@ -24,14 +24,19 @@ export type AliasDictionaryStructures = DictionaryStructure<string, NSchemaServi
 
 export type ViewStructure<N extends string, P> = {
   name: N;
-  view: FC<P>;
+  View: FC<P>;
 };
 
 export type AliasViewStructure = ViewStructure<string, UnknownObject>;
 export type AliasViewStructures = ViewStructure<string, UnknownObject>[];
 
+export type ControllerStructure<T extends string> = {
+  [key in T]: NSchemaService.ControllerHandler;
+};
+
 export type DomainDocuments = {
   router?: RouterStructure<string>;
+  controller?: ControllerStructure<string>;
   dictionaries?: AliasDictionaryStructure | AliasDictionaryStructures;
   views?: AliasViewStructure | AliasViewStructures;
 };

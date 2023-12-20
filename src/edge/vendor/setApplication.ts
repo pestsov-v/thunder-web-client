@@ -20,6 +20,8 @@ export const setApplication = (structures: CollectorStructure[]): void => {
       if (documents.views) {
         edgeSchemaLoader.setViews(structure.domain, documents.views);
       }
+      if (documents.controller)
+        edgeSchemaLoader.setControllers(structure.domain, documents.controller);
     }
   });
 };

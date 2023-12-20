@@ -4,8 +4,12 @@ import { UseViewProps } from './useView';
 const usePrepareView = (props: UseViewProps) => {
   const storage = useDomain(props.domain);
   if (storage) {
-    return storage.views.get(props.view)(props.props);
+    const Component = storage.views.get(props.view);
+    if (Component) {
+      return <Component />;
+    }
   }
+  return null;
 };
 
 export default usePrepareView;

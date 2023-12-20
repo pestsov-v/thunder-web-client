@@ -33,6 +33,8 @@ export class SchemaService extends AbstractService implements ISchemaService {
     import('../../schema/index');
     this._SCHEMA = this._schemaLoader.schema;
 
+    console.log(this._SCHEMA);
+
     return true;
   }
 

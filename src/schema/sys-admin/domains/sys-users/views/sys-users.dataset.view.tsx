@@ -1,5 +1,8 @@
-import { ViewStructure } from '@Vendor/Types';
-import { NSysUsers } from '@Schema/Types/domains/sys-users';
+import { UseController } from '@Vendor';
+import { useEffect } from 'react';
+
+import type { ViewStructure } from '@Vendor/Types';
+import type { NSysUsers } from '@Schema/Types/domains/sys-users';
 
 export type SysUsersDatasetViewProps = {
   className?: string;
@@ -7,7 +10,19 @@ export type SysUsersDatasetViewProps = {
 
 export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDatasetViewProps> = {
   name: 'dataset',
-  view: (props) => {
+  View: (props) => {
+    useEffect(() => {
+      const start = async () => {
+        const handler = UseController<NSysUsers.LoginPayload>('SysUsers', 'v1/login', {
+          phone: '+380951696263',
+          password: '12345',
+        });
+
+        console.log('@@@@', await handler);
+      };
+      start();
+    }, []);
+
     return <div>USERS_DATASET</div>;
   },
 };

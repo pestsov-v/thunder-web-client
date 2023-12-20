@@ -30,7 +30,7 @@
       "@EdgeContainer": ["./src/edge/ioc/ioc.edge.ts"],
       "@Edge/Types": ["./types/edge/index.d.ts"],
       "@Edge/Package": ["./src/edge/packages/packages.ts"],
-      "@Edge/Package/Types": ["./types/edge/packages/packages.ts"],
+      "@Edge/Package/Types": ["./types/edge/packages/packages.d.ts"],
 
       // Common
       "@Vendor": ["./src/edge/vendor/index.ts"],
