@@ -1,6 +1,7 @@
 export const EdgeSymbols = {
   // Services
   GetawayService: Symbol('GetawayService'),
+  SessionService: Symbol('SessionService'),
   SchemaService: Symbol('SchemaService'),
   LocalizationService: Symbol('LocalizationService'),
 

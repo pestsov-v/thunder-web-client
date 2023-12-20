@@ -6,6 +6,7 @@ import type {
   IInitiator,
   ILocalizationService,
   ISchemaService,
+  ISessionService,
 } from '@Edge/Types';
 
 @injectable()
@@ -16,16 +17,20 @@ export class Initiator implements IInitiator {
     @inject(EdgeSymbols.GetawayService)
     private readonly _getawayService: IGetawayService,
     @inject(EdgeSymbols.LocalizationService)
-    private readonly _localizationService: ILocalizationService
+    private readonly _localizationService: ILocalizationService,
+    @inject(EdgeSymbols.SessionService)
+    private readonly _sessionService: ISessionService
   ) {}
 
   public start(): void {
     this._schemaService.start();
     this._getawayService.start();
     this._localizationService.start();
+    this._sessionService.start();
   }
 
   public stop(): void {
+    this._sessionService.stop();
     this._localizationService.stop();
     this._getawayService.stop();
     this._schemaService.stop();
