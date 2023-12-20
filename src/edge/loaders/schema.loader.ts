@@ -1,7 +1,13 @@
 import { injectable } from '@Edge/Package';
 
 import type { HttpMethod } from '@Utility/Types';
-import type { DictionaryStructure, RouterStructure } from '@Vendor/Types';
+import type {
+  AliasDictionaryStructures,
+  AliasViewStructure,
+  AliasViewStructures,
+  DictionaryStructure,
+  RouterStructure,
+} from '@Vendor/Types';
 import type { ISchemaLoader, NSchemaService } from '@Edge/Types';
 
 @injectable()
@@ -34,6 +40,7 @@ export class SchemaLoader implements ISchemaLoader {
       this.schema.set(name, {
         routes: new Map<string, NSchemaService.Route>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
+        views: new Map<string, NSchemaService.View<string>>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
@@ -88,6 +95,23 @@ export class SchemaLoader implements ISchemaLoader {
       });
     } else {
       dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
+    }
+  }
+
+  public setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void {
+    const dStorage = this.schema.get(domain);
+    if (!dStorage) {
+      this.setDomain(domain);
+      this.setViews(domain, views);
+      return;
+    }
+
+    if (Array.isArray(views)) {
+      views.forEach((view) => {
+        dStorage.views.set(view.name, view.view);
+      });
+    } else {
+      dStorage.views.set(views.name, views.view);
     }
   }
 }

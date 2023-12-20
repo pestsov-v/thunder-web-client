@@ -17,6 +17,9 @@ export const setApplication = (structures: CollectorStructure[]): void => {
       if (documents.dictionaries) {
         edgeSchemaLoader.setDictionaries(structure.domain, documents.dictionaries);
       }
+      if (documents.views) {
+        edgeSchemaLoader.setViews(structure.domain, documents.views);
+      }
     }
   });
 };

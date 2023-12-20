@@ -1,14 +1,10 @@
-import dynamic from 'next/dynamic';
+import { UseView } from '@Vendor';
 
-export default function Home(props: any) {
-  const Router = dynamic(() => import('./test.component'), {
-    ssr: false,
-    loading: () => <div>Loading...</div>,
-  });
-
+export default function Home() {
   return (
     <div>
-      <Router />
+      <UseView domain={'SysUsers'} view={'dataset'} />
+      <UseView domain={'SysUsers'} view={'profile'} />
     </div>
   );
 }

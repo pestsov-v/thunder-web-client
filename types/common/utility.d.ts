@@ -2,3 +2,4 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS'
 export type EnvironmentKind = 'edge' | 'server' | 'all';
 
 export type StringObject = Record<string, string>;
+export type UnknownObject = Record<string, unknown>;

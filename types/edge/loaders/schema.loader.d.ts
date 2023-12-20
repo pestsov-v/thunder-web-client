@@ -1,5 +1,11 @@
 import type { NSchemaService } from '../services';
-import type { DictionaryStructure, RouterStructure } from '@Vendor/Types';
+import type {
+  AliasDictionaryStructure,
+  AliasDictionaryStructures,
+  AliasViewStructure,
+  RouterStructure,
+} from '@Vendor/Types';
+import { AliasViewStructures } from '@Vendor/Types';
 
 export interface ISchemaLoader {
   readonly isDefine: boolean;
@@ -11,8 +17,7 @@ export interface ISchemaLoader {
   setRouter(domain: string, routes: RouterStructure<string>): void;
   setDictionaries(
     domain: string,
-    dictionaries:
-      | DictionaryStructure<string, NSchemaService.Dictionary>
-      | DictionaryStructure<string, NSchemaService.Dictionary>[]
+    dictionaries: AliasDictionaryStructure | AliasDictionaryStructures
   ): void;
+  setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void;
 }
