@@ -25,6 +25,7 @@
       "@Server/Package/Types": ["./types/server/packages/packages.ts"],
 
       // Edge
+      "Edge/Common": ["./src/edge/common/index.ts"],
       "@EdgeSymbols": ["./src/edge/ioc/ioc.edge.symbols.ts"],
       "@EdgeContainer": ["./src/edge/ioc/ioc.edge.ts"],
       "@Edge/Types": ["./types/edge/index.d.ts"],
