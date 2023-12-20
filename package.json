@@ -8,5 +8,8 @@
   },
   "keywords": [],
   "author": "Vladyslav Pestsov<vladyslav.pestsov@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
 }
