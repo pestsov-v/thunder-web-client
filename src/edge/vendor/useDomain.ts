@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { container } from '@EdgeContainer';
-import { ISchemaService, NSchemaService } from '@Edge/Types';
 import { EdgeSymbols } from '@EdgeSymbols';
 
-export const useDomain = (name: string) => {
+import type { ISchemaService, NSchemaService } from '@Edge/Types';
+
+export const useDomain = (name: string): NSchemaService.Domain | undefined => {
   const [domain, setDomain] = useState<NSchemaService.Domain>();
 
   useEffect(() => {
@@ -12,13 +13,5 @@ export const useDomain = (name: string) => {
     setDomain(domain);
   }, [name]);
 
-  return { domain };
+  return domain;
 };
-
-const TextComponent = () => {
-  const { domain } = useDomain('SysUsers');
-
-  return <div>${JSON.stringify(domain ? Array.from(domain.routes) : {})}</div>;
-};
-
-export default TextComponent;
