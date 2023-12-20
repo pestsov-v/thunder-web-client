@@ -1,4 +1,4 @@
-import { injectable, inject, axiosCreate } from '@Edge/Package';
+import { injectable, inject, axios } from '@Edge/Package';
 import { AbstractService } from './abstract.service';
 
 import type { Axios } from '@Edge/Package/Types';
@@ -19,7 +19,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
   }
 
   protected init(): boolean {
-    this._REQUESTER = axiosCreate({ url: 'http://localhost:11043' });
+    this._REQUESTER = axios.create({ baseURL: 'http://localhost:11033' });
     return true;
   }
 
@@ -31,8 +31,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
     if (!this._REQUESTER) {
       throw new Error('Axios instance not initialize.');
     }
-
-    return this._REQUESTER();
+    return this._REQUESTER;
   }
 
   public async schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig>(
@@ -55,6 +54,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
       [GetawayHeaders.SERVICE]: route.service,
       [GetawayHeaders.DOMAIN]: route.domain,
       [GetawayHeaders.ACTION]: route.action,
+      'accept-language': 'en',
     };
 
     try {
@@ -65,17 +65,38 @@ export class GetawayService extends AbstractService implements IGetawayService {
         data: config.data,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       throw e;
     }
   }
 
   public async baseRequest<T>(config: Axios.AxiosRequestConfig<T>): Promise<void> {
     try {
-      return this._requester(config);
+      const response = await this._requester.request(config);
+      return {
+        data: response.data,
+        status: response.status,
+        headers: response.headers,
+        request: response.request,
+      };
     } catch (e) {
-      console.error(e);
+      if (e instanceof axios.AxiosError) {
+        return this._resolveAxiosError(e);
+      }
       throw e;
     }
+  }
+
+  private _resolveAxiosError(e: axios.AxiosError) {
+    const data = {};
+
+    if (e.response) {
+      data['status'] = e.response.status;
+      data['headers'] = e.response.headers;
+      data['request'] = e.response.request;
+      data['data'] = e.response.data;
+    }
+
+    return data;
   }
 }

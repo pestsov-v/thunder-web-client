@@ -7,6 +7,9 @@ export const EdgeSymbols = {
   // Loaders
   SchemaLoader: Symbol('SchemaLoader'),
 
+  // Agents
+  FunctionalityAgent: Symbol('FunctionalityAgent'),
+
   // Initiator
   Initiator: Symbol('Initiator'),
 } as const;

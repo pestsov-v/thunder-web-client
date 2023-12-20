@@ -23,4 +23,13 @@ export namespace NGetawayService {
     method: T['method'];
     data?: D;
   };
+
+  export type ServerResponseType =
+    | 'info'
+    | 'redirect'
+    | 'success'
+    | 'error'
+    | 'validation'
+    | 'authenticated'
+    | 'fail';
 }
