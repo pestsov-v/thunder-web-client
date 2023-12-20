@@ -20,12 +20,17 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@Server/Package": [
-        "./src/server/packages/packages.ts"
-      ],
-      "@Server/Package/Types": [
-        "./types/server/packages/packages.ts"
-      ]
+      // Server
+      "@Server/Package": ["./src/server/packages/packages.ts"],
+      "@Server/Package/Types": ["./types/server/packages/packages.ts"],
+
+      // Edge
+      "@EdgeSymbols": ["./src/edge/ioc/ioc.edge.symbols.ts"],
+      "@EdgeContainer": ["./src/edge/ioc/ioc.edge.ts"],
+      "@Edge/Types": ["./types/edge/index.d.ts"],
+      "@Edge/Package": ["./src/edge/packages/packages.ts"],
+      "@Edge/Package/Types": ["./types/edge/packages/packages.ts"],
+
     }
   },
   "include": [
