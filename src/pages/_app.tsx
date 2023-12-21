@@ -5,8 +5,8 @@ import { EdgeSymbols } from '@EdgeSymbols';
 
 import type { IInitiator } from '@Edge/Types';
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp(props: AppProps) {
   container.get<IInitiator>(EdgeSymbols.Initiator).start();
 
-  return <Component {...pageProps} />;
+  return <props.Component {...props.pageProps} />;
 }

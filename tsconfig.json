@@ -26,6 +26,7 @@
 
       // Edge
       "@Edge/Common": ["./src/edge/common/index.ts"],
+      "@Edge/Utils": ["./src/edge/utils/index.ts"],
       "@EdgeSymbols": ["./src/edge/ioc/ioc.edge.symbols.ts"],
       "@EdgeContainer": ["./src/edge/ioc/ioc.edge.ts"],
       "@Edge/Types": ["./types/edge/index.d.ts"],

@@ -13,7 +13,6 @@ export const SysUsersController: NSysUsers.Controller = {
         method: 'POST',
         data: context.body,
       });
-      console.log('#RESULT', result);
     } catch (e) {
       console.log(e);
       throw e;

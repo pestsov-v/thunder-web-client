@@ -17,8 +17,6 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
           phone: '+380951696263',
           password: '12345',
         });
-
-        console.log('@Result', result);
       };
       start();
     }, []);
