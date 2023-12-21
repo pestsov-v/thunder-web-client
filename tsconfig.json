@@ -21,8 +21,11 @@
     "experimentalDecorators": true,
     "paths": {
       // Server
+      "@Server/Symbols": ["./src/server/ioc/ioc.server.symbols.ts"],
+      "@Server/Container": ["./src/server/ioc/ioc.server.ts"],
+      "@Server/Types": ["./types/server/index.d.ts"],
       "@Server/Package": ["./src/server/packages/packages.ts"],
-      "@Server/Package/Types": ["./types/server/packages/packages.ts"],
+      "@Server/Package/Types": ["./types/server/packages/packages.d.ts"],
 
       // Edge
       "@Edge/Common": ["./src/edge/common/index.ts"],

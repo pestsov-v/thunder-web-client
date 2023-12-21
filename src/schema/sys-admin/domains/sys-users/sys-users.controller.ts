@@ -3,7 +3,7 @@ import { NSchemaService } from '@Edge/Types';
 
 export const SysUsersController: NSysUsers.Controller = {
   'v1/login': async (
-    agents,
+    agents: NSchemaService.Agents,
     context: NSchemaService.Context<NSysUsers.LoginPayload>
   ): Promise<void> => {
     const { storage, schema } = agents.fnAgent;

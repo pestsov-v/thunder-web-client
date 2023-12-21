@@ -13,10 +13,14 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
   View: (props) => {
     useEffect(() => {
       const start = async () => {
-        const result = await UseController<NSysUsers.LoginPayload>('SysUsers', 'v1/login', {
-          phone: '+380951696263',
-          password: '12345',
-        });
+        const result = await UseController<NSysUsers.LoginPayload, { first: string }>(
+          'SysUsers',
+          'v1/login',
+          {
+            phone: '+380951696263',
+            password: '12345',
+          }
+        );
       };
       start();
     }, []);
