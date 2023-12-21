@@ -12,7 +12,7 @@ export namespace NFunctionalityAgent {
   };
 
   export type Storage = {
-    readonly localStorage: IStoragePort['getLocalStorage'];
-    readonly sessionStorage: IStoragePort['getSessionStorage'];
+    readonly localStorage: IStoragePort['localStorage'];
+    readonly sessionStorage: IStoragePort['sessionStorage'];
   };
 }

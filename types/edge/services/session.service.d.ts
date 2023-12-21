@@ -6,6 +6,11 @@ export interface ISessionService extends IAbstractService {
 
 export namespace NSessionService {
   export type ServerEventType = 'server:handshake';
+  export type ServerHandshakePayload = {
+    serverTag: string;
+    connectionId: string;
+    service: string;
+  };
 
   export type ClientEventType =
     | 'client:session:to:session'
@@ -17,8 +22,19 @@ export namespace NSessionService {
     payload?: P;
   };
 
-  export type EventStructure<E, P> = {
-    event: ClientEventType;
-    payload: SchemaEventStructure<E, P>;
+  export type EventStructure<E extends ServerEventPayload = ServerEventPayload, P = undefined> = {
+    event: ServerEventType;
+    payload: ServerEventPayload<E, P>;
+  };
+
+  export type ServerEventPayload<
+    E extends ServerEventType,
+    P = undefined,
+  > = E extends 'server:handshake' ? ServerHandshakePayload : never;
+
+  export type EventHandler<E extends ServerEventType> = (payload: ServerEventPayload<E>) => void;
+
+  export type EventHandlers<E extends ServerEventType = ServerEventType> = {
+    [key in E]: EventHandler<key>;
   };
 }

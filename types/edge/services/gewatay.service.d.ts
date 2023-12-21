@@ -3,11 +3,13 @@ import { HttpMethod } from '@Utility/Types';
 import { Axios } from '@Edge/Package/Types';
 
 export interface IGetawayService extends IAbstractService {
-  schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig>(
+  schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig, R = void>(
     config: NGetawayService.SchemaRequestOptions<T>
-  ): Promise<void>;
+  ): Promise<NGetawayService.ResponsePayload<R>>;
 
-  baseRequest<T>(config: Axios.AxiosRequestConfig<T>): Promise<void>;
+  baseRequest<T, R>(
+    config: Axios.AxiosRequestConfig<T>
+  ): Promise<NGetawayService.ResponsePayload<R>>;
 }
 
 export namespace NGetawayService {
@@ -32,4 +34,11 @@ export namespace NGetawayService {
     | 'validation'
     | 'authenticated'
     | 'fail';
+
+  export type ResponsePayload<R> = {
+    data: Axios.AxiosResponse<R>['data'];
+    status: Axios.AxiosResponse<R>['status'];
+    headers: Axios.AxiosResponse<R>['headers'];
+    request: Axios.AxiosResponse<R>['request'];
+  };
 }

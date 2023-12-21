@@ -1,8 +1,10 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
 import { AbstractService } from './abstract.service';
+import { Guards } from '@Edge/Utils';
 
-import type { ISchemaService, ISessionService } from '@Edge/Types';
+import type { ISchemaService, ISessionService, NSessionService, IStoragePort } from '@Edge/Types';
+import { SessionStorageKeys } from '@Edge/Common';
 
 @injectable()
 export class SessionService extends AbstractService implements ISessionService {
@@ -11,7 +13,9 @@ export class SessionService extends AbstractService implements ISessionService {
 
   constructor(
     @inject(EdgeSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService
+    private readonly _schemaService: ISchemaService,
+    @inject(EdgeSymbols.StoragePort)
+    private readonly _storagePort: IStoragePort
   ) {
     super();
   }
@@ -33,7 +37,11 @@ export class SessionService extends AbstractService implements ISessionService {
     this._SOCKET.onmessage = (event) => {
       try {
         const payload = JSON.parse(event.data);
-        // this._eventMediator(payload);
+        if (Guards.isEventStructure(payload)) {
+          this._eventMediator[payload.event](payload.payload);
+        } else {
+          // TODO: set error
+        }
       } catch (e) {
         console.log(e);
       }
@@ -46,4 +54,14 @@ export class SessionService extends AbstractService implements ISessionService {
     this._socket.close();
     this._SOCKET = undefined;
   }
+
+  private _eventMediator: NSessionService.EventHandlers = {
+    'server:handshake': (payload) => {
+      this._listenServerHandshake(payload);
+    },
+  };
+
+  private _listenServerHandshake = (payload: NSessionService.ServerHandshakePayload) => {
+    this._storagePort.sessionStorage.setItem(SessionStorageKeys.SERVER_HANDSHAKE_PAYLOAD, payload);
+  };
 }

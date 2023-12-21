@@ -6,8 +6,10 @@ export const SysUsersController: NSysUsers.Controller = {
     agents,
     context: NSchemaService.Context<NSysUsers.LoginPayload>
   ): Promise<void> => {
+    const { storage, schema } = agents.fnAgent;
+
     try {
-      const result = await agents.fnAgent.schema.sendRequest({
+      const result = await schema.sendRequest({
         route: 'v1/login',
         domain: 'SysUsers',
         method: 'POST',

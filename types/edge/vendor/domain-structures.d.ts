@@ -19,6 +19,8 @@ export type WsListenerStructure<T extends string> = {
   [key in T]: {
     type: NSessionService.ClientEventType | NSessionService.ClientEventType[];
     handler: NSchemaService.WsListener;
+    isPrivateUser?: boolean;
+    isPrivateOrganization?: boolean;
   };
 };
 
