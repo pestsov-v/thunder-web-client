@@ -5,6 +5,7 @@ import type {
   AliasViewStructure,
   ControllerStructure,
   RouterStructure,
+  WsListenerStructure,
 } from '@Vendor/Types';
 import { AliasViewStructures } from '@Vendor/Types';
 
@@ -22,4 +23,5 @@ export interface ISchemaLoader {
   ): void;
   setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void;
   setControllers(domain: string, controllers: ControllerStructure<string>): void;
+  setWsListeners(domain: string, listeners: WsListenerStructure<string>): void;
 }

@@ -1,6 +1,7 @@
 import type { EnvironmentKind, HttpMethod, UnknownObject } from '@Utility/Types';
 import type { NSchemaService } from '@Edge/Types';
 import type { FC } from 'react';
+import { NSessionService } from '@Edge/Types';
 
 export type RouterStructure<T extends string> = {
   [key in T]: {
@@ -11,6 +12,15 @@ export type RouterStructure<T extends string> = {
       isPrivateUser?: boolean;
       isPrivateOrganization?: boolean;
     };
+  };
+};
+
+export type WsListenerStructure<T extends string> = {
+  [key in T]: {
+    type: NSessionService.ClientEventType | NSessionService.ClientEventType[];
+    handler: NSchemaService.WsListener;
+    isPrivateUser?: boolean;
+    isPrivateOrganization?: boolean;
   };
 };
 
@@ -37,6 +47,7 @@ export type ControllerStructure<T extends string> = {
 export type DomainDocuments = {
   router?: RouterStructure<string>;
   controller?: ControllerStructure<string>;
+  wsListeners?: WsListenerStructure<string>;
   dictionaries?: AliasDictionaryStructure | AliasDictionaryStructures;
   views?: AliasViewStructure | AliasViewStructures;
 };

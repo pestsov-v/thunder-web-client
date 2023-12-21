@@ -4,11 +4,11 @@ import { EdgeSymbols } from '@EdgeSymbols';
 import type { Nullable } from '@Utility/Types';
 import type { IFunctionalityAgent, ISchemaService } from '@Edge/Types';
 
-export const UseController = async <T, R = void>(
+export const UseController = async <T, R>(
   domain: string,
   controller: string,
   data?: T
-): Promise<Nullable<T>> => {
+): Promise<Nullable<R>> => {
   const loader = container.get<ISchemaService>(EdgeSymbols.SchemaService);
   const dStorage = loader.schema.get(domain);
   if (dStorage) {
@@ -22,7 +22,10 @@ export const UseController = async <T, R = void>(
           body: data,
         }
       );
-      return result;
+      return result ?? null;
+    } else {
+      return null;
     }
   }
+  return null;
 };

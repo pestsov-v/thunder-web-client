@@ -25,17 +25,23 @@ export namespace NSchemaService {
     fnAgent: IFunctionalityAgent;
   };
 
-  export type Context<D = unknown> = {
+  export type Context<D = any> = {
     body?: D;
   };
 
-  export type ControllerHandler = <R = void>(agents: Agents, context: Context) => Promise<R>;
+  export type ControllerHandler<R> = (agents: Agents, context: Context) => Promise<R | void>;
+  export type WsListener = {
+    handler: ControllerHandler;
+    isPrivateUser?: boolean;
+    isPrivateOrganization?: boolean;
+  };
 
   export type Domain = {
     routes: Map<string, Route>;
     dictionaries: Map<string, Dictionary>;
     views: Map<string, View>;
     controllers: Map<string, ControllerHandler>;
+    wsListeners: Map<string, WsListener>;
   };
   export type Schema = Map<string, Domain>;
 }

@@ -1,10 +1,10 @@
 import { injectable, inject, axios } from '@Edge/Package';
+import { EdgeSymbols } from '@EdgeSymbols';
+import { GetawayHeaders } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 
 import type { Axios } from '@Edge/Package/Types';
 import type { IGetawayService, ISchemaService, NGetawayService } from '@Edge/Types';
-import { EdgeSymbols } from '@EdgeSymbols';
-import { GetawayHeaders } from '@Edge/Common';
 
 @injectable()
 export class GetawayService extends AbstractService implements IGetawayService {
@@ -34,9 +34,10 @@ export class GetawayService extends AbstractService implements IGetawayService {
     return this._REQUESTER;
   }
 
-  public async schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig>(
-    config: NGetawayService.SchemaRequestOptions<T>
-  ): Promise<void> {
+  public async schemaRequest<
+    T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig,
+    R = void,
+  >(config: NGetawayService.SchemaRequestOptions<T>): Promise<NGetawayService.ResponsePayload<R>> {
     const dStorage = this._schemaService.schema.get(config.domain);
     if (!dStorage) {
       throw new Error(`Domain storage "${config.domain}" not found.`);
@@ -70,7 +71,9 @@ export class GetawayService extends AbstractService implements IGetawayService {
     }
   }
 
-  public async baseRequest<T>(config: Axios.AxiosRequestConfig<T>): Promise<void> {
+  public async baseRequest<T, R>(
+    config: Axios.AxiosRequestConfig<T>
+  ): Promise<NGetawayService.ResponsePayload<R>> {
     try {
       const response = await this._requester.request(config);
       return {
@@ -87,14 +90,22 @@ export class GetawayService extends AbstractService implements IGetawayService {
     }
   }
 
-  private _resolveAxiosError(e: axios.AxiosError) {
-    const data = {};
-
+  private _resolveAxiosError(e: Axios.AxiosError): NGetawayService.ResponsePayload<unknown> {
+    let data: NGetawayService.ResponsePayload<unknown>;
     if (e.response) {
-      data['status'] = e.response.status;
-      data['headers'] = e.response.headers;
-      data['request'] = e.response.request;
-      data['data'] = e.response.data;
+      data = {
+        status: e.response.status,
+        headers: e.response.headers,
+        request: e.response.request,
+        data: e.response.data,
+      };
+    } else {
+      data = {
+        status: 500,
+        headers: {},
+        request: {},
+        data: {},
+      };
     }
 
     return data;
