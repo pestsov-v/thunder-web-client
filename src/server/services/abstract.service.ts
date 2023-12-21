@@ -1,6 +1,6 @@
 import { injectable } from '@Server/Package';
 
-import type { IAbstractService, IDiscoveryService } from '@Server/Types';
+import type { IAbstractService, IDiscoveryService, ILoggerService } from '@Server/Types';
 
 @injectable()
 export abstract class AbstractService implements IAbstractService {
@@ -8,11 +8,12 @@ export abstract class AbstractService implements IAbstractService {
   protected abstract init(): Promise<boolean>;
   protected abstract destroy(): Promise<void>;
   protected abstract readonly _discoveryService: IDiscoveryService;
+  protected abstract readonly _loggerService: ILoggerService | undefined;
 
   public async start(): Promise<void> {
     try {
       if (await this.init()) {
-        console.log(`Service ${this._SERVICE_NAME} has been started.`);
+        console.log(`Server service ${this._SERVICE_NAME} has been started.`);
       }
     } catch (e) {
       console.log(e);

@@ -1,6 +1,15 @@
 import { express, next } from '@Server/Package';
+import { container } from '@Server/Container';
+import { IInitiator } from '@Server/Types';
+import { ServerSymbols } from '@Server/Symbols';
+import * as os from 'os';
+import config from 'config';
 
 const isDev = process.env.NODE_ENV !== 'production';
+
+const initiator = container.get<IInitiator>(ServerSymbols.Initiator);
+
+initiator.start().catch((e) => console.log(e));
 
 const server = next({
   dev: isDev,
@@ -15,14 +24,11 @@ const server = next({
 const nextHandler = server.getRequestHandler();
 const app = express();
 
-import config from 'config';
-import * as os from 'os';
-
 if (!process.env.NODE_ENV) {
   throw new Error('Node environment mode is undefined');
 }
 
-const initiator = async () => {
+const initiatorhandler = async () => {
   const schemaProfile = process.env.THUNDER_SCHEMA_PROFILE || 'default';
 
   const baseConfig = config.util.loadFileConfigs(
@@ -33,7 +39,7 @@ const initiator = async () => {
   process.env.THE = JSON.stringify(baseConfig);
 };
 
-initiator().catch((e) => console.log(e));
+initiatorhandler().catch((e) => console.log(e));
 
 server
   .prepare()
