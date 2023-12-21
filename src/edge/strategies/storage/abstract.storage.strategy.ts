@@ -3,7 +3,7 @@ import type { IStorageStrategy } from '@Edge/Types';
 
 @injectable()
 export abstract class AbstractStorageStrategy implements IStorageStrategy {
-  protected abstract storage: typeof localStorage | typeof sessionStorage;
+  protected abstract readonly storage: typeof localStorage | typeof sessionStorage;
 
   public get length(): number {
     return this.storage.length;

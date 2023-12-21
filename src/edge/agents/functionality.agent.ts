@@ -20,10 +20,10 @@ export class FunctionalityAgent implements IFunctionalityAgent {
 
   public get schema(): NFunctionalityAgent.Schema {
     return {
-      sendRequest: <T extends NGetawayService.SchemaConfig>(
+      sendRequest: <T extends NGetawayService.SchemaConfig, R>(
         config: NGetawayService.SchemaRequestOptions<T>
-      ): Promise<void> => {
-        return this._getawayService.schemaRequest<T>(config);
+      ): Promise<NGetawayService.ResponsePayload<R>> => {
+        return this._getawayService.schemaRequest<T, R>(config);
       },
     };
   }
@@ -31,7 +31,7 @@ export class FunctionalityAgent implements IFunctionalityAgent {
   public get storage(): NFunctionalityAgent.Storage {
     return {
       localStorage: this._storagePort.localStorage,
-      sessionStorage: this._storagePort.localStorage,
+      sessionStorage: this._storagePort.sessionStorage,
     };
   }
 }

@@ -42,7 +42,7 @@ export class SchemaLoader implements ISchemaLoader {
         routes: new Map<string, NSchemaService.Route>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
-        controllers: new Map<string, NSchemaService.ControllerHandler>(),
+        controllers: new Map<string, NSchemaService.ControllerHandler<string>>(),
         wsListeners: new Map<string, NSchemaService.WsListener>(),
       });
     } else {

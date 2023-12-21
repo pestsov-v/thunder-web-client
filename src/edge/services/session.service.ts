@@ -62,6 +62,10 @@ export class SessionService extends AbstractService implements ISessionService {
   };
 
   private _listenServerHandshake = (payload: NSessionService.ServerHandshakePayload) => {
-    this._storagePort.sessionStorage.setItem(SessionStorageKeys.SERVER_HANDSHAKE_PAYLOAD, payload);
+    if (typeof window !== 'undefined') {
+      this._storagePort
+        .getSessionStorage()
+        .setItem(SessionStorageKeys.SERVER_HANDSHAKE_PAYLOAD, payload);
+    }
   };
 }

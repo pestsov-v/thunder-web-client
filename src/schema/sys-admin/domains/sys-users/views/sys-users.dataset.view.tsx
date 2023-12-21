@@ -21,8 +21,6 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
       start();
     }, []);
 
-    console.log(navigator);
-
     return <div>USERS_DATASET</div>;
   },
 };

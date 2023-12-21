@@ -29,8 +29,12 @@ export namespace NSchemaService {
     body?: D;
   };
 
-  export type ControllerHandler = <R = void>(agents: Agents, context: Context) => Promise<R | void>;
-  export type WsListener = ControllerHandler;
+  export type ControllerHandler<R> = (agents: Agents, context: Context) => Promise<R | void>;
+  export type WsListener = {
+    handler: ControllerHandler;
+    isPrivateUser?: boolean;
+    isPrivateOrganization?: boolean;
+  };
 
   export type Domain = {
     routes: Map<string, Route>;

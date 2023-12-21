@@ -7,7 +7,7 @@ export type SysUsersProfileViewProps = {
 
 export const SysUsersProfileView: ViewStructure<NSysUsers.Forms, SysUsersProfileViewProps> = {
   name: 'profile',
-  view: (props) => {
+  View: (props) => {
     return <div>USER_PROFILE</div>;
   },
 };
