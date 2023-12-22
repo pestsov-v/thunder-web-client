@@ -1,29 +1,17 @@
-import {
-  ItemProps,
-  LanguageDropdown,
-} from '@Schema/sys-admin/layouts/widgets/Header/shared/LanguageDropdown';
-import UkraineIcon from '../assets/icons/flags/ukraine.svg';
-import RussianIcon from '../assets/icons/flags/russian.svg';
-import UkIcon from '../assets/icons/flags/united-kingdom.svg';
+import { ReactElement } from 'react';
+import { FooterWidget, NavbarWidget, SidebarWidget } from '@Schema/sys-admin/layouts/widgets';
 
-export const MainLayout = () => {
-  const items: ItemProps[] = [
-    {
-      icon: UkraineIcon,
-      language: 'ua',
-      text: 'Українська',
-    },
-    {
-      icon: RussianIcon,
-      language: 'ru',
-      text: 'Російська',
-    },
-    {
-      icon: UkIcon,
-      language: 'en',
-      text: 'Англійська',
-    },
-  ];
+export type MainLayoutProps = {
+  children: ReactElement;
+};
 
-  return <LanguageDropdown items={items} />;
+export const MainLayout = (props: MainLayoutProps): ReactElement => {
+  return (
+    <div>
+      <NavbarWidget />
+      <SidebarWidget />
+      {props.children}
+      <FooterWidget />
+    </div>
+  );
 };
