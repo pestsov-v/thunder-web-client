@@ -4,7 +4,7 @@ import { EdgeSymbols } from '@EdgeSymbols';
 import type { Nullable } from '@Utility/Types';
 import type { IFunctionalityAgent, ISchemaService } from '@Edge/Types';
 
-export const UseController = async <T, R>(
+export const getController = async <T, R>(
   domain: string,
   controller: string,
   data?: T

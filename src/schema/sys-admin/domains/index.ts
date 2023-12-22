@@ -1,1 +1,1 @@
-export * from './sys-users/sys-users.collector';
+export * from './sys-users';

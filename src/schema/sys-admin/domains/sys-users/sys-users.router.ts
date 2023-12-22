@@ -1,13 +1,15 @@
 import { NSysUsers } from '@Schema/Types/domains/sys-users';
+import { setRouter } from '@Setters';
+import { DomainsKind } from '@Schema/Types/common/domains';
 
-export const SysUsersRouter: NSysUsers.Routes = {
+export const SysUsersRouter = setRouter<NSysUsers.Paths, DomainsKind>({
   'v1/login': {
     POST: {
-      domain: 'SysAuth',
-      service: 'SysAdmin',
       environment: 'edge',
+      domain: 'SysUsers',
+      service: 'SysAdmin',
       isPrivateUser: false,
       isPrivateOrganization: false,
     },
   },
-};
+});

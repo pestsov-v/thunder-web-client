@@ -1,20 +1,20 @@
-import { UseController } from '@Vendor';
+import { getController } from '@Vendor';
 import { useEffect } from 'react';
+import { setView } from '@Setters';
 import { Button } from '@nextui-org/button';
 
-import type { ViewStructure } from '@Vendor/Types';
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
 
 export type SysUsersDatasetViewProps = {
   className?: string;
 };
 
-export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDatasetViewProps> = {
+export const SysUsersDatasetView = setView<NSysUsers.Forms, SysUsersDatasetViewProps>({
   name: 'dataset',
   View: (props) => {
     useEffect(() => {
       const start = async () => {
-        const result = await UseController<NSysUsers.LoginPayload, { first: string }>(
+        const result = await getController<NSysUsers.LoginPayload, { first: string }>(
           'SysUsers',
           'v1/login',
           {
@@ -33,4 +33,4 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
       </div>
     );
   },
-};
+});

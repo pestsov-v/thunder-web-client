@@ -1,12 +1,14 @@
-import { NSysUsers } from '@Schema/Types/domains/sys-users';
-import { NSchemaService } from '@Edge/Types';
+import { setWsListener } from '@Setters';
 
-export const SysUsersWsListener: NSysUsers.WsListeners = {
+import type { NSysUsers } from '@Schema/Types/domains/sys-users';
+import type { NSchemaService } from '@Edge/Types';
+
+export const SysUsersWsListener = setWsListener<NSysUsers.Events>({
   'v1:add:user': {
     type: 'client:broadcast:to:app',
     isPrivateUser: false,
     isPrivateOrganization: false,
-    handler: (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
+    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
       console.log(agents);
     },
   },
@@ -14,8 +16,8 @@ export const SysUsersWsListener: NSysUsers.WsListeners = {
     isPrivateUser: false,
     isPrivateOrganization: false,
     type: 'client:session:to:session',
-    handler: (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
+    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
       console.log(agents);
     },
   },
-};
+});

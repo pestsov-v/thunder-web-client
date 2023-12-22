@@ -1,7 +1,6 @@
-import type { EnvironmentKind, HttpMethod, UnknownObject } from '@Utility/Types';
-import type { NSchemaService } from '@Edge/Types';
 import type { FC } from 'react';
-import { NSessionService } from '@Edge/Types';
+import type { NSchemaService, NSessionService } from '@Edge/Types';
+import type { EnvironmentKind, HttpMethod, UnknownObject } from '@Utility/Types';
 
 export type RouterStructure<T extends string> = {
   [key in T]: {
@@ -15,7 +14,7 @@ export type RouterStructure<T extends string> = {
   };
 };
 
-export type WsListenerStructure<T extends string> = {
+export type WsListenerStructure<T extends string = string> = {
   [key in T]: {
     type: NSessionService.ClientEventType | NSessionService.ClientEventType[];
     handler: NSchemaService.WsListener;
@@ -55,4 +54,8 @@ export type DomainDocuments = {
 export type CollectorStructure = {
   domain: string;
   documents: DomainDocuments;
+};
+
+export type StoreStructure<T extends string> = {
+  [key in T]: NSchemaService.Store;
 };

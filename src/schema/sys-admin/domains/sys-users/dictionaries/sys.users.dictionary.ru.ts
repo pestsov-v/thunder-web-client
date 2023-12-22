@@ -1,8 +1,10 @@
-import { NSysUsers } from '@Schema/Types/domains/sys-users';
-import { languageTypes } from '@Schema/sys-admin/common/language-types';
+import { setDictionary } from '@Setters';
 
-export const SysUsersDictionaryRu: NSysUsers.Dictionary = {
-  language: languageTypes.RU,
+import type { LanguageKind } from '@Schema/Types/common/language-type';
+import type { NSysUsers } from '@Schema/Types/domains/sys-users';
+
+export const SysUsersDictionaryRU = setDictionary<LanguageKind, NSysUsers.Dictionary>({
+  language: 'ru',
   dictionary: {
     user: {
       table: {
@@ -10,4 +12,4 @@ export const SysUsersDictionaryRu: NSysUsers.Dictionary = {
       },
     },
   },
-};
+});

@@ -1,6 +1,6 @@
-import { LanguageType } from '@Schema/Types/common/language-type';
+import { LanguageKind } from '@Schema/Types/common/language-type';
 
-export const languageTypes: Record<Uppercase<LanguageType>, LanguageType> = {
+export const languageTypes: Record<Uppercase<LanguageKind>, LanguageKind> = {
   EN: 'en',
   RU: 'ru',
   UA: 'ua',

@@ -1,26 +1,26 @@
+import { setCollector } from '@Setters';
 import { domainNames } from '../../common/domain-names';
-import { SysUsersRouter } from './sys-users.router';
-import { SysUsersWsListener } from '@Schema/sys-admin/domains/sys-users/sys-users.ws-listener';
-import { SysUsersController } from '@Schema/sys-admin/domains/sys-users/sys-users.controller';
+
 import {
+  SysUsersRouter,
+  SysUsersController,
   SysUsersDatasetView,
   SysUsersProfileView,
-} from '@Schema/sys-admin/domains/sys-users/views';
-import {
-  SysUsersDictionaryEn,
-  SysUsersDictionaryRu,
-  SysUsersDictionaryUa,
-} from '@Schema/sys-admin/domains/sys-users/dictionaries';
+  SysUsersDictionaryEN,
+  SysUsersDictionaryRU,
+  SysUsersDictionaryUA,
+  SysUsersStore,
+  SysUsersWsListener,
+} from './index';
 
-import type { CollectorStructure } from '@Vendor/Types';
-
-export const SysUsersCollector: CollectorStructure = {
+export const SysUsersCollector = setCollector({
   domain: domainNames.SYS_USERS,
   documents: {
     controller: SysUsersController,
     router: SysUsersRouter,
+    store: SysUsersStore,
     wsListeners: SysUsersWsListener,
-    dictionaries: [SysUsersDictionaryEn, SysUsersDictionaryRu, SysUsersDictionaryUa],
-    views: [SysUsersDatasetView, SysUsersProfileView],
+    dictionaries: [SysUsersDictionaryEN, SysUsersDictionaryRU, SysUsersDictionaryUA],
+    views: [SysUsersProfileView, SysUsersDatasetView],
   },
-};
+});
