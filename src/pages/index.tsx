@@ -1,4 +1,5 @@
 import { UseView } from '@Vendor';
+import { GetServerSideProps } from 'next';
 
 export default function Home() {
   return (
@@ -8,3 +9,9 @@ export default function Home() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
+};

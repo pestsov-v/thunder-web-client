@@ -1,5 +1,6 @@
 import { UseController } from '@Vendor';
 import { useEffect } from 'react';
+import { Button } from '@nextui-org/button';
 
 import type { ViewStructure } from '@Vendor/Types';
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
@@ -25,6 +26,11 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
       start();
     }, []);
 
-    return <div>USERS_DATASET</div>;
+    return (
+      <div>
+        <p>USERS_DATASET</p>
+        <Button color={'primary'}>Увійти</Button>
+      </div>
+    );
   },
 };
