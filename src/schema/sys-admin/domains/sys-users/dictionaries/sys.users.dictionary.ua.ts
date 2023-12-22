@@ -8,6 +8,14 @@ export const SysUsersDictionaryUA = setDictionary<LanguageKind, NSysUsers.Dictio
   dictionary: {
     user: {
       table: {
+        fullName: "Повне ім'я",
+        login: 'Логін',
+        email: 'Електронна пошта',
+        phone: 'Телефон',
+        createdAt: 'Створений',
+        isBLocked: 'Заблокований',
+        isVerifies: 'Верифікований',
+        maxSessions: 'Кількість сессій',
         role: 'Роль',
       },
     },

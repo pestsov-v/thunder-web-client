@@ -2,8 +2,9 @@ import type { IAbstractService } from './abstract.service';
 import type { FC } from 'react';
 import type { IFunctionalityAgent } from '../agents';
 import type { NSessionService } from './session.service';
-import type { AnyObject, EnvironmentKind, HttpMethod } from '@Utility/Types';
+import type { AnyObject, EnvironmentKind, HttpMethod, Nullable } from '@Utility/Types';
 import { Zustand } from '@Edge/Package/Types';
+import { z } from 'zod';
 
 export interface ISchemaService extends IAbstractService {
   readonly schema: NSchemaService.Schema;
@@ -38,6 +39,11 @@ export namespace NSchemaService {
     isPrivateUser?: boolean; // default false
     isPrivateOrganization?: boolean; // default false
   };
+
+  export type ValidateHandler = <T = any>(
+    validator: z.ZodObject<T>,
+    body: T
+  ) => Nullable<z.ZodError>;
 
   export type StoreStorageKind = 'localStorage' | 'sessionStorage';
   export type StorePersistenceKind = 'persist' | 'vanish';

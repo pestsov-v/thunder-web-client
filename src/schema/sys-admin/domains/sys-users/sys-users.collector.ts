@@ -6,21 +6,24 @@ import {
   SysUsersController,
   SysUsersDatasetView,
   SysUsersProfileView,
+  SysUsersAddUserView,
   SysUsersDictionaryEN,
   SysUsersDictionaryRU,
   SysUsersDictionaryUA,
   SysUsersStore,
   SysUsersWsListener,
-} from './index';
+  SysUsersValidator,
+} from '.';
 
 export const SysUsersCollector = setCollector({
   domain: domainNames.SYS_USERS,
   documents: {
     controller: SysUsersController,
     router: SysUsersRouter,
+    validator: SysUsersValidator,
     store: SysUsersStore,
     wsListeners: SysUsersWsListener,
     dictionaries: [SysUsersDictionaryEN, SysUsersDictionaryRU, SysUsersDictionaryUA],
-    views: [SysUsersProfileView, SysUsersDatasetView],
+    views: [SysUsersProfileView, SysUsersDatasetView, SysUsersAddUserView],
   },
 });

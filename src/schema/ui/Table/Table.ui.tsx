@@ -14,7 +14,7 @@ export const AbstractTable = (props?: TableProps): ReactElement => {
     <Table
       hideHeader={props?.table?.hideHeader}
       aria-label={props?.table?.ariaLabel ?? 'Standard dataset table'}
-      color={'primary'}
+      color={'success'}
     >
       <TableHeader>
         <TableColumn>NAME</TableColumn>

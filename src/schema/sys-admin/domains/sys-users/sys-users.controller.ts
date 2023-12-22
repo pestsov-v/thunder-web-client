@@ -16,6 +16,8 @@ export const SysUsersController = setController<NSysUsers.Paths>({
         method: 'POST',
         data: context.body,
       });
+
+      console.log(result);
     } catch (e) {
       console.log(e);
       throw e;

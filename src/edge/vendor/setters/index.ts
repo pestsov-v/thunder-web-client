@@ -6,3 +6,4 @@ export * from './setDictionary';
 export * from './setView';
 export * from './setController';
 export * from './setWsListener';
+export * from './setValidator';

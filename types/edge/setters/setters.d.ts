@@ -8,6 +8,7 @@ export type CollectionStructure = {
     router?: RouterStructure<string>;
     controller?: ControllerStructure;
     wsListeners?: WsListenerStructure;
+    validator?: ValidatorStructure;
     store?: StoreStructure;
     dictionaries?: DictionaryStructure | DictionaryStructure[];
     views?: ViewStructure | ViewStructure[];
@@ -49,4 +50,11 @@ export type ControllerStructure<T extends string = string> = {
 
 export type WsListenerStructure<T extends string = string> = {
   [key in T]: NSchemaService.WsListener;
+};
+
+export type ValidatorStructure<T extends string = string> = {
+  [key in T]: {
+    inSchema?: NSchemaService.ValidateHandler;
+    outSchema?: NSchemaService.ValidateHandler;
+  };
 };
