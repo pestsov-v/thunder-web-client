@@ -1,12 +1,13 @@
 import { injectable } from '@Edge/Package';
 
-import type { HttpMethod } from '@Utility/Types';
+import type { AnyObject, HttpMethod } from '@Utility/Types';
 import type { ISchemaLoader, NSchemaService } from '@Edge/Types';
 
 import {
   ControllerStructure,
   DictionaryStructure,
   RouterStructure,
+  StoreStructure,
   ViewStructure,
   WsListenerStructure,
 } from '@Setters/Types';
@@ -42,9 +43,9 @@ export class SchemaLoader implements ISchemaLoader {
         routes: new Map<string, NSchemaService.Route>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
-        controllers: new Map<string, NSchemaService.ControllerHandler>(),
+        controllers: new Map<string, NSchemaService.ControllerHandler<string>>(),
         wsListeners: new Map<string, NSchemaService.WsListener>(),
-        store: new Map<string, NSchemaService.Store<unknown>>(),
+        store: new Map<string, NSchemaService.Store>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
@@ -125,6 +126,27 @@ export class SchemaLoader implements ISchemaLoader {
         dStorage.wsListeners.set(lName, listener);
       } else {
         throw new Error(`Websocket listener with "${lName}" has been exists.`);
+      }
+    }
+  }
+
+  public setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
+    const dStorage = this.schema.get(domain);
+    if (!dStorage) {
+      this.setDomain(domain);
+      this.setStore(domain, stores);
+      return;
+    }
+
+    for (const sName in stores) {
+      const store = stores[sName];
+      if (!store) return;
+
+      const isExist = dStorage.store.get(sName);
+      if (!isExist) {
+        dStorage.store.set(sName, store);
+      } else {
+        throw new Error(`Zustand store with "${sName}" has been exists.`);
       }
     }
   }

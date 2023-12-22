@@ -1,6 +1,6 @@
-import { IAbstractService } from './abstract.service';
-import { HttpMethod } from '@Utility/Types';
-import { Axios } from '@Edge/Package/Types';
+import type { Axios } from '@Edge/Package/Types';
+import type { HttpMethod } from '@Utility/Types';
+import type { IAbstractService } from './abstract.service';
 
 export interface IGetawayService extends IAbstractService {
   schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig, R = void>(

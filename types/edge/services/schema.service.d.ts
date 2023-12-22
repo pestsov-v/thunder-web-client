@@ -1,8 +1,9 @@
-import { IAbstractService } from './abstract.service';
-import { AnyObject, EnvironmentKind, HttpMethod } from '@Utility/Types';
-import { FC } from 'react';
-import { IFunctionalityAgent } from '../agents';
-import { NSessionService } from './session.service';
+import type { IAbstractService } from './abstract.service';
+import type { FC } from 'react';
+import type { IFunctionalityAgent } from '../agents';
+import type { NSessionService } from './session.service';
+import type { AnyObject, EnvironmentKind, HttpMethod } from '@Utility/Types';
+import { Zustand } from '@Edge/Package/Types';
 
 export interface ISchemaService extends IAbstractService {
   readonly schema: NSchemaService.Schema;
@@ -43,6 +44,7 @@ export namespace NSchemaService {
 
   export type Store<S = AnyObject, T = AnyObject> = {
     initialState: S;
+    actions: Zustand.Actions<T>;
     storage?: StoreStorageKind; // default 'localStorage'
     persistence?: StorePersistenceKind; // default 'persist'
     partiality?: (state: S) => S; // default undefined
@@ -56,7 +58,7 @@ export namespace NSchemaService {
     views: Map<string, View>;
     controllers: Map<string, ControllerHandler>;
     wsListeners: Map<string, WsListener>;
-    store: Map<string, Store<unknown>>;
+    store: Map<string, Store>;
   };
   export type Schema = Map<string, Domain>;
 }
