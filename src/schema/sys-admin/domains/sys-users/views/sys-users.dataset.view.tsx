@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { setView } from '@Vendor';
-import { Button } from '@nextui-org/button';
+import { setView, getController } from '@Vendor';
+import { AbstractTable } from '@Ui';
 
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
-import { getController } from '../../../../../edge/vendor/getters/getController';
 
 export type SysUsersDatasetViewProps = {
   className?: string;
@@ -29,7 +28,7 @@ export const SysUsersDatasetView = setView<NSysUsers.Forms, SysUsersDatasetViewP
     return (
       <div>
         <p>USERS_DATASET</p>
-        <Button color={'primary'}>Увійти</Button>
+        <AbstractTable />
       </div>
     );
   },

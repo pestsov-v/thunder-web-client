@@ -44,6 +44,7 @@
 
       // Schema
       "@Schema/*": ["./src/schema/*"],
+      "@Ui": ["./src/schema/ui/index.ts"],
       "@Schema/Types/*": ["./types/schema/*"]
     }
   },
