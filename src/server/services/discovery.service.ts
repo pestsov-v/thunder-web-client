@@ -109,7 +109,10 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
 
       const config = this._config.util.extendDeep(configs, this._externalConfig);
       if ('client' in config) {
-        process.env.__$$__CLIENT_ENVIRONMENTS__$$__ = JSON.stringify(config.client);
+        await fse.writeFile(
+          `${process.cwd()}/.env.local`,
+          `NEXT_PUBLIC_CLIENT_ENVS=${JSON.stringify(config.client)}`
+        );
         delete config.client;
       }
 
