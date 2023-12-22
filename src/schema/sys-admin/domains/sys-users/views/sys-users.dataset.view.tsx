@@ -1,9 +1,9 @@
-import { getController } from '@Vendor';
 import { useEffect } from 'react';
-import { setView } from '@Setters';
+import { setView } from '@Vendor';
 import { Button } from '@nextui-org/button';
 
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
+import { getController } from '../../../../../edge/vendor/getters/getController';
 
 export type SysUsersDatasetViewProps = {
   className?: string;

@@ -1,4 +1,4 @@
-import { setStore } from '@Setters';
+import { setStore } from '@Vendor';
 import { DomainsKind } from '@Schema/Types/common/domains';
 
 export const SysUsersStore = setStore<
@@ -14,5 +14,6 @@ export const SysUsersStore = setStore<
     persistence: 'persist',
     version: 1,
     skipHydration: true,
+    actions: () => {},
   },
 });

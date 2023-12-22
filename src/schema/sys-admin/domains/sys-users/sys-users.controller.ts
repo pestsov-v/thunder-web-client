@@ -1,6 +1,6 @@
 import { NSysUsers } from '@Schema/Types/domains/sys-users';
 import { NSchemaService } from '@Edge/Types';
-import { setController } from '@Setters';
+import { setController } from '@Vendor';
 
 export const SysUsersController = setController<NSysUsers.Paths>({
   'v1/login': async (

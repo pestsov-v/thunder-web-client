@@ -1,4 +1,4 @@
-import { setCollector } from '@Setters';
+import { setCollector } from '@Vendor';
 import { domainNames } from '../../common/domain-names';
 
 import {

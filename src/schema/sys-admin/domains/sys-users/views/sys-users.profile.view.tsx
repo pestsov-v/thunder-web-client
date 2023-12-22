@@ -1,4 +1,4 @@
-import { setView } from '@Setters';
+import { setView } from '@Vendor';
 
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
 

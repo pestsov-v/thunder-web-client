@@ -1,5 +1,5 @@
 import { NSysUsers } from '@Schema/Types/domains/sys-users';
-import { setRouter } from '@Setters';
+import { setRouter } from '@Vendor';
 import { DomainsKind } from '@Schema/Types/common/domains';
 
 export const SysUsersRouter = setRouter<NSysUsers.Paths, DomainsKind>({

@@ -7,8 +7,8 @@ export type UseViewProps = {
   props?: unknown;
 };
 
-export const UseView: FC<UseViewProps> = ({ domain, view, props }) => {
-  const DynamicComponent = dynamic(() => import('./usePrepareView'), {
+export const GetView: FC<UseViewProps> = ({ domain, view, props }) => {
+  const DynamicComponent = dynamic(() => import('./getPrepareView'), {
     ssr: false,
     loading: () => <div>Loading...</div>,
   });

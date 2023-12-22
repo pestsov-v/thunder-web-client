@@ -1,4 +1,4 @@
-import { setWsListener } from '@Setters';
+import { setWsListener } from '@Vendor';
 
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
 import type { NSchemaService } from '@Edge/Types';

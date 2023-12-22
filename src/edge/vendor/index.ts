@@ -1,2 +1,2 @@
-export * from './useView';
-export * from './useController';
+export * from './setters';
+export * from './getters';
