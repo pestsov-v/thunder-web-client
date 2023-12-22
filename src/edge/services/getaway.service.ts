@@ -4,22 +4,53 @@ import { GetawayHeaders } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 
 import type { Axios } from '@Edge/Package/Types';
-import type { IGetawayService, ISchemaService, NGetawayService } from '@Edge/Types';
+import type {
+  IGetawayService,
+  ISchemaService,
+  NGetawayService,
+  IDiscoveryService,
+} from '@Edge/Types';
 
 @injectable()
 export class GetawayService extends AbstractService implements IGetawayService {
-  private _REQUESTER: Axios.AxiosInstance | undefined;
   protected _SERVICE_NAME = GetawayService.name;
 
+  private _REQUESTER: Axios.AxiosInstance | undefined;
+  private _CONFIG: NGetawayService.Config | undefined;
+
   constructor(
+    @inject(EdgeSymbols.DiscoveryService)
+    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService
   ) {
     super();
   }
 
+  private _setConfig() {
+    this._CONFIG = {
+      protocol: 'http',
+      host: 'localhost',
+      port: 11033,
+      urls: {
+        baseApiUrl: '/v1/call/api/',
+      },
+    };
+  }
+
+  private get _config(): NGetawayService.Config {
+    if (!this._CONFIG) {
+      throw new Error('Configuration not set.');
+    }
+
+    return this._CONFIG;
+  }
+
   protected init(): boolean {
-    this._REQUESTER = axios.create({ baseURL: 'http://localhost:11033' });
+    this._setConfig();
+
+    const { protocol, host, port } = this._config;
+    this._REQUESTER = axios.create({ baseURL: `${protocol}://${host}:${port}` });
     return true;
   }
 
@@ -60,7 +91,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
 
     try {
       return await this.baseRequest({
-        url: '/v1/call/api/',
+        url: this._config.urls.baseApiUrl,
         method: route.method,
         headers: headers,
         data: config.data,

@@ -13,6 +13,14 @@ export interface IGetawayService extends IAbstractService {
 }
 
 export namespace NGetawayService {
+  export type Config = {
+    protocol: string;
+    host: string;
+    port: number;
+    urls: {
+      baseApiUrl: string;
+    };
+  };
   export type SchemaConfig = {
     domain: string;
     route: string;

@@ -1,23 +1,37 @@
-import { express, next } from '@Server/Package';
+import { container } from '@Server/Container';
+import { IInitiator } from '@Server/Types';
+import { ServerSymbols } from '@Server/Symbols';
 
-const isDev = process.env.NODE_ENV !== 'production';
+const initiator = container.get<IInitiator>(ServerSymbols.Initiator);
 
-const server = next({ dev: isDev });
-const nextHandler = server.getRequestHandler();
-const app = express();
+const initiate = async () => {
+  await initiator.start();
+};
 
-server
-  .prepare()
-  .then(() => {
-    app.get('*', (req: express.Request, res: express.Response) => {
-      return nextHandler(req, res);
-    });
+const terminate = async () => {
+  await initiator.stop();
+  process.removeAllListeners();
+  process.exit(0);
+};
 
-    app.listen(3012, () => {
-      console.log('server ready on port 3012');
-    });
-  })
-  .catch((exception) => {
-    console.error(exception.stack);
+process.on('SIGTERM', terminate);
+process.on('SIGINT', terminate);
+process.on('SIGHUP', terminate);
+process.on('uncaughtException', (e) => {
+  console.error(e);
+  initiator.stop().then(() => {
     process.exit(1);
   });
+});
+process.on('unhandledRejection', (reason, parameter) => {
+  parameter.catch((e) => {
+    console.error(e);
+    initiator.stop().then(() => {
+      process.exit(1);
+    });
+  });
+});
+
+initiate().catch((e) => {
+  console.log('Server end with error: ', e);
+});

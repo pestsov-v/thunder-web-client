@@ -1,0 +1,15 @@
+{
+  "services": {
+      "schema": {
+        "schemaPath": "saasa"
+      }
+  },
+  "adapters": {
+    "http": {
+      "serverTag": "sys_admin_visualizer_01",
+      "protocol": "http",
+      "host": "localhost",
+      "port": "14053"
+    }
+  }
+}
