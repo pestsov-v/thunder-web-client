@@ -184,7 +184,7 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   private _get<T>(name: string, defaultValue?: T): T {
-    const value = this._config.get<T>(name);
+    const value = this._config.get<T>(`config.${name}`);
     if (typeof value === 'undefined' || typeof value === null) {
       if (!defaultValue) {
         throw new Error(`Environment variable "${name}" not found`);
@@ -216,7 +216,7 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   private async _getEnvBuffer(path: string): Promise<Buffer> {
-    const variable = this._get<string>(path);
+    const variable = this._get<string>(`config.${path}`);
     if (!variable) {
       throw new Error(`Could not found certificate in path "${path}"`);
     }

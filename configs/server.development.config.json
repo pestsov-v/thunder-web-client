@@ -9,8 +9,7 @@
       "serverTag": "sys_admin_visualizer_01",
       "protocol": "http",
       "host": "localhost",
-      "port": "10033"
+      "port": "14053"
     }
-  },
-  "test": 14
+  }
 }
