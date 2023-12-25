@@ -1,15 +1,16 @@
 import { injectable } from '@Edge/Package';
 
-import type { HttpMethod } from '@Utility/Types';
+import type { AnyObject, HttpMethod } from '@Utility/Types';
 import type { ISchemaLoader, NSchemaService } from '@Edge/Types';
-import type {
-  AliasViewStructure,
-  AliasViewStructures,
+
+import {
   ControllerStructure,
   DictionaryStructure,
   RouterStructure,
+  StoreStructure,
+  ViewStructure,
   WsListenerStructure,
-} from '@Vendor/Types';
+} from '@Setters/Types';
 
 @injectable()
 export class SchemaLoader implements ISchemaLoader {
@@ -44,6 +45,7 @@ export class SchemaLoader implements ISchemaLoader {
         views: new Map<string, NSchemaService.View<string>>(),
         controllers: new Map<string, NSchemaService.ControllerHandler<string>>(),
         wsListeners: new Map<string, NSchemaService.WsListener>(),
+        store: new Map<string, NSchemaService.Store>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
@@ -79,12 +81,7 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
-  public setDictionaries(
-    domain: string,
-    dictionaries:
-      | DictionaryStructure<string, NSchemaService.Dictionary>
-      | DictionaryStructure<string, NSchemaService.Dictionary>[]
-  ): void {
+  public setDictionaries(domain: string, dictionaries: DictionaryStructure): void {
     const dStorage = this.schema.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
@@ -92,16 +89,10 @@ export class SchemaLoader implements ISchemaLoader {
       return;
     }
 
-    if (Array.isArray(dictionaries)) {
-      dictionaries.forEach((dictionary) => {
-        dStorage.dictionaries.set(dictionary.language, dictionary.dictionary);
-      });
-    } else {
-      dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
-    }
+    dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
   }
 
-  public setControllers(domain: string, controllers: ControllerStructure<string>) {
+  public setControllers(domain: string, controllers: ControllerStructure): void {
     const dStorage = this.schema.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
@@ -120,7 +111,7 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
-  public setWsListeners(domain: string, listeners: WsListenerStructure<string>) {
+  public setWsListeners(domain: string, listeners: WsListenerStructure): void {
     const dStorage = this.schema.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
@@ -139,20 +130,39 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
-  public setViews(domain: string, views: AliasViewStructure | AliasViewStructures): void {
+  public setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
+    const dStorage = this.schema.get(domain);
+    if (!dStorage) {
+      this.setDomain(domain);
+      this.setStore(domain, stores);
+      return;
+    }
+
+    for (const sName in stores) {
+      const store = stores[sName];
+      if (!store) return;
+
+      const isExist = dStorage.store.get(sName);
+      if (!isExist) {
+        dStorage.store.set(sName, store);
+      } else {
+        throw new Error(`Zustand store with "${sName}" has been exists.`);
+      }
+    }
+  }
+
+  public setViews(domain: string, views: ViewStructure): void {
     const dStorage = this.schema.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setViews(domain, views);
       return;
     }
-
-    if (Array.isArray(views)) {
-      views.forEach((view) => {
-        dStorage.views.set(view.name, view.View);
-      });
-    } else {
+    const isExist = dStorage.views.get(views.name);
+    if (!isExist) {
       dStorage.views.set(views.name, views.View);
+    } else {
+      throw new Error(`View with "${views.name}" has been exists.`);
     }
   }
 }

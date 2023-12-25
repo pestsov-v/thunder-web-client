@@ -1,17 +1,26 @@
-import { UseView } from '@Vendor';
-import { GetServerSideProps } from 'next';
+import { GetView } from '@Vendor';
+import { MainLayout } from '@Schema/sys-admin/layouts/MainLayout';
+import type { GetServerSideProps } from 'next';
 
-export default function Home() {
+export default function Home(props: any) {
+  console.log('PPP', props);
   return (
     <div>
-      <UseView domain={'SysUsers'} view={'dataset'} />
-      <UseView domain={'SysUsers'} view={'profile'} />
+      <MainLayout>
+        <div>
+          <GetView domain={'SysUsers'} view={'dataset'} />
+          <GetView domain={'SysUsers'} view={'profile'} />
+          <GetView domain={'SysUsers'} view={'add-user'} />
+        </div>
+      </MainLayout>
     </div>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
-    props: {},
+    props: {
+      cccxcfd: 'ddsdasdsad',
+    },
   };
 };

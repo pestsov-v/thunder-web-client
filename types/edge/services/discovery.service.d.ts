@@ -1,6 +1,8 @@
-import { IAbstractService } from '@Edge/Types';
+import type { IAbstractService } from '@Edge/Types';
 
 export interface IDiscoveryService extends IAbstractService {
+  readonly nodeEnv: string;
+
   getMandatory<T>(name: string): T;
   getString(name: string, def: string): string;
   getNumber(name: string, def: number): number;

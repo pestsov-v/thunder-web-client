@@ -1,13 +1,23 @@
-import { NSysUsers } from '@Schema/Types/domains/sys-users';
-import { languageTypes } from '@Schema/sys-admin/common/language-types';
+import { setDictionary } from '@Vendor';
 
-export const SysUsersDictionaryEn: NSysUsers.Dictionary = {
-  language: languageTypes.EN,
+import type { LanguageKind } from '@Schema/Types/common/language-type';
+import type { NSysUsers } from '@Schema/Types/domains/sys-users';
+
+export const SysUsersDictionaryEN = setDictionary<LanguageKind, NSysUsers.Dictionary>({
+  language: 'en',
   dictionary: {
     user: {
       table: {
+        fullName: 'Full name',
+        login: 'Login',
+        email: 'Email',
+        phone: 'Phone',
+        createdAt: 'Created at',
+        isBLocked: 'Block',
+        isVerifies: 'Verify',
+        maxSessions: 'Max sessions',
         role: 'Role',
       },
     },
   },
-};
+});

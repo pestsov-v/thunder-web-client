@@ -10,6 +10,7 @@
   "author": "Vladyslav Pestsov<vladyslav.pestsov@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@nextui-org/react": "^2.2.9",
     "axios": "^1.6.2",
     "config": "^3.3.9",
@@ -20,7 +21,10 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "reflect-metadata": "^0.2.1"
+    "react-hook-form": "^7.49.2",
+    "reflect-metadata": "^0.2.1",
+    "zod": "^3.22.4",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/config": "^3.3.3",

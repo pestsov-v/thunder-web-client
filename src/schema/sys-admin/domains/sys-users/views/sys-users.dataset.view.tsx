@@ -1,20 +1,29 @@
-import { UseController } from '@Vendor';
-import { useEffect } from 'react';
-import { Button } from '@nextui-org/button';
+import { useEffect, useState } from 'react';
+import { setView, getController, getStore } from '@Vendor';
+import { AbstractTable } from '@Ui';
 
-import type { ViewStructure } from '@Vendor/Types';
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
+import type { Root } from '@Schema/Types/root';
+import type { DomainsKind } from '@Schema/Types/common/domains';
 
 export type SysUsersDatasetViewProps = {
   className?: string;
 };
 
-export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDatasetViewProps> = {
+export const SysUsersDatasetView = setView<NSysUsers.Forms, SysUsersDatasetViewProps>({
   name: 'dataset',
   View: (props) => {
+    const [result, setResult] = useState<any>();
+
+    const store = getStore<Root.Store, Root.Store, Root.StoreActions>('Root', 'Root');
+
+    const { getActualLanguage } = store();
+
+    console.log(getActualLanguage());
+
     useEffect(() => {
       const start = async () => {
-        const result = await UseController<NSysUsers.LoginPayload, { first: string }>(
+        const result = await getController<DomainsKind, NSysUsers.Paths, NSysUsers.LoginPayload>(
           'SysUsers',
           'v1/login',
           {
@@ -22,6 +31,8 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
             password: '12345',
           }
         );
+
+        setResult(result);
       };
       start();
     }, []);
@@ -29,8 +40,8 @@ export const SysUsersDatasetView: ViewStructure<NSysUsers.Forms, SysUsersDataset
     return (
       <div>
         <p>USERS_DATASET</p>
-        <Button color={'primary'}>Увійти</Button>
+        <AbstractTable />
       </div>
     );
   },
-};
+});

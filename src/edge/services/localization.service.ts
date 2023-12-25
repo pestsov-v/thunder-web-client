@@ -106,7 +106,7 @@ export class LocalizationService extends AbstractService implements ILocalizatio
         return record[resource];
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       throw e;
     }
   }

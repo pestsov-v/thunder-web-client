@@ -18,6 +18,10 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
     return true;
   }
 
+  public get nodeEnv(): string {
+    return process.env.NODE_ENV;
+  }
+
   protected destroy(): void {
     this._CONFIG = undefined;
   }

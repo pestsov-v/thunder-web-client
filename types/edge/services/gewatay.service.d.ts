@@ -1,11 +1,19 @@
-import { IAbstractService } from './abstract.service';
-import { HttpMethod } from '@Utility/Types';
-import { Axios } from '@Edge/Package/Types';
+import type { Axios } from '@Edge/Package/Types';
+import type { HttpMethod } from '@Utility/Types';
+import type { IAbstractService } from './abstract.service';
 
 export interface IGetawayService extends IAbstractService {
-  schemaRequest<T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig, R = void>(
-    config: NGetawayService.SchemaRequestOptions<T>
-  ): Promise<NGetawayService.ResponsePayload<R>>;
+  schemaRequest: <
+    Route extends string = string,
+    Domain extends string = string,
+    Data = any,
+    Result = void,
+  >(
+    route: Route,
+    domain: Domain,
+    method: HttpMethod,
+    config?: NGetawayService.SchemaRequestOptions<Data>
+  ) => Promise<NGetawayService.ResponsePayload<Result>>;
 
   baseRequest<T, R>(
     config: Axios.AxiosRequestConfig<T>
@@ -21,16 +29,13 @@ export namespace NGetawayService {
       baseApiUrl: string;
     };
   };
-  export type SchemaConfig = {
-    domain: string;
-    route: string;
+  export type SchemaConfig<R extends string = string, D extends string = string> = {
+    domain: R;
+    route: D;
     method: HttpMethod;
   };
 
-  export type SchemaRequestOptions<T extends SchemaConfig, D = any> = {
-    domain: T['domain'];
-    route: T['route'];
-    method: T['method'];
+  export type SchemaRequestOptions<D = any> = {
     data?: D;
   };
 
@@ -42,6 +47,10 @@ export namespace NGetawayService {
     | 'validation'
     | 'authenticated'
     | 'fail';
+
+  export type ServerResponse = {
+    responseType: ServerResponseType;
+  };
 
   export type ResponsePayload<R> = {
     data: Axios.AxiosResponse<R>['data'];

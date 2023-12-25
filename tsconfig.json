@@ -40,9 +40,11 @@
       "@Vendor": ["./src/edge/vendor/index.ts"],
       "@Vendor/Types": ["./types/edge/vendor/index.d.ts"],
       "@Utility/Types": ["./types/common/index.d.ts"],
+      "@Setters/Types": ["./types/edge/setters/index.d.ts"],
 
       // Schema
       "@Schema/*": ["./src/schema/*"],
+      "@Ui": ["./src/schema/ui/index.ts"],
       "@Schema/Types/*": ["./types/schema/*"]
     }
   },

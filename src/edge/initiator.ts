@@ -8,6 +8,7 @@ import type {
   ILocalizationService,
   ISchemaService,
   ISessionService,
+  IStoreService,
 } from '@Edge/Types';
 
 @injectable()
@@ -22,7 +23,9 @@ export class Initiator implements IInitiator {
     @inject(EdgeSymbols.LocalizationService)
     private readonly _localizationService: ILocalizationService,
     @inject(EdgeSymbols.SessionService)
-    private readonly _sessionService: ISessionService
+    private readonly _sessionService: ISessionService,
+    @inject(EdgeSymbols.StoreService)
+    private readonly _storeService: IStoreService
   ) {}
 
   public start(): void {
@@ -31,9 +34,11 @@ export class Initiator implements IInitiator {
     this._getawayService.start();
     this._localizationService.start();
     this._sessionService.start();
+    this._storeService.start();
   }
 
   public stop(): void {
+    this._storeService.stop();
     this._sessionService.stop();
     this._localizationService.stop();
     this._getawayService.stop();

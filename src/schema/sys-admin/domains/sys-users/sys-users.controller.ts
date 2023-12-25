@@ -1,7 +1,8 @@
 import { NSysUsers } from '@Schema/Types/domains/sys-users';
 import { NSchemaService } from '@Edge/Types';
+import { setController } from '@Vendor';
 
-export const SysUsersController: NSysUsers.Controller = {
+export const SysUsersController = setController<NSysUsers.Paths>({
   'v1/login': async (
     agents: NSchemaService.Agents,
     context: NSchemaService.Context<NSysUsers.LoginPayload>
@@ -15,9 +16,12 @@ export const SysUsersController: NSysUsers.Controller = {
         method: 'POST',
         data: context.body,
       });
+
+      console.log(result);
     } catch (e) {
       console.log(e);
       throw e;
     }
   },
-};
+  'v1/signup': {},
+});

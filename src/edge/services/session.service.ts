@@ -1,10 +1,10 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
+import { SessionStorageKeys } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 import { Guards } from '@Edge/Utils';
 
 import type { ISchemaService, ISessionService, NSessionService, IStoragePort } from '@Edge/Types';
-import { SessionStorageKeys } from '@Edge/Common';
 
 @injectable()
 export class SessionService extends AbstractService implements ISessionService {
@@ -32,7 +32,7 @@ export class SessionService extends AbstractService implements ISessionService {
     return true;
   }
   protected init(): boolean {
-    this._SOCKET = new WebSocket('ws://localhost:11043');
+    this._SOCKET = new WebSocket('ws://localhost:11073');
 
     this._SOCKET.onmessage = (event) => {
       try {
@@ -43,7 +43,7 @@ export class SessionService extends AbstractService implements ISessionService {
           // TODO: set error
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     };
 

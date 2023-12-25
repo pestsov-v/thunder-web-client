@@ -1,7 +1,10 @@
-import { IAbstractService } from './abstract.service';
-import { EnvironmentKind, HttpMethod } from '@Utility/Types';
-import { FC } from 'react';
-import { IFunctionalityAgent } from '../agents';
+import type { FC } from 'react';
+import type { Zustand, Zod } from '@Edge/Package/Types';
+import type { AnyObject, EnvironmentKind, HttpMethod } from '@Utility/Types';
+
+import type { IAbstractService } from './abstract.service';
+import type { IFunctionalityAgent } from '../agents';
+import type { NSessionService } from './session.service';
 
 export interface ISchemaService extends IAbstractService {
   readonly schema: NSchemaService.Schema;
@@ -31,9 +34,29 @@ export namespace NSchemaService {
 
   export type ControllerHandler<R> = (agents: Agents, context: Context) => Promise<R | void>;
   export type WsListener = {
+    type: NSessionService.ClientEventType | NSessionService.ClientEventType[];
     handler: ControllerHandler;
-    isPrivateUser?: boolean;
-    isPrivateOrganization?: boolean;
+    isPrivateUser?: boolean; // default false
+    isPrivateOrganization?: boolean; // default false
+  };
+
+  export type ValidateHandler = <T = void>() => Zod.ZodObject<Zod.ZodRawShape>;
+
+  export type Validator<IN = void, OUT = void> = {
+    inSchema?: ValidateHandler<IN>;
+    outSchema?: ValidateHandler<OUT>;
+  };
+
+  export type StoreStorageKind = 'localStorage' | 'sessionStorage';
+  export type StorePersistenceKind = 'persist' | 'vanish';
+
+  export type Store<S = any, T = any> = {
+    actions: Zustand.Actions<S, T>;
+    storage?: StoreStorageKind; // default 'localStorage'
+    persistence?: StorePersistenceKind; // default 'persist'
+    partiality?: (state: S) => S; // default undefined
+    version?: number; // default 1
+    skipHydration?: boolean; // default true
   };
 
   export type Domain = {
@@ -42,6 +65,8 @@ export namespace NSchemaService {
     views: Map<string, View>;
     controllers: Map<string, ControllerHandler>;
     wsListeners: Map<string, WsListener>;
+    store: Map<string, Store>;
+    validators: Map<string, Validator>;
   };
   export type Schema = Map<string, Domain>;
 }

@@ -5,6 +5,7 @@ export const EdgeSymbols = {
   SessionService: Symbol('SessionService'),
   SchemaService: Symbol('SchemaService'),
   LocalizationService: Symbol('LocalizationService'),
+  StoreService: Symbol('StoreService'),
 
   // Loaders
   SchemaLoader: Symbol('SchemaLoader'),
