@@ -19,9 +19,7 @@ export class StoreService extends AbstractService implements IStoreService {
     super();
   }
 
-  protected destroy(): void {
-    console.log('');
-  }
+  protected destroy(): void {}
 
   protected init(): boolean {
     return true;
@@ -42,7 +40,6 @@ export class StoreService extends AbstractService implements IStoreService {
     }
 
     const internalConfig: NSchemaService.Store = {
-      initialState: config.initialState,
       partiality: config.partiality ?? undefined,
       version: config.version ?? 1,
       persistence: config.persistence ?? 'persist',
@@ -51,15 +48,10 @@ export class StoreService extends AbstractService implements IStoreService {
       actions: config.actions,
     };
 
-    const state = {
-      ...internalConfig.initialState,
-      ...internalConfig.actions,
-    };
-
     let creator: Zustand.StateCreator<T> | Zustand.PersistStateCreator<T>;
     switch (internalConfig.persistence) {
       case 'persist':
-        creator = persist<T>(state, {
+        creator = persist<T>(internalConfig.actions, {
           skipHydration: internalConfig.skipHydration,
           name: store,
           storage: createJSONStorage(() =>
@@ -80,6 +72,6 @@ export class StoreService extends AbstractService implements IStoreService {
 
     return this._discoveryService.nodeEnv === 'production'
       ? create(creator)
-      : devtools(creator, { name: store });
+      : create(devtools(creator, { name: store }));
   }
 }

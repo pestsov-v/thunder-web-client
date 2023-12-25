@@ -15,8 +15,12 @@ export type CollectionStructure = {
   };
 };
 
-export type StoreStructure<T extends string = string, B, A> = {
+export type StoreStructure<T extends string = string, B = any, A = any> = {
   [key in T]?: NSchemaService.Store<B, A>;
+};
+
+export type ValidatorStructure<T extends string = string> = {
+  [key in T]?: NSchemaService.Validator;
 };
 
 export type RouterStructure<T extends string, D extends string = string> = {
@@ -50,11 +54,4 @@ export type ControllerStructure<T extends string = string> = {
 
 export type WsListenerStructure<T extends string = string> = {
   [key in T]: NSchemaService.WsListener;
-};
-
-export type ValidatorStructure<T extends string = string> = {
-  [key in T]: {
-    inSchema?: NSchemaService.ValidateHandler;
-    outSchema?: NSchemaService.ValidateHandler;
-  };
 };

@@ -8,16 +8,12 @@ export const SysUsersWsListener = setWsListener<NSysUsers.Events>({
     type: 'client:broadcast:to:app',
     isPrivateUser: false,
     isPrivateOrganization: false,
-    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
-      console.log(agents);
-    },
+    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {},
   },
   'v1:remove:user': {
     isPrivateUser: false,
     isPrivateOrganization: false,
     type: 'client:session:to:session',
-    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {
-      console.log(agents);
-    },
+    handler: async (agents: NSchemaService.Agents, context: NSchemaService.Context) => {},
   },
 });

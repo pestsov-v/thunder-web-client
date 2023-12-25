@@ -10,6 +10,7 @@ import type {
   NGetawayService,
   IDiscoveryService,
 } from '@Edge/Types';
+import { HttpMethod } from '@Utility/Types';
 
 @injectable()
 export class GetawayService extends AbstractService implements IGetawayService {
@@ -66,35 +67,40 @@ export class GetawayService extends AbstractService implements IGetawayService {
   }
 
   public async schemaRequest<
-    T extends NGetawayService.SchemaConfig = NGetawayService.SchemaConfig,
-    R = void,
-  >(config: NGetawayService.SchemaRequestOptions<T>): Promise<NGetawayService.ResponsePayload<R>> {
-    const dStorage = this._schemaService.schema.get(config.domain);
+    Route extends string = string,
+    Domain extends string = string,
+    Data = any,
+    Result = void,
+  >(
+    route: Route,
+    domain: Domain,
+    method: HttpMethod,
+    config?: NGetawayService.SchemaRequestOptions<Data>
+  ): Promise<NGetawayService.ResponsePayload<Result>> {
+    const dStorage = this._schemaService.schema.get(domain);
     if (!dStorage) {
-      throw new Error(`Domain storage "${config.domain}" not found.`);
+      throw new Error(`Domain storage "${domain}" not found.`);
     }
 
-    const path = config.route + '{{' + config.method.toString() + '}}';
-    const route = dStorage.routes.get(path);
-    if (!route) {
-      throw new Error(
-        `Route structure "${config.route}" not exists in "${config.domain}" domain storage.`
-      );
+    const path = route + '{{' + method.toString() + '}}';
+    const sRoute = dStorage.routes.get(path);
+    if (!sRoute) {
+      throw new Error(`Route structure "${route}" not exists in "${domain}" domain storage.`);
     }
 
     const headers = {
-      [GetawayHeaders.SERVICE]: route.service,
-      [GetawayHeaders.DOMAIN]: route.domain,
-      [GetawayHeaders.ACTION]: route.action,
+      [GetawayHeaders.SERVICE]: sRoute.service,
+      [GetawayHeaders.DOMAIN]: sRoute.domain,
+      [GetawayHeaders.ACTION]: sRoute.action,
       'accept-language': 'en',
     };
 
     try {
       return await this.baseRequest({
         url: this._config.urls.baseApiUrl,
-        method: route.method,
+        method: sRoute.method,
         headers: headers,
-        data: config.data,
+        data: config?.data,
       });
     } catch (e) {
       console.error(e);

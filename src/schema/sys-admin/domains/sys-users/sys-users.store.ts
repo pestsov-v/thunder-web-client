@@ -7,13 +7,13 @@ export const SysUsersStore = setStore<
   { add: () => Promise<void> }
 >({
   SysUsers: {
-    initialState: {
-      firstName: '',
-    },
     storage: 'localStorage',
     persistence: 'persist',
     version: 1,
     skipHydration: true,
-    actions: () => {},
+    actions: (setState, getState, store) => ({
+      firstName: '',
+      add: async () => {},
+    }),
   },
 });

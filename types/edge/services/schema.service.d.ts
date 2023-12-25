@@ -1,10 +1,10 @@
-import type { IAbstractService } from './abstract.service';
 import type { FC } from 'react';
+import type { Zustand, Zod } from '@Edge/Package/Types';
+import type { AnyObject, EnvironmentKind, HttpMethod } from '@Utility/Types';
+
+import type { IAbstractService } from './abstract.service';
 import type { IFunctionalityAgent } from '../agents';
 import type { NSessionService } from './session.service';
-import type { AnyObject, EnvironmentKind, HttpMethod, Nullable } from '@Utility/Types';
-import { Zustand } from '@Edge/Package/Types';
-import { z } from 'zod';
 
 export interface ISchemaService extends IAbstractService {
   readonly schema: NSchemaService.Schema;
@@ -40,17 +40,18 @@ export namespace NSchemaService {
     isPrivateOrganization?: boolean; // default false
   };
 
-  export type ValidateHandler = <T = any>(
-    validator: z.ZodObject<T>,
-    body: T
-  ) => Nullable<z.ZodError>;
+  export type ValidateHandler = <T = void>() => Zod.ZodObject<Zod.ZodRawShape>;
+
+  export type Validator<IN = void, OUT = void> = {
+    inSchema?: ValidateHandler<IN>;
+    outSchema?: ValidateHandler<OUT>;
+  };
 
   export type StoreStorageKind = 'localStorage' | 'sessionStorage';
   export type StorePersistenceKind = 'persist' | 'vanish';
 
-  export type Store<S = AnyObject, T = AnyObject> = {
-    initialState: S;
-    actions: Zustand.Actions<T>;
+  export type Store<S = any, T = any> = {
+    actions: Zustand.Actions<S, T>;
     storage?: StoreStorageKind; // default 'localStorage'
     persistence?: StorePersistenceKind; // default 'persist'
     partiality?: (state: S) => S; // default undefined
@@ -65,6 +66,7 @@ export namespace NSchemaService {
     controllers: Map<string, ControllerHandler>;
     wsListeners: Map<string, WsListener>;
     store: Map<string, Store>;
+    validators: Map<string, Validator>;
   };
   export type Schema = Map<string, Domain>;
 }

@@ -12,6 +12,7 @@ import {
   LocalizationService,
   SchemaService,
   SessionService,
+  StoreService,
 } from '../services';
 
 import type {
@@ -26,6 +27,7 @@ import type {
   IStorageFactory,
   IStoragePort,
   IStorageStrategy,
+  IStoreService,
 } from '@Edge/Types';
 
 export const EdgeModule = new ContainerModule((bind) => {
@@ -33,6 +35,7 @@ export const EdgeModule = new ContainerModule((bind) => {
   bind<IDiscoveryService>(EdgeSymbols.DiscoveryService).to(DiscoveryService).inSingletonScope();
   bind<IGetawayService>(EdgeSymbols.GetawayService).to(GetawayService).inSingletonScope();
   bind<ISessionService>(EdgeSymbols.SessionService).to(SessionService).inSingletonScope();
+  bind<IStoreService>(EdgeSymbols.StoreService).to(StoreService).inSingletonScope();
   bind<ISchemaService>(EdgeSymbols.SchemaService).to(SchemaService).inSingletonScope();
   bind<ILocalizationService>(EdgeSymbols.LocalizationService)
     .to(LocalizationService)

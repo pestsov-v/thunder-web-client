@@ -1,5 +1,6 @@
-import { IGetawayService } from '../services';
+import { NGetawayService } from '../services';
 import { IStoragePort } from '../ports';
+import { HttpMethod } from '@Utility/Types';
 
 export interface IFunctionalityAgent {
   readonly schema: NFunctionalityAgent.Schema;
@@ -8,7 +9,17 @@ export interface IFunctionalityAgent {
 
 export namespace NFunctionalityAgent {
   export type Schema = {
-    sendRequest: IGetawayService['schemaRequest'];
+    sendRequest: <
+      Route extends string = string,
+      Domain extends string = string,
+      Data = any,
+      Result = void,
+    >(
+      route: Route,
+      domain: Domain,
+      method: HttpMethod,
+      config?: NGetawayService.SchemaRequestOptions<Data>
+    ) => Promise<NGetawayService.ResponsePayload<Result>>;
   };
 
   export type Storage = {

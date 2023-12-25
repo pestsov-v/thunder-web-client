@@ -31,6 +31,9 @@ export const setCollector = (structure: CollectionStructure): StrSym => {
     if (documents.wsListeners) {
       edgeSchemaLoader.setWsListeners(structure.domain, documents.wsListeners);
     }
+    if (documents.store) {
+      edgeSchemaLoader.setStore(structure.domain, documents.store);
+    }
 
     if (documents.views) {
       if (Array.isArray(documents.views)) {

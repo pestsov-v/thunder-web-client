@@ -8,6 +8,7 @@ import type {
   NFunctionalityAgent,
   NGetawayService,
 } from '@Edge/Types';
+import { HttpMethod } from '@Utility/Types';
 
 @injectable()
 export class FunctionalityAgent implements IFunctionalityAgent {
@@ -20,10 +21,23 @@ export class FunctionalityAgent implements IFunctionalityAgent {
 
   public get schema(): NFunctionalityAgent.Schema {
     return {
-      sendRequest: <T extends NGetawayService.SchemaConfig, R>(
-        config: NGetawayService.SchemaRequestOptions<T>
-      ): Promise<NGetawayService.ResponsePayload<R>> => {
-        return this._getawayService.schemaRequest<T, R>(config);
+      sendRequest: <
+        Route extends string = string,
+        Domain extends string = string,
+        Data = any,
+        Result = void,
+      >(
+        route: Route,
+        domain: Domain,
+        method: HttpMethod,
+        config?: NGetawayService.SchemaRequestOptions<Data>
+      ): Promise<NGetawayService.ResponsePayload<Result>> => {
+        return this._getawayService.schemaRequest<Route, Domain, Data, Result>(
+          route,
+          domain,
+          method,
+          config
+        );
       },
     };
   }

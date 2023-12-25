@@ -1,9 +1,11 @@
-import { setView } from '@Vendor';
+import { getValidator, setView } from '@Vendor';
 import { useForm } from 'react-hook-form';
 
 import type { NSysUsers } from '@Schema/Types/domains/sys-users';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
+import { DomainsKind } from '@Schema/Types/common/domains';
+import { NSysAuth } from '@Schema/Types/domains/sys-auth';
 
 export type SysUsersAddUserViewProps = {
   className?: string;
@@ -16,7 +18,7 @@ export const SysUsersAddUserView = setView<NSysUsers.Forms, SysUsersAddUserViewP
 
     const onSubmit = (data: any) => console.log(data);
 
-    console.log(watch('firstName'));
+    // console.log(watch('firstName'));
 
     return (
       <form onSubmit={handleSubmit(onSubmit)}>

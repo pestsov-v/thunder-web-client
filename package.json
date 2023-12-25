@@ -10,6 +10,7 @@
   "author": "Vladyslav Pestsov<vladyslav.pestsov@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@nextui-org/react": "^2.2.9",
     "axios": "^1.6.2",
     "config": "^3.3.9",
