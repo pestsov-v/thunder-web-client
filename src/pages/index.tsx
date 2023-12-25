@@ -2,7 +2,8 @@ import { GetView } from '@Vendor';
 import { MainLayout } from '@Schema/sys-admin/layouts/MainLayout';
 import type { GetServerSideProps } from 'next';
 
-export default function Home() {
+export default function Home(props: any) {
+  console.log('PPP', props);
   return (
     <div>
       <MainLayout>
@@ -18,6 +19,8 @@ export default function Home() {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
-    props: {},
+    props: {
+      cccxcfd: 'ddsdasdsad',
+    },
   };
 };

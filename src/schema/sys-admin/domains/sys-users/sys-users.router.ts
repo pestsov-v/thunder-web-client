@@ -12,4 +12,9 @@ export const SysUsersRouter = setRouter<NSysUsers.Paths, DomainsKind>({
       isPrivateOrganization: false,
     },
   },
+  'v1/signup': {
+    POST: {
+      environment: '',
+    },
+  },
 });

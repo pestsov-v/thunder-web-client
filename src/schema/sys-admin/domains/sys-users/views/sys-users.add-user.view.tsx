@@ -22,9 +22,17 @@ export const SysUsersAddUserView = setView<NSysUsers.Forms, SysUsersAddUserViewP
 
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input defaultValue={'test'} {...register('firstName')} color={'warning'} isRequired />
+        <Input
+          defaultValue={'test'}
+          {...register('firstName')}
+          color={'warning'}
+          {...props}
+          isRequired
+        />
         <Button type={'submit'}>Додати</Button>
+        <Button color={'secondary'}>sassasasa</Button>
       </form>
     );
+    11043;
   },
 });

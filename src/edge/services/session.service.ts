@@ -32,7 +32,7 @@ export class SessionService extends AbstractService implements ISessionService {
     return true;
   }
   protected init(): boolean {
-    this._SOCKET = new WebSocket('ws://localhost:11043');
+    this._SOCKET = new WebSocket('ws://localhost:11073');
 
     this._SOCKET.onmessage = (event) => {
       try {

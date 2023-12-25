@@ -23,4 +23,5 @@ export const SysUsersController = setController<NSysUsers.Paths>({
       throw e;
     }
   },
+  'v1/signup': {},
 });
