@@ -1,22 +1,22 @@
 import { injectable, inject } from '@Edge/Package';
+import { container } from '@EdgeContainer';
 import { EdgeSymbols } from '@EdgeSymbols';
 
+import type { HttpMethod } from '@Utility/Types';
 import type {
   IFunctionalityAgent,
   IGetawayService,
-  IStoragePort,
+  INavigatorProvider,
+  IStorageProvider,
   NFunctionalityAgent,
   NGetawayService,
 } from '@Edge/Types';
-import { HttpMethod } from '@Utility/Types';
 
 @injectable()
 export class FunctionalityAgent implements IFunctionalityAgent {
   constructor(
     @inject(EdgeSymbols.GetawayService)
-    private readonly _getawayService: IGetawayService,
-    @inject(EdgeSymbols.StoragePort)
-    private readonly _storagePort: IStoragePort
+    private readonly _getawayService: IGetawayService
   ) {}
 
   public get schema(): NFunctionalityAgent.Schema {
@@ -43,9 +43,27 @@ export class FunctionalityAgent implements IFunctionalityAgent {
   }
 
   public get storage(): NFunctionalityAgent.Storage {
+    const provider = container.get<IStorageProvider>(EdgeSymbols.StorageProvider);
+
     return {
-      localStorage: this._storagePort.localStorage,
-      sessionStorage: this._storagePort.sessionStorage,
+      localStorage: provider.localStorage,
+      sessionStorage: provider.sessionStorage,
+    };
+  }
+
+  public get navigator(): NFunctionalityAgent.Navigator {
+    const provider = container.get<INavigatorProvider>(EdgeSymbols.NavigatorProvider);
+
+    return {
+      cookieEnabled: provider.cookieEnabled,
+      isOnline: provider.isOnline,
+      userAgent: provider.userAgent,
+      networkInfo: provider.networkInfo,
+      defaultLanguage: provider.defaultLanguage,
+      supportedLanguages: provider.supportedLanguages,
+      useCoordinates: (successCallback, errorCallback) => {
+        return provider.useCoordinates(successCallback, errorCallback);
+      },
     };
   }
 }

@@ -4,13 +4,15 @@ import { GetawayHeaders } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 
 import type { Axios } from '@Edge/Package/Types';
+import type { HttpMethod } from '@Utility/Types';
 import type {
   IGetawayService,
   ISchemaService,
   NGetawayService,
   IDiscoveryService,
+  INavigatorProvider,
 } from '@Edge/Types';
-import { HttpMethod } from '@Utility/Types';
+import { container } from '@EdgeContainer';
 
 @injectable()
 export class GetawayService extends AbstractService implements IGetawayService {
@@ -30,11 +32,14 @@ export class GetawayService extends AbstractService implements IGetawayService {
 
   private _setConfig() {
     this._CONFIG = {
-      protocol: 'http',
-      host: 'localhost',
-      port: 11033,
+      protocol: this._discoveryService.getString('services.getaway.protocol', 'http'),
+      host: this._discoveryService.getString('services.getaway.host', 'localhost'),
+      port: this._discoveryService.getNumber('services.getaway.port', 11063),
       urls: {
-        baseApiUrl: '/v1/call/api/',
+        baseApiUrl: this._discoveryService.getString(
+          'services.getaway.urls.baseApiUrl',
+          '/v1/call/api'
+        ),
       },
     };
   }
@@ -57,6 +62,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
 
   protected destroy(): void {
     this._REQUESTER = undefined;
+    this._CONFIG = undefined;
   }
 
   private get _requester(): Axios.AxiosInstance {
@@ -77,6 +83,8 @@ export class GetawayService extends AbstractService implements IGetawayService {
     method: HttpMethod,
     config?: NGetawayService.SchemaRequestOptions<Data>
   ): Promise<NGetawayService.ResponsePayload<Result>> {
+    console.log(route, domain, method, config);
+    console.log(this._schemaService.schema);
     const dStorage = this._schemaService.schema.get(domain);
     if (!dStorage) {
       throw new Error(`Domain storage "${domain}" not found.`);
@@ -92,7 +100,8 @@ export class GetawayService extends AbstractService implements IGetawayService {
       [GetawayHeaders.SERVICE]: sRoute.service,
       [GetawayHeaders.DOMAIN]: sRoute.domain,
       [GetawayHeaders.ACTION]: sRoute.action,
-      'accept-language': 'en',
+      'accept-language': container.get<INavigatorProvider>(EdgeSymbols.NavigatorProvider)
+        .defaultLanguage.shortLn,
     };
 
     try {

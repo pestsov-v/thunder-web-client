@@ -10,10 +10,7 @@ export const SysUsersController = setController<NSysUsers.Paths>({
     const { storage, schema } = agents.fnAgent;
 
     try {
-      const result = await schema.sendRequest({
-        route: 'v1/login',
-        domain: 'SysUsers',
-        method: 'POST',
+      const result = await schema.sendRequest('v1/login', 'SysUsers', 'POST', {
         data: context.body,
       });
 

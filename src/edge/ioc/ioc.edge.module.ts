@@ -3,7 +3,7 @@ import { EdgeSymbols } from '@EdgeSymbols';
 import { Initiator } from '../initiator';
 import { SchemaLoader } from '../loaders';
 import { FunctionalityAgent } from '../agents';
-import { StoragePort } from '../ports';
+import { NavigatorProvider, StorageProvider } from '../ports';
 import { StorageFactory } from '../factories';
 import { LocalStorageStrategy, SessionStorageStrategy } from '../strategies/storage';
 import {
@@ -21,11 +21,12 @@ import type {
   IGetawayService,
   IInitiator,
   ILocalizationService,
+  INavigatorProvider,
   ISchemaLoader,
   ISchemaService,
   ISessionService,
   IStorageFactory,
-  IStoragePort,
+  IStorageProvider,
   IStorageStrategy,
   IStoreService,
 } from '@Edge/Types';
@@ -56,7 +57,8 @@ export const EdgeModule = new ContainerModule((bind) => {
   bind<IStorageFactory>(EdgeSymbols.StorageFactory).to(StorageFactory).inSingletonScope();
 
   // Ports
-  bind<IStoragePort>(EdgeSymbols.StoragePort).to(StoragePort).inSingletonScope();
+  bind<IStorageProvider>(EdgeSymbols.StorageProvider).to(StorageProvider).inTransientScope();
+  bind<INavigatorProvider>(EdgeSymbols.NavigatorProvider).to(NavigatorProvider).inTransientScope();
 
   // Agents
   bind<IFunctionalityAgent>(EdgeSymbols.FunctionalityAgent)

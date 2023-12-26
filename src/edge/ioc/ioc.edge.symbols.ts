@@ -18,7 +18,8 @@ export const EdgeSymbols = {
   StorageFactory: Symbol('StorageFactory'),
 
   // Ports
-  StoragePort: Symbol('StoragePort'),
+  StorageProvider: Symbol('StorageProvider'),
+  NavigatorProvider: Symbol('NavigatorProvider'),
 
   // Agents
   FunctionalityAgent: Symbol('FunctionalityAgent'),

@@ -1,10 +1,11 @@
 import { NGetawayService } from '../services';
-import { IStoragePort } from '../ports';
+import { INavigatorProvider, IStorageProvider } from '../providers';
 import { HttpMethod } from '@Utility/Types';
 
 export interface IFunctionalityAgent {
   readonly schema: NFunctionalityAgent.Schema;
   readonly storage: NFunctionalityAgent.Storage;
+  readonly navigator: NFunctionalityAgent.Navigator;
 }
 
 export namespace NFunctionalityAgent {
@@ -23,7 +24,18 @@ export namespace NFunctionalityAgent {
   };
 
   export type Storage = {
-    readonly localStorage: IStoragePort['localStorage'];
-    readonly sessionStorage: IStoragePort['sessionStorage'];
+    readonly localStorage: IStorageProvider['localStorage'];
+    readonly sessionStorage: IStorageProvider['sessionStorage'];
+  };
+
+  export type Navigator = {
+    readonly cookieEnabled: INavigatorProvider['cookieEnabled'];
+    readonly isOnline: INavigatorProvider['isOnline'];
+    readonly userAgent: INavigatorProvider['userAgent'];
+    readonly networkInfo: INavigatorProvider['networkInfo'];
+    readonly defaultLanguage: INavigatorProvider['defaultLanguage'];
+    readonly supportedLanguages: INavigatorProvider['supportedLanguages'];
+
+    readonly useCoordinates: INavigatorProvider['useCoordinates'];
   };
 }

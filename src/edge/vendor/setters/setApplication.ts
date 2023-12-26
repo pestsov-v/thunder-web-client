@@ -1,9 +1,20 @@
 import { MetadataKeys } from '@Edge/Common';
 
-import type { StrSym } from '@Utility/Types';
+import type { AnyObject, StrSym } from '@Utility/Types';
 import type { ISchemaLoader } from '@Edge/Types';
+import { FC } from 'react';
 
-export const setApplication = (structures: StrSym[], root?: StrSym): void => {
+export const setApplication = <NF extends AnyObject = AnyObject, SE extends AnyObject = AnyObject>(
+  structures: StrSym[],
+  layouts?: StrSym[],
+  root?: {
+    collector?: StrSym;
+    errors?: {
+      notFound404?: FC<NF>;
+      serverError500?: FC<SE>;
+    };
+  }
+): void => {
   const edgeSchemaLoader: ISchemaLoader = Reflect.getMetadata(MetadataKeys.SchemaLoader, Reflect);
   const edgeDefine = edgeSchemaLoader && edgeSchemaLoader.isDefine;
 };

@@ -7,3 +7,7 @@ export type NestedObject = Record<string, NestedObject | string>;
 export type UnknownObject = Record<string, unknown>;
 export type AnyObject = Record<string, any>;
 export type Nullable<T> = T | null;
+
+export type AnyFnWithArgs = (...args: any[]) => void;
+export type AnyFnWithoutArgs = (...args: any[]) => void;
+export type AnyFunction = AnyFnWithArgs | AnyFnWithoutArgs;

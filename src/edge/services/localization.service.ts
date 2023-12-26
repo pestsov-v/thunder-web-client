@@ -4,6 +4,7 @@ import { AbstractService } from './abstract.service';
 
 import type { StringObject } from '@Utility/Types';
 import type {
+  IDiscoveryService,
   ILocalizationService,
   ISchemaService,
   NLocalizationService,
@@ -16,6 +17,8 @@ export class LocalizationService extends AbstractService implements ILocalizatio
   private _CONFIG: NLocalizationService.Config | undefined;
 
   constructor(
+    @inject(EdgeSymbols.DiscoveryService)
+    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService
   ) {
@@ -24,9 +27,18 @@ export class LocalizationService extends AbstractService implements ILocalizatio
 
   protected init(): boolean {
     this._CONFIG = {
-      fallbackLanguage: 'en',
-      defaultLanguage: 'en',
-      supportedLanguages: ['en', 'ru', 'ua'],
+      fallbackLanguage: this._discoveryService.getString(
+        'services.localization.fallbackLanguage',
+        'en'
+      ),
+      defaultLanguage: this._discoveryService.getString(
+        'services.localization.defaultLanguage',
+        'en'
+      ),
+      supportedLanguages: this._discoveryService.getArray<string>(
+        'services.localization.supportedLanguages',
+        ['en']
+      ),
     };
 
     return true;

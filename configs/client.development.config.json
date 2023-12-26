@@ -1,0 +1,22 @@
+{
+  "services": {
+    "getaway": {
+      "protocol": "http",
+      "host": "localhost",
+      "port": 11033,
+      "urls": {
+        "baseApiUrl": "/v1/call/api"
+      }
+    },
+    "sessions": {
+      "protocol": "ws",
+      "host": "localhost",
+      "port": 11043
+    },
+    "localization": {
+      "fallbackLanguage": "en",
+      "defaultLanguage": "en",
+      "supportedLanguages": ["en", "ru", "ua"]
+    }
+  }
+}

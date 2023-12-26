@@ -1,10 +1,14 @@
 import type { IAbstractService } from './abstract.service';
 
-export interface ISessionService extends IAbstractService {
-  readonly one: boolean;
-}
+export type ISessionService = IAbstractService;
 
 export namespace NSessionService {
+  export type Config = {
+    protocol: string;
+    host: string;
+    port: number;
+  };
+
   export type ServerEventType = 'server:handshake';
   export type ServerHandshakePayload = {
     serverTag: string;

@@ -1,10 +1,10 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
 
-import type { IStorageFactory, IStoragePort, IStorageStrategy } from '@Edge/Types';
+import type { IStorageFactory, IStorageProvider, IStorageStrategy } from '@Edge/Types';
 
 @injectable()
-export class StoragePort implements IStoragePort {
+export class StorageProvider implements IStorageProvider {
   constructor(
     @inject(EdgeSymbols.StorageFactory)
     private readonly _storageFactory: IStorageFactory

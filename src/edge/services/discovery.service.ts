@@ -97,21 +97,19 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
 
     let record: NestedObject | string = this._config;
     for (const key of names) {
-      if (record && typeof record === 'object' && key in record) {
+      if (record && typeof record === 'object') {
         record = record[key];
-      } else {
-        record = key;
       }
     }
 
     if (record) {
+      return record;
+    } else {
       if (defaultValue) {
         return typeof record === 'undefined' ? defaultValue : record;
       } else {
-        return record;
+        throw new Error(`Variable "${name}" not found`);
       }
-    } else {
-      throw new Error(`Variable "${name}" not found`);
     }
   }
 }

@@ -4,20 +4,45 @@ import { SessionStorageKeys } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 import { Guards } from '@Edge/Utils';
 
-import type { ISchemaService, ISessionService, NSessionService, IStoragePort } from '@Edge/Types';
+import type {
+  ISchemaService,
+  ISessionService,
+  NSessionService,
+  IStorageProvider,
+  IDiscoveryService,
+} from '@Edge/Types';
 
 @injectable()
 export class SessionService extends AbstractService implements ISessionService {
   protected _SERVICE_NAME = SessionService.name;
   private _SOCKET: WebSocket | undefined;
+  private _CONFIG: NSessionService.Config | undefined;
 
   constructor(
+    @inject(EdgeSymbols.DiscoveryService)
+    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService,
-    @inject(EdgeSymbols.StoragePort)
-    private readonly _storagePort: IStoragePort
+    @inject(EdgeSymbols.StorageProvider)
+    private readonly _storagePort: IStorageProvider
   ) {
     super();
+  }
+
+  private _setConfig(): void {
+    this._CONFIG = {
+      protocol: this._discoveryService.getString('services.sessions.protocol', 'ws'),
+      host: this._discoveryService.getString('services.sessions.host', 'localhost'),
+      port: this._discoveryService.getNumber('services.sessions.port', 11073),
+    };
+  }
+
+  private get _config(): NSessionService.Config {
+    if (!this._CONFIG) {
+      throw new Error('Configuration not set.');
+    }
+
+    return this._CONFIG;
   }
 
   private get _socket(): WebSocket {
@@ -28,11 +53,11 @@ export class SessionService extends AbstractService implements ISessionService {
     return this._SOCKET;
   }
 
-  public get one() {
-    return true;
-  }
   protected init(): boolean {
-    this._SOCKET = new WebSocket('ws://localhost:11073');
+    this._setConfig();
+
+    const { protocol, host, port } = this._config;
+    this._SOCKET = new WebSocket(`${protocol}://${host}:${port}`);
 
     this._SOCKET.onmessage = (event) => {
       try {

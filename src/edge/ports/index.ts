@@ -1,1 +1,2 @@
-export * from './storage.port';
+export * from './storage.provider';
+export * from './navigator.provider';
