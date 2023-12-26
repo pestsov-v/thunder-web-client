@@ -46,6 +46,7 @@ export class SchemaLoader implements ISchemaLoader {
         controllers: new Map<string, NSchemaService.ControllerHandler<string>>(),
         wsListeners: new Map<string, NSchemaService.WsListener>(),
         store: new Map<string, NSchemaService.Store>(),
+        validators: new Map<string, NSchemaService.Validator>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);

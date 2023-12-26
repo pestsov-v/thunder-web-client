@@ -1,5 +1,6 @@
 export type * from './factories';
 export type * from './strategies';
+export type * from './integrations';
 export type * from './providers';
 export type * from './agents';
 export type * from './loaders';

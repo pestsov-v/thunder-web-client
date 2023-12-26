@@ -83,8 +83,6 @@ export class GetawayService extends AbstractService implements IGetawayService {
     method: HttpMethod,
     config?: NGetawayService.SchemaRequestOptions<Data>
   ): Promise<NGetawayService.ResponsePayload<Result>> {
-    console.log(route, domain, method, config);
-    console.log(this._schemaService.schema);
     const dStorage = this._schemaService.schema.get(domain);
     if (!dStorage) {
       throw new Error(`Domain storage "${domain}" not found.`);

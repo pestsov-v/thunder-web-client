@@ -1,9 +1,11 @@
 import { ContainerModule } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
+
 import { Initiator } from '../initiator';
 import { SchemaLoader } from '../loaders';
 import { FunctionalityAgent } from '../agents';
-import { NavigatorProvider, StorageProvider } from '../ports';
+import { SentryIntegration } from '../integrations';
+import { NavigatorProvider, StorageProvider } from '../providers';
 import { StorageFactory } from '../factories';
 import { LocalStorageStrategy, SessionStorageStrategy } from '../strategies/storage';
 import {
@@ -56,9 +58,12 @@ export const EdgeModule = new ContainerModule((bind) => {
   // Factories
   bind<IStorageFactory>(EdgeSymbols.StorageFactory).to(StorageFactory).inSingletonScope();
 
-  // Ports
+  // Providers
   bind<IStorageProvider>(EdgeSymbols.StorageProvider).to(StorageProvider).inTransientScope();
   bind<INavigatorProvider>(EdgeSymbols.NavigatorProvider).to(NavigatorProvider).inTransientScope();
+
+  // Integrations
+  bind(EdgeSymbols.SentryIntegration).to(SentryIntegration).inSingletonScope();
 
   // Agents
   bind<IFunctionalityAgent>(EdgeSymbols.FunctionalityAgent)
