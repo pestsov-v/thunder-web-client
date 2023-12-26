@@ -1,5 +1,6 @@
 import { injectable, inject, axios } from '@Edge/Package';
 import { EdgeSymbols } from '@EdgeSymbols';
+import { container } from '@EdgeContainer';
 import { GetawayHeaders } from '@Edge/Common';
 import { AbstractService } from './abstract.service';
 
@@ -12,7 +13,6 @@ import type {
   IDiscoveryService,
   INavigatorProvider,
 } from '@Edge/Types';
-import { container } from '@EdgeContainer';
 
 @injectable()
 export class GetawayService extends AbstractService implements IGetawayService {
@@ -39,6 +39,10 @@ export class GetawayService extends AbstractService implements IGetawayService {
         baseApiUrl: this._discoveryService.getString(
           'services.getaway.urls.baseApiUrl',
           '/v1/call/api'
+        ),
+        baseExceptionUrl: this._discoveryService.getString(
+          'services.getaway.urls.baseExceptionUrl',
+          'v1/exception-tunnel'
         ),
       },
     };
@@ -153,5 +157,21 @@ export class GetawayService extends AbstractService implements IGetawayService {
     }
 
     return data;
+  }
+
+  public async sendWebClientError<D extends string = string, P extends string = string>(
+    exception: NGetawayService.WebClientErrorOptions<D, P>
+  ): Promise<void> {
+    try {
+      await this._requester.request({
+        url: this._config.urls.baseExceptionUrl,
+        method: 'POST',
+        env: this._discoveryService.nodeEnv,
+        data: exception,
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 }

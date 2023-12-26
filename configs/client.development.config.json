@@ -5,7 +5,8 @@
       "host": "localhost",
       "port": 11033,
       "urls": {
-        "baseApiUrl": "/v1/call/api"
+        "baseApiUrl": "/v1/call/api",
+        "baseExceptionUrl": "v1/exception-tunnel"
       }
     },
     "sessions": {
@@ -17,6 +18,16 @@
       "fallbackLanguage": "en",
       "defaultLanguage": "en",
       "supportedLanguages": ["en", "ru", "ua"]
+    }
+  },
+  "integrations": {
+    "sentry": {
+      "enable": false,
+      "token": "",
+      "logLevel": "debug",
+      "tracesSampleRate": 100,
+      "replaysSessionSampleRate": 0.1,
+      "replaysOnErrorSampleRate": 1.0
     }
   }
 }

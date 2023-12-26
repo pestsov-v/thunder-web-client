@@ -1,9 +1,10 @@
 import type { Axios } from '@Edge/Package/Types';
 import type { HttpMethod } from '@Utility/Types';
 import type { IAbstractService } from './abstract.service';
+import { NSentryIntegration } from '../integrations';
 
 export interface IGetawayService extends IAbstractService {
-  schemaRequest: <
+  readonly schemaRequest: <
     Route extends string = string,
     Domain extends string = string,
     Data = any,
@@ -15,9 +16,12 @@ export interface IGetawayService extends IAbstractService {
     config?: NGetawayService.SchemaRequestOptions<Data>
   ) => Promise<NGetawayService.ResponsePayload<Result>>;
 
-  baseRequest<T, R>(
+  readonly baseRequest<T, R>(
     config: Axios.AxiosRequestConfig<T>
   ): Promise<NGetawayService.ResponsePayload<R>>;
+  readonly sendWebClientError<D extends string = string, P extends string = string>(
+    exception: NGetawayService.WebClientErrorOptions<D, P>
+  ): Promise<void>
 }
 
 export namespace NGetawayService {
@@ -27,29 +31,11 @@ export namespace NGetawayService {
     port: number;
     urls: {
       baseApiUrl: string;
+      baseExceptionUrl: string;
     };
   };
-  export type SchemaConfig<R extends string = string, D extends string = string> = {
-    domain: R;
-    route: D;
-    method: HttpMethod;
-  };
-
   export type SchemaRequestOptions<D = any> = {
     data?: D;
-  };
-
-  export type ServerResponseType =
-    | 'info'
-    | 'redirect'
-    | 'success'
-    | 'error'
-    | 'validation'
-    | 'authenticated'
-    | 'fail';
-
-  export type ServerResponse = {
-    responseType: ServerResponseType;
   };
 
   export type ResponsePayload<R> = {
@@ -57,5 +43,20 @@ export namespace NGetawayService {
     status: Axios.AxiosResponse<R>['status'];
     headers: Axios.AxiosResponse<R>['headers'];
     request: Axios.AxiosResponse<R>['request'];
+  };
+
+  export type WebClientErrorOptions<D extends string = string, P extends string = string> = {
+    service: string;
+    domain: D;
+    action: P;
+    method: HttpMethod;
+    isPrivateUser?: boolean;
+    isPrivateOrganization?: boolean;
+    userId?: string;
+    sessionId?: string;
+    connectionId?: string;
+    level: NSentryIntegration.LogLevels;
+    stack: string;
+    timestamp?: number;
   };
 }
