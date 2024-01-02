@@ -4,7 +4,8 @@ import { EdgeSymbols } from '@EdgeSymbols';
 
 import { AbstractService } from './abstract.service';
 
-import type { ISchemaLoader, ISchemaService, NSchemaService } from '@Edge/Types';
+import type { IDiscoveryService, ISchemaLoader, ISchemaService, NSchemaService } from '@Edge/Types';
+import dynamic from 'next/dynamic';
 
 @injectable()
 export class SchemaService extends AbstractService implements ISchemaService {
@@ -12,6 +13,8 @@ export class SchemaService extends AbstractService implements ISchemaService {
   private _SCHEMA: NSchemaService.Schema | undefined;
 
   constructor(
+    @inject(EdgeSymbols.DiscoveryService)
+    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.SchemaLoader)
     private readonly _schemaLoader: ISchemaLoader
   ) {
@@ -30,10 +33,14 @@ export class SchemaService extends AbstractService implements ISchemaService {
     this._schemaLoader.init();
     Reflect.defineMetadata(MetadataKeys.SchemaLoader, this._schemaLoader, Reflect);
 
-    import('../../schema/index');
-    this._SCHEMA = this._schemaLoader.schema;
+    try {
+      this._SCHEMA = this._schemaLoader.schema;
 
-    return true;
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 
   protected destroy(): void {

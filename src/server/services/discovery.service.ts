@@ -3,6 +3,7 @@ import { AbstractService } from './abstract.service';
 
 import type { Config } from '@Server/Package/Types';
 import type { IDiscoveryService } from '@Server/Types';
+import process from 'process';
 
 @injectable()
 export class DiscoveryService extends AbstractService implements IDiscoveryService {
@@ -55,6 +56,10 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
     return this._SERVER_TAG;
   }
 
+  public get nodeEnv(): string | 'production' {
+    return process.env.NODE_ENV;
+  }
+
   private async _setConfigurations(): Promise<void> {
     try {
       await this._setExternalConfig();
@@ -66,9 +71,11 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   private async _setExternalConfig(): Promise<void> {
-    const externalConfigPath = `${os.homedir()}/.cap_configs/schemas/${this._PROFILE}/web-client.${
+    const externalConfigPath = `${os.homedir()}/.thunder/${this._PROFILE}/web-client.${
       this._NODE_ENV
     }.config.json`;
+
+    console.log(externalConfigPath);
 
     let msg: string;
     try {
@@ -108,7 +115,7 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
       }
 
       const config = this._config.util.extendDeep(configs, this._externalConfig);
-      if ('client' in config) {
+      if ('web-client' in config) {
         await fse.writeFile(
           `${process.cwd()}/.env.local`,
           `NEXT_PUBLIC_CLIENT_ENVS=${JSON.stringify(config.client)}`

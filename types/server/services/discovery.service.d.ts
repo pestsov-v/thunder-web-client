@@ -2,6 +2,7 @@ import { IAbstractService } from './abstract.service';
 
 export interface IDiscoveryService extends IAbstractService {
   readonly serverTag: string;
+  readonly nodeEnv: string | 'production';
 
   getMandatory<T>(name: string): T;
   getString(name: string, def: string): string;

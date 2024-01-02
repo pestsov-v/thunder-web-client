@@ -6,7 +6,6 @@ import { FC } from 'react';
 
 export const setApplication = <NF extends AnyObject = AnyObject, SE extends AnyObject = AnyObject>(
   structures: StrSym[],
-  layouts?: StrSym[],
   root?: {
     collector?: StrSym;
     errors?: {

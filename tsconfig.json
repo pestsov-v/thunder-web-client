@@ -9,54 +9,95 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "CommonJS",
+    "declaration": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
     "paths": {
       // Server
-      "@Server/Symbols": ["./src/server/ioc/ioc.server.symbols.ts"],
-      "@Server/Container": ["./src/server/ioc/ioc.server.ts"],
-      "@Server/Types": ["./types/server/index.d.ts"],
-      "@Server/Package": ["./src/server/packages/packages.ts"],
-      "@Server/Package/Types": ["./types/server/packages/packages.d.ts"],
-
+      "@Server/Symbols": [
+        "src/server/ioc/ioc.server.symbols.ts"
+      ],
+      "@Server/Container": [
+        "src/server/ioc/ioc.server.ts"
+      ],
+      "@Server/Types": [
+        "types/server/index.d.ts"
+      ],
+      "@Server/Package": [
+        "src/server/packages/packages.ts"
+      ],
+      "@Server/Package/Types": [
+        "types/server/packages/packages.d.ts"
+      ],
       // Edge
-      "@Edge/Common": ["./src/edge/common/index.ts"],
-      "@Edge/Utils": ["./src/edge/utils/index.ts"],
-      "@EdgeSymbols": ["./src/edge/ioc/ioc.edge.symbols.ts"],
-      "@EdgeContainer": ["./src/edge/ioc/ioc.edge.ts"],
-      "@Edge/Types": ["./types/edge/index.d.ts"],
-      "@Edge/Package": ["./src/edge/packages/packages.ts"],
-      "@Edge/Package/Types": ["./types/edge/packages/packages.d.ts"],
-
+      "@Edge/Common": [
+        "src/edge/common/index.ts"
+      ],
+      "@Edge/Utils": [
+        "src/edge/utils/index.ts"
+      ],
+      "@EdgeSymbols": [
+        "src/edge/ioc/ioc.edge.symbols.ts"
+      ],
+      "@EdgeContainer": [
+        "src/edge/ioc/ioc.edge.ts"
+      ],
+      "@Edge/Types": [
+        "types/edge/index.d.ts"
+      ],
+      "@Edge/Package": [
+        "src/edge/packages/packages.ts"
+      ],
+      "@Edge/Package/Types": [
+        "types/edge/packages/packages.d.ts"
+      ],
       // Common
-      "@Vendor": ["./src/edge/vendor/index.ts"],
-      "@Vendor/Types": ["./types/edge/vendor/index.d.ts"],
-      "@Utility/Types": ["./types/common/index.d.ts"],
-      "@Setters/Types": ["./types/edge/setters/index.d.ts"],
-
+      "@Vendor": [
+        "src/edge/vendor/index.ts"
+      ],
+      "@Vendor/Types": [
+        "types/edge/vendor/index.d.ts"
+      ],
+      "@Utility/Types": [
+        "types/common/index.d.ts"
+      ],
+      "@Setters/Types": [
+        "types/edge/setters/index.d.ts"
+      ],
       // Schema
-      "@Schema/*": ["./src/schema/*"],
-      "@Ui": ["./src/schema/ui/index.ts"],
-      "@Schema/Types/*": ["./types/schema/*"]
-    }
+      "@Schema/*": [
+        "src/schema/*"
+      ],
+      "@Ui": [
+        "src/schema/ui/index.ts"
+      ],
+      "@Schema/Types/*": [
+        "types/schema/*"
+      ]
+    },
+    "noEmit": true,
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "src/edge/**/*.ts",
+    "src/edge/**/*.tsx",
+    "src/server/**/*.ts",
+    "types/edge/**/*.d.ts",
+    "types/server/**/*.d.ts"
   ],
   "exclude": [
-    "node_modules"
-  ],
-  "ts-node": {
-    "transpileOnly": true
-  }
+    "node_modules",
+    "dist",
+    "src/schema",
+    "src/pages"
+  ]
 }
