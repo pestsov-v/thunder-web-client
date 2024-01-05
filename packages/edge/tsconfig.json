@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,27 +17,26 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "./",
+    "rootDir": "./src",
     "paths": {
-      // Edge
-      "@Edge/Symbols": ["src/edge/ioc/ioc.edge.symbols.ts"],
-      "@Edge/Container": ["src/edge/ioc/ioc.edge.ts"],
-      "@Edge/Package": ["src/edge/packages/packages.ts"],
-      "@Edge/Types": ["types/edge/index.d.ts"]
+      "@Edge/Symbols": ["./src/ioc/ioc.edge.symbols.ts"],
+      "@Edge/Container": ["./src/ioc/ioc.edge.ts"],
+      "@Edge/Package": ["./src/packages/packages.ts"],
+      "@Edge/Types": ["./types/index.d.ts"]
     },
     "noEmit": false
   },
   "include": [
     "next-env.d.ts",
-    "./src/packages/server/**/*",
-    "./types/**/*.d.ts"
+    "./src/**/*",
+    "./server/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "visualizer",
     "src/pages"
   ],
 }

@@ -21,23 +21,22 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "./",
+    "rootDir": "./src",
     "paths": {
-      // Edge
-      "@Edge/Symbols": ["src/edge/ioc/ioc.edge.symbols.ts"],
-      "@Edge/Container": ["src/edge/ioc/ioc.edge.ts"],
-      "@Edge/Package": ["src/edge/packages/packages.ts"],
-      "@Edge/Types": ["types/edge/index.d.ts"]
+      "@Server/Symbols": ["./src/ioc/ioc.server.symbols.ts"],
+      "@Server/Container": ["./src/ioc/ioc.server.ts"],
+      "@Server/Package": ["./src/packages/packages.ts"],
+      "@Server/Types": ["./types/index.d.ts"]
     },
     "noEmit": false
   },
   "include": [
     "next-env.d.ts",
-    "./src/packages/server/**/*",
-    "./types/**/*.d.ts"
+    "./src/**/*",
+    "./server/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "visualizer",
     "src/pages"
   ],
 }
