@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "ES2020",
+    "module": "CommonJS",
     "allowJs": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -23,12 +23,21 @@
     "baseUrl": "./",
     "rootDir": "./src",
     "paths": {
-      "@Server/Symbols": ["./src/ioc/ioc.server.symbols.ts"],
-      "@Server/Container": ["./src/ioc/ioc.server.ts"],
-      "@Server/Package": ["./src/packages/packages.ts"],
-      "@Server/Types": ["./types/index.d.ts"]
+      "@Server/Symbols": [
+        "./src/ioc/ioc.server.symbols.ts"
+      ],
+      "@Server/Container": [
+        "./src/ioc/ioc.server.ts"
+      ],
+      "@Server/Package": [
+        "./src/packages/packages.ts"
+      ],
+      "@Server/Types": [
+        "./types/index.d.ts"
+      ]
     },
-    "noEmit": false
+    "noEmit": false,
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
@@ -38,5 +47,5 @@
   "exclude": [
     "node_modules",
     "src/pages"
-  ],
+  ]
 }

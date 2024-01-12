@@ -1,6 +1,6 @@
 import { injectable, inject } from '@Server/Package';
+import { ServerSymbols } from '@Server/Symbols';
 import { AbstractService } from './abstract.service';
-import { ServerSymbols } from '../ioc/ioc.server.symbols';
 
 import type { IDiscoveryService, ILoggerService } from '@Server/Types';
 

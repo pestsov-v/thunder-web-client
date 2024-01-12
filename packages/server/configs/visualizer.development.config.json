@@ -1,7 +1,8 @@
 {
   "services": {
       "schema": {
-        "schemaPath": "saasa"
+        "schemaPath": "saasa",
+        "schemaDir": "sasasaas"
       }
   },
   "adapters": {

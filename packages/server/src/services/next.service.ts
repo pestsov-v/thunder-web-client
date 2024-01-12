@@ -33,9 +33,9 @@ export class NextService extends AbstractService implements INextService {
 
   private _setConfig() {
     this._CONFIG = {
-      protocol: this._discoveryService.getString('server.adapters.http.protocol', 'http'),
-      host: this._discoveryService.getString('server.adapters.http.host', 'localhost'),
-      port: this._discoveryService.getNumber('server.adapters.http.port', 3000),
+      protocol: this._discoveryService.getString('adapters.http.protocol', 'http'),
+      host: this._discoveryService.getString('adapters.http.host', 'localhost'),
+      port: this._discoveryService.getNumber('adapters.http.port', 3000),
     };
   }
 

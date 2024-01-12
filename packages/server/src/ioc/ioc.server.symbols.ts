@@ -3,7 +3,6 @@ export const ServerSymbols = {
   DiscoveryService: Symbol('DiscoveryService'),
   LoggerService: Symbol('LoggerService'),
   NextService: Symbol('NextService'),
-  SchemaService: Symbol('SchemaService'),
 
   // Initiator
   Initiator: Symbol('Initiator'),

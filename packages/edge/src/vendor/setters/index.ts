@@ -1,4 +1,4 @@
-export * from './setApplication';
+export * from './setService';
 export * from './setCollector';
 export * from './setStore';
 export * from './setRouter';
