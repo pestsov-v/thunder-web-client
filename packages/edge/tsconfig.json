@@ -6,7 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "ES2020",
+    "module": "CommonJS",
     "allowJs": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

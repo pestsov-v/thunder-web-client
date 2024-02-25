@@ -69,20 +69,28 @@ export class LocalizationService extends AbstractService implements ILocalizatio
   }
 
   public getDefaultLnResource(
+    services: string,
     domain: string,
     resource: string,
     substitutions?: StringObject
   ): string {
-    return this.getResource(domain, this.defaultLanguage, resource, substitutions);
+    return this.getResource(services, domain, this.defaultLanguage, resource, substitutions);
   }
 
   public getResource(
+    service: string,
     domain: string,
     language: string,
     resource: string,
     substitutions?: Record<string, string>
   ): string {
-    const dStorage = this._schemaService.schema.get(domain);
+    const sStorage = this._schemaService.services.get(service);
+    if (!sStorage) {
+      throw new Error('Service storage not found');
+    }
+
+    const dStorage = sStorage.get(domain);
+
     if (!dStorage) {
       throw new Error('Domain storage not found');
     }

@@ -1,44 +1,102 @@
 import type { IAbstractService } from './abstract.service';
 
-export type ISessionService = IAbstractService;
+export interface ISessionService extends IAbstractService {
+  useMediator<E extends NSessionService.ClientEvent = NSessionService.ClientEvent>(
+    socket: WebSocket,
+    event: E,
+    payload: NSessionService.EventPayload<E>
+  ): Promise<void>;
+}
 
 export namespace NSessionService {
   export type Config = {
-    protocol: string;
-    host: string;
-    port: number;
+    enable: boolean;
+    connect: {
+      protocol: 'ws' | 'wss';
+      host: string;
+      port: number;
+    };
   };
 
-  export type ServerEventType = 'server:handshake';
-  export type ServerHandshakePayload = {
+  export type ServerEvent =
+    | 'handshake'
+    | 'handshake.error'
+    | 'upload:page'
+    | 'authenticate'
+    | 'authenticate.error'
+    | 'session:to:session'
+    | 'broadcast:to:service';
+
+  export type ClientEvent =
+    | 'handshake'
+    | 'handshake.error'
+    | 'authenticate'
+    | 'authenticate.error'
+    | 'upload:page'
+    | 'session:to:session'
+    | 'broadcast:to:service';
+
+  export type HandShakePayload = {
     serverTag: string;
     connectionId: string;
+    services: string[];
+  };
+
+  export type HandshakeErrorPayload = {
+    code: string;
+    message: string;
+  };
+
+  export type SessionToSessionPayload<T = any> = {
     service: string;
+    domain: string;
+    event: string;
+    payload: T & {
+      sessionId: string;
+    };
   };
 
-  export type ClientEventType =
-    | 'client:session:to:session'
-    | 'client:broadcast:to:app'
-    | 'client:broadcast:to:room';
-
-  export type SchemaEventStructure<E extends string, P = undefined> = {
+  export type EventStructure<E extends ServerEvent> = {
     event: E;
-    payload?: P;
+    payload: EventPayload<E>;
   };
 
-  export type EventStructure<E extends ServerEventPayload = ServerEventPayload, P = undefined> = {
-    event: ServerEventType;
-    payload: ServerEventPayload<E, P>;
+  export type AuthenticatePayload = {
+    status: 'OK';
+    authWebsocketId: string;
   };
 
-  export type ServerEventPayload<
-    E extends ServerEventType,
-    P = undefined,
-  > = E extends 'server:handshake' ? ServerHandshakePayload : never;
+  export type AuthenticateErrorPayload = {
+    code: string;
+    message: string;
+  };
 
-  export type EventHandler<E extends ServerEventType> = (payload: ServerEventPayload<E>) => void;
+  export type UploadPagePayload = {
+    connectionId: string;
+  };
 
-  export type EventHandlers<E extends ServerEventType = ServerEventType> = {
+  export type EventPayload<E extends ClientEvent> = E extends 'handshake'
+    ? HandShakePayload
+    : E extends 'handshake.error'
+      ? HandshakeErrorPayload
+      : E extends 'authenticate'
+        ? AuthenticatePayload
+        : E extends 'authenticate.error'
+          ? AuthenticateErrorPayload
+          : E extends 'session:to:session'
+            ? SessionToSessionPayload
+            : E extends 'broadcast:to:service'
+              ? string
+              : E extends 'upload:page'
+                ? UploadPagePayload
+                : never;
+
+  export type EventHandler<E extends ClientEvent> = (
+    socket: WebSocket,
+    payload: EventPayload<E>
+  ) => Promise<void>;
+
+  export type Events<E extends ClientEvent = ClientEvent> = {
     [key in E]: EventHandler<key>;
   };
 }

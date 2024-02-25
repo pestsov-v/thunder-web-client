@@ -7,7 +7,7 @@ import type { IFunctionalityAgent } from '../agents';
 import type { NSessionService } from './session.service';
 
 export interface ISchemaService extends IAbstractService {
-  readonly schema: NSchemaService.Schema;
+  readonly services: NSchemaService.Services;
 }
 
 export namespace NSchemaService {
@@ -68,5 +68,6 @@ export namespace NSchemaService {
     store: Map<string, Store>;
     validators: Map<string, Validator>;
   };
-  export type Schema = Map<string, Domain>;
+  export type Domains = Map<string, Domain>;
+  export type Services = Map<string, Domains>;
 }

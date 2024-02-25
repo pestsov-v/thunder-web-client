@@ -2,6 +2,7 @@ import { injectable, AbstractDiscoveryService } from '@Server/Package';
 import { AbstractService } from './abstract.service';
 
 import type { IDiscoveryService } from '@Server/Types';
+// @ts-ignore
 import type { IAbstractDiscoveryService } from '@chaminjector/seeds-discovery-service';
 
 @injectable()

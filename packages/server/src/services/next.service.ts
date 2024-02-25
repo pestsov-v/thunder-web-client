@@ -1,4 +1,4 @@
-import { injectable, inject, next, express } from '@Server/Package';
+import { injectable, inject, next, express } from '../packages/packages';
 import { ServerSymbols } from '@Server/Symbols';
 import { AbstractService } from './abstract.service';
 

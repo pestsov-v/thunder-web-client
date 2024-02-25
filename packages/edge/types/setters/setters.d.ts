@@ -2,17 +2,14 @@ import type { NSchemaService } from '../services';
 import type { FC } from 'react';
 import type { EnvironmentKind, HttpMethod, AnyObject } from '../../common';
 
-export type CollectionStructure = {
-  domain: string;
-  documents: {
-    router?: RouterStructure<string>;
-    controller?: ControllerStructure;
-    wsListeners?: WsListenerStructure;
-    validator?: ValidatorStructure;
-    store?: StoreStructure;
-    dictionaries?: DictionaryStructure | DictionaryStructure[];
-    views?: ViewStructure | ViewStructure[];
-  };
+export type Documents = {
+  router?: RouterStructure<string>;
+  controller?: ControllerStructure;
+  wsListeners?: WsListenerStructure;
+  validator?: ValidatorStructure;
+  store?: StoreStructure;
+  dictionaries?: DictionaryStructure | DictionaryStructure[];
+  views?: ViewStructure | ViewStructure[];
 };
 
 export type StoreStructure<T extends string = string, B = any, A = any> = {

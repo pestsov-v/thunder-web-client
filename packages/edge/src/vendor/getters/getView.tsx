@@ -1,18 +1,25 @@
 import { FC } from 'react';
-import dynamic from 'next/dynamic';
+import dynamic, { DynamicOptionsLoadingProps } from 'next/dynamic';
 import React from 'react';
 
-export type UseViewProps = {
+export type UseViewProps<T = any> = {
+  service: string;
   domain: string;
   view: string;
-  props?: unknown;
+  props?: T;
+  ssr?: boolean;
+  loading?: (loadingProps: DynamicOptionsLoadingProps) => JSX.Element | null;
 };
 
-export const GetView: FC<UseViewProps> = ({ domain, view, props }) => {
+export const GetView: FC<UseViewProps> = ({ service, domain, view, props, ssr, loading }) => {
   const DynamicComponent = dynamic(() => import('./getPrepareView'), {
-    ssr: false,
-    loading: () => <div>Loading...</div>,
+    ssr: ssr ?? false,
+    loading: loading ?? (() => <div>loading...</div>),
   });
 
-  return <DynamicComponent domain={domain} view={view} props={props} />;
+  if (DynamicComponent) {
+    return <DynamicComponent service={service} domain={domain} view={view} props={props} />;
+  } else {
+    return <div></div>;
+  }
 };

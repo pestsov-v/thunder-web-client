@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Container } from '@Server/Package';
+import { Container } from '../packages/packages';
 import { ServerModule } from './ioc.server.module';
 
 const container = new Container();

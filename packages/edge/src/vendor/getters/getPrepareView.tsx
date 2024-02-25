@@ -3,14 +3,17 @@ import { GetDomain } from './getDomain';
 import { UseViewProps } from './getView';
 
 const GetPrepareView = (props: UseViewProps) => {
-  const storage = GetDomain(props.domain);
+  const storage = GetDomain(props.service, props.domain);
+
   if (storage) {
-    const Component = storage.views.get(props.view);
+    const Component: ((props: any) => React.JSX.Element) | undefined = storage.views.get(
+      props.view
+    );
+
     if (Component) {
-      return <Component />;
+      return <Component {...props.props} />;
     }
   }
-  return null;
 };
 
 export default GetPrepareView;

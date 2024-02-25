@@ -15,32 +15,43 @@ import type {
 
 @injectable()
 export class SchemaLoader implements ISchemaLoader {
-  private _SCHEMA: NSchemaService.Schema | undefined;
+  private _DOMAINS: NSchemaService.Domains | undefined;
+  private _services: NSchemaService.Services | undefined;
 
   public init(): void {
-    this._SCHEMA = new Map<string, NSchemaService.Domain>();
+    this._DOMAINS = new Map<string, NSchemaService.Domain>();
+    this._services = new Map<string, NSchemaService.Domains>();
   }
 
   public destroy(): void {
-    this._SCHEMA = undefined;
+    this._DOMAINS = undefined;
+    this._services = undefined;
   }
 
   public get isDefine(): boolean {
-    return typeof this._SCHEMA !== 'undefined';
+    return typeof this._DOMAINS !== 'undefined';
   }
 
-  public get schema(): NSchemaService.Schema {
-    if (!this._SCHEMA) {
+  public get services(): NSchemaService.Services {
+    if (!this._services) {
       throw new Error('Schema collection not initialize.');
     }
 
-    return this._SCHEMA;
+    return this._services;
+  }
+
+  private get _domains(): NSchemaService.Domains {
+    if (!this._DOMAINS) {
+      throw new Error('Domains collection not initialize');
+    }
+
+    return this._DOMAINS;
   }
 
   public setDomain(name: string): void {
-    const domain = this.schema.get(name);
+    const domain = this.services.get(name);
     if (!domain) {
-      this.schema.set(name, {
+      this._domains.set(name, {
         routes: new Map<string, NSchemaService.Route>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
@@ -54,8 +65,24 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
+  public applyDomainToService(service: string, domain: string): void {
+    const sStorage = this.services.get(service);
+    if (!sStorage) {
+      this.services.set(service, new Map<string, NSchemaService.Domain>());
+      this.applyDomainToService(service, domain);
+      return;
+    }
+
+    const dStorage = this._domains.get(domain);
+    if (!dStorage) {
+      throw new Error(`Domain ${domain} not found`);
+    }
+
+    sStorage.set(domain, dStorage);
+  }
+
   public setRouter(domain: string, routes: RouterStructure<string>): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setRouter(domain, routes);
@@ -84,7 +111,7 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   public setDictionaries(domain: string, dictionaries: DictionaryStructure): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setDictionaries(domain, dictionaries);
@@ -95,7 +122,7 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   public setControllers(domain: string, controllers: ControllerStructure): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setControllers(domain, controllers);
@@ -114,7 +141,7 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   public setWsListeners(domain: string, listeners: WsListenerStructure): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setWsListeners(domain, listeners);
@@ -133,7 +160,7 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   public setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setStore(domain, stores);
@@ -154,7 +181,7 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   public setViews(domain: string, views: ViewStructure): void {
-    const dStorage = this.schema.get(domain);
+    const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this.setDomain(domain);
       this.setViews(domain, views);

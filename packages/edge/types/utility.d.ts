@@ -11,3 +11,16 @@ export type Nullable<T> = T | null;
 export type AnyFnWithArgs = (...args: any[]) => void;
 export type AnyFnWithoutArgs = (...args: any[]) => void;
 export type AnyFunction = AnyFnWithArgs | AnyFnWithoutArgs;
+
+export type KeyConfigLiteralBuilder<T, F extends string | boolean | number> = T extends Record<
+  string,
+  unknown
+>
+  ? {
+      [K in keyof T]: T[K] extends F
+        ? `${string & K}`
+        : K extends string
+          ? `${string & K}.${KeyConfigLiteralBuilder<T[K], F>}`
+          : never;
+    }[keyof T]
+  : string;

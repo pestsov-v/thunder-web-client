@@ -78,16 +78,23 @@ export class GetawayService extends AbstractService implements IGetawayService {
 
   public async schemaRequest<
     Route extends string = string,
+    SERVICES extends string = string,
     Domain extends string = string,
     Data = any,
     Result = void,
   >(
     route: Route,
+    service: SERVICES,
     domain: Domain,
     method: HttpMethod,
     config?: NGetawayService.SchemaRequestOptions<Data>
   ): Promise<NGetawayService.ResponsePayload<Result>> {
-    const dStorage = this._schemaService.schema.get(domain);
+    const sStorage = this._schemaService.services.get(service);
+    if (!sStorage) {
+      throw new Error(`Service storage "${service}" not found.`);
+    }
+
+    const dStorage = sStorage.get(domain);
     if (!dStorage) {
       throw new Error(`Domain storage "${domain}" not found.`);
     }

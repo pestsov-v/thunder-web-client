@@ -4,14 +4,17 @@ import { EdgeSymbols } from '@Edge/Symbols';
 
 import type { ISchemaService, NSchemaService } from '@Edge/Types';
 
-export const GetDomain = (name: string): NSchemaService.Domain | undefined => {
+export const GetDomain = (service: string, name: string): NSchemaService.Domain | undefined => {
   const [domain, setDomain] = useState<NSchemaService.Domain>();
 
   useEffect(() => {
-    const loader = container.get<ISchemaService>(EdgeSymbols.SchemaService);
-    const domain = loader.schema.get(name);
-    setDomain(domain);
-  }, [name]);
+    const services = container.get<ISchemaService>(EdgeSymbols.SchemaService).services;
+    const sStorage = services.get(service);
+    if (sStorage) {
+      const dStorage = sStorage.get(name);
+      setDomain(dStorage);
+    }
+  }, [service, name]);
 
   return domain;
 };

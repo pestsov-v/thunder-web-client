@@ -1,6 +1,6 @@
 {
   "name": "@chaminjector/web-client",
-  "version": "1.0.17",
+  "version": "1.0.25",
   "description": "Web-client for @chaminjector platform frontend schemas.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -34,7 +34,7 @@
   },
   "license": "ISC",
   "scripts": {
-    "start:dev": "NODE_ENV=development SCHEMA_PROFILE=sys_admin ts-node -r tsconfig-paths/register --files src/server/index.ts",
+    "start:dev": "NODE_ENV=development SCHEMA_PROFILE=sys_admin ts-node -r tsconfig-paths/register --files src/index.ts",
     "build:packages": "rm -rf dist && tsc -p tsconfig.cjs.json && tsc -p tsconfig.types.json && cp package.json dist/package.json",
     "add:types": "cp -r types dist/types",
     "add:imports": "echo 'export * from \"../types\";' >> ./dist/_types/index.d.ts",
@@ -45,6 +45,7 @@
     "start:prod": "node ./_cjs/index.js"
   },
   "dependencies": {
+    "@chaminjector/typescheme": "^0.0.18",
     "@sentry/nextjs": "^7.91.0",
     "axios": "^1.6.2",
     "inversify": "^6.0.2",
@@ -60,6 +61,7 @@
     "@babel/preset-env": "^7.23.7",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@types/react": "^18.2.48",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.3.3"

@@ -10,8 +10,9 @@ export const getStore = <
   T = any,
   A extends Zustand.StoreApi<T> = Zustand.StoreApi<T>,
 >(
+  service: S,
   domain: D,
   store: S
 ): UseBoundStore<A> => {
-  return container.get<IStoreService>(EdgeSymbols.StoreService).createStore(domain, store);
+  return container.get<IStoreService>(EdgeSymbols.StoreService).createStore(service, domain, store);
 };

@@ -1,26 +1,20 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@Edge/Symbols';
 import { AbstractService } from './abstract.service';
-import { Guards } from '../utils';
-import { SessionStorageKeys } from '../common';
 
 import type {
   ISchemaService,
   ISessionService,
   NSessionService,
   IStorageProvider,
-  IDiscoveryService,
 } from '@Edge/Types';
+import { container } from '@Edge/Container';
 
 @injectable()
 export class SessionService extends AbstractService implements ISessionService {
   protected _SERVICE_NAME = SessionService.name;
-  private _SOCKET: WebSocket | undefined;
-  private _CONFIG: NSessionService.Config | undefined;
 
   constructor(
-    @inject(EdgeSymbols.DiscoveryService)
-    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService,
     @inject(EdgeSymbols.StorageProvider)
@@ -29,69 +23,100 @@ export class SessionService extends AbstractService implements ISessionService {
     super();
   }
 
-  private _setConfig(): void {
-    this._CONFIG = {
-      protocol: this._discoveryService.getString('services.sessions.protocol', 'ws'),
-      host: this._discoveryService.getString('services.sessions.host', 'localhost'),
-      port: this._discoveryService.getNumber('services.sessions.port', 11073),
-    };
-  }
-
-  private get _config(): NSessionService.Config {
-    if (!this._CONFIG) {
-      throw new Error('Configuration not set.');
-    }
-
-    return this._CONFIG;
-  }
-
-  private get _socket(): WebSocket {
-    if (!this._SOCKET) {
-      throw new Error('Websocket connection not initialize.');
-    }
-
-    return this._SOCKET;
-  }
-
   protected init(): boolean {
-    this._setConfig();
-
-    const { protocol, host, port } = this._config;
-    this._SOCKET = new WebSocket(`${protocol}://${host}:${port}`);
-
-    this._SOCKET.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-        if (Guards.isEventStructure(payload)) {
-          this._eventMediator[payload.event](payload.payload);
-        } else {
-          // TODO: set error
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    return true;
-  }
-
-  protected destroy(): void {
-    this._socket.close();
-    this._SOCKET = undefined;
-  }
-
-  private _eventMediator: NSessionService.EventHandlers = {
-    'server:handshake': (payload) => {
-      this._listenServerHandshake(payload);
-    },
-  };
-
-  private _listenServerHandshake = (payload: NSessionService.ServerHandshakePayload) => {
-    if (typeof window !== 'undefined') {
-      this._storagePort.sessionStorage.setItem(
-        SessionStorageKeys.SERVER_HANDSHAKE_PAYLOAD,
-        payload
-      );
+    try {
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
     }
+  }
+
+  protected destroy(): void {}
+
+  private _events: NSessionService.Events = {
+    handshake: async (socket, payload) => this._handshake(socket, payload),
+    'handshake.error': async (socket, payload) => this._handshakeError(socket, payload),
+    authenticate: async (socket, payload) => this._authenticate(socket, payload),
+    'authenticate.error': async (socket, payload) => this._authenticateError(socket, payload),
+    'upload:page': async (socket, payload) => this._uploadPage(socket, payload),
+    'session:to:session': async (socket, payload) => this._sessionToSession(socket, payload),
+    'broadcast:to:service': async (socket, payload) => this._broadcastToService(socket, payload),
   };
+
+  public async useMediator<E extends NSessionService.ClientEvent = NSessionService.ClientEvent>(
+    socket: WebSocket,
+    event: E,
+    payload: NSessionService.EventPayload<E>
+  ): Promise<void> {
+    try {
+      await this._events[event](socket, payload);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  private async _handshake(
+    socket: WebSocket,
+    payload: NSessionService.HandShakePayload
+  ): Promise<void> {
+    try {
+      const ioc = container.get<IStorageProvider>(EdgeSymbols.StorageProvider);
+
+      if (ioc.localStorage) {
+        ioc.localStorage.setItem<string>('websocket-connection-id', payload.connectionId);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  private async _handshakeError(
+    socket: WebSocket,
+    payload: NSessionService.HandshakeErrorPayload
+  ): Promise<void> {
+    console.log('_handshakeError', payload);
+  }
+
+  private async _authenticate(
+    socket: WebSocket,
+    payload: NSessionService.AuthenticatePayload
+  ): Promise<void> {
+    console.log('_authenticate', payload);
+  }
+
+  private async _authenticateError(
+    socket: WebSocket,
+    payload: NSessionService.AuthenticateErrorPayload
+  ): Promise<void> {
+    console.log('_authenticateError', payload);
+  }
+
+  private async _uploadPage(
+    socket: WebSocket,
+    payload: NSessionService.UploadPagePayload
+  ): Promise<void> {
+    console.log('_uploadPage', payload);
+  }
+
+  private async _sessionToSession(
+    socket: WebSocket,
+    payload: NSessionService.SessionToSessionPayload
+  ): Promise<void> {
+    console.log('_sessionToSession', payload);
+  }
+
+  private async _broadcastToService(socket: WebSocket, payload: any): Promise<void> {
+    console.log('_broadcastToService', payload);
+  }
+
+  private _send<E extends NSessionService.ServerEvent>(
+    socket: WebSocket,
+    event: E,
+    payload: any
+  ): void {
+    socket.send(JSON.stringify({ event, payload }));
+  }
 }

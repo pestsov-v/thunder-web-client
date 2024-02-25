@@ -1,16 +1,16 @@
 {
   "name": "@chaminjector/visualizer",
-  "version": "0.0.9",
-  "description": "Web-client for @chaminjector platform frontend schemas.",
+  "description": "Visualizer for @chaminjector platform frontend schemas.",
   "main": "index.js",
   "types": "index.d.ts",
+  "version": "0.1.2",
   "files": [
     "./*"
   ],
   "keywords": [
     "@chaminjector",
     "@chaminjector/web-client",
-    "@Chaminjector/core"
+    "@chaminjector/core"
   ],
   "exports": {
     ".": {
@@ -32,32 +32,44 @@
     "email": "vladyslav.pestsov@gmail.com",
     "name": "Vladyslav Pestsov"
   },
-  "license": "ISC",
   "scripts": {
-    "start:dev": "NODE_ENV=development SCHEMA_PROFILE=sys_admin ts-node -r tsconfig-paths/register --files src/index.ts",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "start:dev": "NODE_ENV=development SCHEMA_PROFILE=sys_admin ts-node -r tsconfig-paths/register --files src/index.test.ts",
     "build:packages": "rm -rf dist && tsc -p tsconfig.cjs.json && tsc -p tsconfig.types.json && cp package.json dist/package.json",
     "add:types": "cp -r types dist/types",
     "add:imports": "echo 'export * from \"../types\";' >> ./dist/_types/index.d.ts",
     "add:package": "echo '{\"type\": \"commonjs\"}' > dist/_cjs/package.json && cp README.md dist/README.md",
     "build:dist": "npm run build:packages && npm run add:types && npm run add:imports && npm run add:package",
     "resolve:path": "tsc-alias -v --dir dist/_cjs -p tsconfig.cjs.json && tsc-alias -v --dir dist/_types -p tsconfig.types.json",
-    "build:prod": "npm run build:dist && npm run resolve:path",
-    "start:prod": "node ./_cjs/index.js"
+    "build:prod": "npm run build:dist && npm run resolve:path"
   },
   "dependencies": {
     "@chaminjector/seeds-discovery-service": "^0.0.11",
+    "@chaminjector/typescheme": "^0.0.18",
     "axios": "^1.6.2",
     "express": "^4.18.2",
     "fs-extra": "^11.2.0",
     "inversify": "^6.0.2",
-    "next": "^14.0.4",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/fs-extra": "^11.0.4",
-    "ts-node": "^10.9.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
     "tsc-alias": "^1.8.8",
-    "typescript": "^5.3.3"
+    "typescript": "^5"
   }
 }

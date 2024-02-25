@@ -9,6 +9,7 @@ export type * from '../common';
 export type * from './packages/packages';
 export type * from './setters';
 export type * from './utility';
+export type * from './adapters';
 
 export interface IInitiator {
   start(): void;

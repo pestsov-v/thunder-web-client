@@ -31,10 +31,16 @@ export class StoreService extends AbstractService implements IStoreService {
   }
 
   public createStore<T>(
+    service: string,
     domain: string,
     store: string
   ): Zustand.StateCreator<T> | Zustand.PersistStateCreator<T> {
-    const dStorage = this._schemaService.schema.get(domain);
+    const sStorage = this._schemaService.services.get(service);
+    if (!sStorage) {
+      throw new Error(`Service storage "${service}" not found`);
+    }
+
+    const dStorage = sStorage.get(domain);
     if (!dStorage) {
       throw new Error(`Domain storage "${domain}" not found`);
     }

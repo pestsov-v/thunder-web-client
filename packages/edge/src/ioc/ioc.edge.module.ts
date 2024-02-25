@@ -1,5 +1,5 @@
 import { ContainerModule } from '../packages/packages';
-import { EdgeSymbols } from './ioc.edge.symbols';
+import { EdgeSymbols } from '@Edge/Symbols';
 
 import { Initiator } from '../initiator';
 import { SchemaLoader } from '../loaders';
@@ -31,7 +31,9 @@ import type {
   IStorageProvider,
   IStorageStrategy,
   IStoreService,
+  IWsAdapter,
 } from '@Edge/Types';
+import { WsAdapter } from '../adapters';
 
 export const EdgeModule = new ContainerModule((bind) => {
   // Services
@@ -46,6 +48,9 @@ export const EdgeModule = new ContainerModule((bind) => {
 
   // Loaders
   bind<ISchemaLoader>(EdgeSymbols.SchemaLoader).to(SchemaLoader).inSingletonScope();
+
+  // Adapters
+  bind<IWsAdapter>(EdgeSymbols.WsAdapter).to(WsAdapter).inSingletonScope();
 
   // Strategies
   bind<IStorageStrategy>(EdgeSymbols.LocalStorageStrategy)

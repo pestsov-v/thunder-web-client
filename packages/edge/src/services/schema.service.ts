@@ -1,26 +1,23 @@
 import { injectable, inject } from '@Edge/Package';
-import { MetadataKeys } from '../common';
 import { EdgeSymbols } from '@Edge/Symbols';
 
 import { AbstractService } from './abstract.service';
 
-import type { IDiscoveryService, ISchemaLoader, ISchemaService, NSchemaService } from '@Edge/Types';
+import type { IDiscoveryService, ISchemaService, NSchemaService } from '@Edge/Types';
 
 @injectable()
 export class SchemaService extends AbstractService implements ISchemaService {
   protected _SERVICE_NAME = SchemaService.name;
-  private _SCHEMA: NSchemaService.Schema | undefined;
+  private _SCHEMA: NSchemaService.Services | undefined;
 
   constructor(
     @inject(EdgeSymbols.DiscoveryService)
-    private readonly _discoveryService: IDiscoveryService,
-    @inject(EdgeSymbols.SchemaLoader)
-    private readonly _schemaLoader: ISchemaLoader
+    private readonly _discoveryService: IDiscoveryService
   ) {
     super();
   }
 
-  public get schema(): NSchemaService.Schema {
+  public get services(): NSchemaService.Services {
     if (!this._SCHEMA) {
       throw new Error('Schema collection not initialize.');
     }
@@ -29,11 +26,8 @@ export class SchemaService extends AbstractService implements ISchemaService {
   }
 
   protected init(): boolean {
-    this._schemaLoader.init();
-    Reflect.defineMetadata(MetadataKeys.SchemaLoader, this._schemaLoader, Reflect);
-
     try {
-      this._SCHEMA = this._schemaLoader.schema;
+      console.log('WEB_CLIENT_SERVICES', this._SCHEMA);
 
       return true;
     } catch (e) {
@@ -44,10 +38,5 @@ export class SchemaService extends AbstractService implements ISchemaService {
 
   protected destroy(): void {
     this._SCHEMA = undefined;
-
-    this._schemaLoader.destroy();
-
-    Reflect.deleteMetadata(MetadataKeys.SchemaLoader, Reflect);
-    Reflect.getMetadataKeys(Reflect).forEach((key) => Reflect.deleteMetadata(key, Reflect));
   }
 }

@@ -23,17 +23,20 @@ export class FunctionalityAgent implements IFunctionalityAgent {
     return {
       sendRequest: <
         Route extends string = string,
+        Service extends string = string,
         Domain extends string = string,
         Data = any,
         Result = void,
       >(
         route: Route,
+        service: Service,
         domain: Domain,
         method: HttpMethod,
         config?: NGetawayService.SchemaRequestOptions<Data>
       ): Promise<NGetawayService.ResponsePayload<Result>> => {
-        return this._getawayService.schemaRequest<Route, Domain, Data, Result>(
+        return this._getawayService.schemaRequest<Route, Service, Domain, Data, Result>(
           route,
+          service,
           domain,
           method,
           config

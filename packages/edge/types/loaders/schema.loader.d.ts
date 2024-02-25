@@ -11,11 +11,12 @@ import { AnyObject } from '../../common';
 
 export interface ISchemaLoader {
   readonly isDefine: boolean;
-  readonly schema: NSchemaService.Schema;
+  readonly services: NSchemaService.Services;
 
   init(): void;
   destroy(): void;
   setDomain(name: string): void;
+  applyDomainToService(name: string, domain: string): void;
   setRouter(domain: string, routes: RouterStructure<string>): void;
   setDictionaries(domain: string, dictionaries: DictionaryStructure): void;
   setViews(domain: string, views: ViewStructure): void;

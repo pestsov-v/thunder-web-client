@@ -1,8 +1,7 @@
 {
   "services": {
       "schema": {
-        "schemaPath": "saasa",
-        "schemaDir": "sasasaas"
+        "schemaEntrypoint": "/Users/vladislavpestsov/internal/thunder-web-client/packages/.test_schemas/entry.ts"
       }
   },
   "adapters": {
