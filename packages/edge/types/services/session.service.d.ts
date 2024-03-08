@@ -1,14 +1,35 @@
 import type { IAbstractService } from './abstract.service';
 
 export interface ISessionService extends IAbstractService {
-  useMediator<E extends NSessionService.ClientEvent = NSessionService.ClientEvent>(
-    socket: WebSocket,
+  sessionToSession<
+    P = never,
+    S extends string = string,
+    D extends string = string,
+    E extends string = string,
+  >(
+    service: S,
+    domain: D,
     event: E,
-    payload: NSessionService.EventPayload<E>
+    sessionId: string,
+    payload?: P
+  ): Promise<void>;
+  sessionToSessionError<
+    P = never,
+    S extends string = string,
+    D extends string = string,
+    E extends string = string,
+  >(
+    service: S,
+    domain: D,
+    event: E,
+    sessionId: string,
+    payload?: P
   ): Promise<void>;
 }
 
 export namespace NSessionService {
+  export type ErrorType = 'EXCEPTION' | 'ERROR' | 'VALIDATION';
+
   export type Config = {
     enable: boolean;
     connect: {
@@ -18,15 +39,6 @@ export namespace NSessionService {
     };
   };
 
-  export type ServerEvent =
-    | 'handshake'
-    | 'handshake.error'
-    | 'upload:page'
-    | 'authenticate'
-    | 'authenticate.error'
-    | 'session:to:session'
-    | 'broadcast:to:service';
-
   export type ClientEvent =
     | 'handshake'
     | 'handshake.error'
@@ -34,7 +46,9 @@ export namespace NSessionService {
     | 'authenticate.error'
     | 'upload:page'
     | 'session:to:session'
-    | 'broadcast:to:service';
+    | 'session:to:session.error'
+    | 'broadcast:to:service'
+    | 'broadcast:to:service.error';
 
   export type HandShakePayload = {
     serverTag: string;
@@ -47,17 +61,21 @@ export namespace NSessionService {
     message: string;
   };
 
-  export type SessionToSessionPayload<T = any> = {
-    service: string;
-    domain: string;
-    event: string;
-    payload: T & {
-      sessionId: string;
-    };
+  export type SessionToSessionPayload = {
+    sessionId: string;
+  };
+
+  export type SessionToSessionErrorPayload = {
+    type: ErrorType;
+    code: string;
+    message: string;
   };
 
   export type EventStructure<E extends ServerEvent> = {
-    event: E;
+    service: string;
+    domain: string;
+    event: string;
+    type: E;
     payload: EventPayload<E>;
   };
 
@@ -85,18 +103,13 @@ export namespace NSessionService {
           ? AuthenticateErrorPayload
           : E extends 'session:to:session'
             ? SessionToSessionPayload
-            : E extends 'broadcast:to:service'
-              ? string
-              : E extends 'upload:page'
-                ? UploadPagePayload
-                : never;
+            : E extends 'session:to:session.error'
+              ? SessionToSessionErrorPayload
+              : E extends 'broadcast:to:service'
+                ? string
+                : E extends 'upload:page'
+                  ? UploadPagePayload
+                  : never;
 
-  export type EventHandler<E extends ClientEvent> = (
-    socket: WebSocket,
-    payload: EventPayload<E>
-  ) => Promise<void>;
-
-  export type Events<E extends ClientEvent = ClientEvent> = {
-    [key in E]: EventHandler<key>;
-  };
+  // for schemas
 }

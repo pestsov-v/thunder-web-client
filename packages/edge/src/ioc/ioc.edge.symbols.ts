@@ -29,6 +29,7 @@ export const EdgeSymbols = {
 
   // Agents
   FunctionalityAgent: Symbol('FunctionalityAgent'),
+  SchemaAgent: Symbol('SchemaAgent'),
 
   // Initiator
   Initiator: Symbol('Initiator'),

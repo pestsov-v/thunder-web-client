@@ -23,21 +23,36 @@
     "baseUrl": "./",
     "paths": {
       // Edge
-      "@Edge/Symbols": ["src/edge/ioc/ioc.edge.symbols.ts"],
-      "@Edge/Container": ["src/edge/ioc/ioc.edge.ts"],
-      "@Edge/Package": ["src/edge/packages/packages.ts"],
-      "@Edge/Types": ["types/edge/index.d.ts"]
+      "@Edge/Symbols": [
+        "src/edge/ioc/ioc.edge.symbols.ts"
+      ],
+      "@Edge/Container": [
+        "src/edge/ioc/ioc.edge.ts"
+      ],
+      "@Edge/Package": [
+        "src/edge/packages/packages.ts"
+      ],
+      "@Edge/Types": [
+        "types/edge/index.d.ts"
+      ]
     },
-    "noEmit": false
+    "noEmit": false,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "./src/packages/server/**/*",
-    "./types/**/*.d.ts"
+    "./types/**/*.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "visualizer",
     "src/pages"
-  ],
+  ]
 }

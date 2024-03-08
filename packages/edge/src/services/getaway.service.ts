@@ -33,8 +33,8 @@ export class GetawayService extends AbstractService implements IGetawayService {
   private _setConfig() {
     this._CONFIG = {
       protocol: this._discoveryService.getString('services.getaway.protocol', 'http'),
-      host: this._discoveryService.getString('services.getaway.host', 'localhost'),
-      port: this._discoveryService.getNumber('services.getaway.port', 11063),
+      host: this._discoveryService.getString('services.getaway.host', '0.0.0.0'),
+      port: this._discoveryService.getNumber('services.getaway.port', 11000),
       urls: {
         baseApiUrl: this._discoveryService.getString(
           'services.getaway.urls.baseApiUrl',
@@ -59,8 +59,7 @@ export class GetawayService extends AbstractService implements IGetawayService {
   protected init(): boolean {
     this._setConfig();
 
-    const { protocol, host, port } = this._config;
-    this._REQUESTER = axios.create({ baseURL: `${protocol}://${host}:${port}` });
+    this._REQUESTER = axios.create();
     return true;
   }
 
@@ -99,23 +98,23 @@ export class GetawayService extends AbstractService implements IGetawayService {
       throw new Error(`Domain storage "${domain}" not found.`);
     }
 
-    const path = route + '{{' + method.toString() + '}}';
-    const sRoute = dStorage.routes.get(path);
+    const sRoute = dStorage.routes.get(route + '{{' + method.toUpperCase() + '}}');
     if (!sRoute) {
       throw new Error(`Route structure "${route}" not exists in "${domain}" domain storage.`);
     }
 
     const headers = {
-      [GetawayHeaders.SERVICE]: sRoute.service,
-      [GetawayHeaders.DOMAIN]: sRoute.domain,
-      [GetawayHeaders.ACTION]: sRoute.action,
+      [GetawayHeaders.SERVICE]: service,
+      [GetawayHeaders.DOMAIN]: domain,
+      [GetawayHeaders.ACTION]: sRoute.route,
       'accept-language': container.get<INavigatorProvider>(EdgeSymbols.NavigatorProvider)
         .defaultLanguage.shortLn,
     };
 
+    const { protocol, host, port } = this._config;
     try {
       return await this.baseRequest({
-        url: this._config.urls.baseApiUrl,
+        url: `${protocol}://${host}:${port}${this._config.urls.baseApiUrl}`,
         method: sRoute.method,
         headers: headers,
         data: config?.data,

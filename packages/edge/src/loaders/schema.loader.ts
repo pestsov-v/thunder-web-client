@@ -2,15 +2,12 @@ import { injectable } from '@Edge/Package';
 
 import type {
   AnyObject,
-  ControllerStructure,
   DictionaryStructure,
-  HttpMethod,
   ISchemaLoader,
   NSchemaService,
-  RouterStructure,
+  ServiceStructure,
   StoreStructure,
   ViewStructure,
-  WsListenerStructure,
 } from '@Edge/Types';
 
 @injectable()
@@ -40,6 +37,44 @@ export class SchemaLoader implements ISchemaLoader {
     return this._services;
   }
 
+  public setBusinessLogic(services: ServiceStructure[]): void {
+    services.forEach((service) => {
+      service.domains.forEach((domain) => {
+        const name = domain.domain;
+        const { documents } = domain;
+
+        this._setDomain(name);
+        if (documents.router) {
+          this._setRouter(name, documents.router);
+        }
+        if (documents.views) {
+          if (Array.isArray(documents.views)) {
+            documents.views.forEach((v) => this._setView(name, v));
+          } else {
+            this._setView(name, documents.views);
+          }
+        }
+        if (documents.dictionaries) {
+          if (Array.isArray(documents.dictionaries)) {
+            documents.dictionaries.forEach((v) => this._setDictionary(name, v));
+          } else {
+            this._setDictionary(name, documents.dictionaries);
+          }
+        }
+
+        if (documents.store) {
+          this._setStore(name, documents.store);
+        }
+
+        if (documents.emitter) {
+          this._setEmitter(name, documents.emitter);
+        }
+
+        this._applyDomainToService(service.service, domain.domain);
+      });
+    });
+  }
+
   private get _domains(): NSchemaService.Domains {
     if (!this._DOMAINS) {
       throw new Error('Domains collection not initialize');
@@ -48,28 +83,27 @@ export class SchemaLoader implements ISchemaLoader {
     return this._DOMAINS;
   }
 
-  public setDomain(name: string): void {
+  private _setDomain(name: string): void {
     const domain = this.services.get(name);
     if (!domain) {
       this._domains.set(name, {
-        routes: new Map<string, NSchemaService.Route>(),
+        routes: new Map<string, NSchemaService.RouteStructure>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
-        controllers: new Map<string, NSchemaService.ControllerHandler<string>>(),
-        wsListeners: new Map<string, NSchemaService.WsListener>(),
         store: new Map<string, NSchemaService.Store>(),
         validators: new Map<string, NSchemaService.Validator>(),
+        events: new Map<string, NSchemaService.EventStructure>(),
       });
     } else {
       throw new Error(`Domain with name "${name}" has been exists early`);
     }
   }
 
-  public applyDomainToService(service: string, domain: string): void {
+  private _applyDomainToService(service: string, domain: string): void {
     const sStorage = this.services.get(service);
     if (!sStorage) {
       this.services.set(service, new Map<string, NSchemaService.Domain>());
-      this.applyDomainToService(service, domain);
+      this._applyDomainToService(service, domain);
       return;
     }
 
@@ -81,89 +115,86 @@ export class SchemaLoader implements ISchemaLoader {
     sStorage.set(domain, dStorage);
   }
 
-  public setRouter(domain: string, routes: RouterStructure<string>): void {
+  private _setRouter(domain: string, routes: NSchemaService.Router<string>): void {
     const dStorage = this._domains.get(domain);
     if (!dStorage) {
-      this.setDomain(domain);
-      this.setRouter(domain, routes);
+      this._setDomain(domain);
+      this._setRouter(domain, routes);
       return;
     }
 
-    for (const path in routes) {
-      const methods = routes[path];
+    for (const route in routes) {
+      const endpoint = routes[route];
 
-      for (const method in methods) {
-        const httpMethod = method as HttpMethod;
-        const route = methods[httpMethod];
-        if (route) {
-          dStorage.routes.set(path + '{{' + method.toUpperCase() + '}}', {
-            domain: route.domain,
-            action: path,
-            environment: route.environment,
-            service: route.service,
-            method: httpMethod,
-            isPrivateUser: route.isPrivateUser,
-            isPrivateOrganization: route.isPrivateOrganization,
-          });
+      for (const method in endpoint) {
+        const controller = endpoint[method];
+
+        if (controller) {
+          const name = route + '{{' + method.toUpperCase() + '}}';
+          if (dStorage.routes.has(name)) {
+            throw new Error(
+              `Route path "${endpoint}" with method "${method.toUpperCase()}" has been exists.`
+            );
+          } else {
+            dStorage.routes.set(name, {
+              route: route,
+              method: method,
+              scope: controller.scope,
+              handler: controller.handler,
+            });
+          }
         }
       }
     }
   }
 
-  public setDictionaries(domain: string, dictionaries: DictionaryStructure): void {
+  private _setEmitter(domain: string, events: NSchemaService.Emitter<string>): void {
     const dStorage = this._domains.get(domain);
     if (!dStorage) {
-      this.setDomain(domain);
-      this.setDictionaries(domain, dictionaries);
+      this._setDomain(domain);
+      this._setEmitter(domain, events);
+      return;
+    }
+
+    for (const event in events) {
+      const types = events[event];
+
+      for (const type in types) {
+        const listener = types[type as NSchemaService.EventType];
+
+        if (listener) {
+          const name = event + '{{' + type + '}}';
+          if (dStorage.events.has(name)) {
+            throw new Error(`Event name "${event}" with event type "${type}" has been exists.`);
+          } else {
+            dStorage.events.set(name, {
+              event: event,
+              type: type as NSchemaService.EventType,
+              scope: listener.scope,
+              handler: listener.handler,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  private _setDictionary(domain: string, dictionaries: DictionaryStructure): void {
+    const dStorage = this._domains.get(domain);
+    if (!dStorage) {
+      this._setDomain(domain);
+      this._setDictionary(domain, dictionaries);
       return;
     }
 
     dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
   }
 
-  public setControllers(domain: string, controllers: ControllerStructure): void {
+  private _setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
     const dStorage = this._domains.get(domain);
     if (!dStorage) {
-      this.setDomain(domain);
-      this.setControllers(domain, controllers);
-      return;
-    }
-
-    for (const cName in controllers) {
-      const controller = controllers[cName];
-      const isExist = dStorage.controllers.get(cName);
-      if (!isExist) {
-        dStorage.controllers.set(cName, controller);
-      } else {
-        throw new Error(`Controller with "${cName}" has been exists.`);
-      }
-    }
-  }
-
-  public setWsListeners(domain: string, listeners: WsListenerStructure): void {
-    const dStorage = this._domains.get(domain);
-    if (!dStorage) {
-      this.setDomain(domain);
-      this.setWsListeners(domain, listeners);
-      return;
-    }
-
-    for (const lName in listeners) {
-      const listener = listeners[lName];
-      const isExist = dStorage.controllers.get(lName);
-      if (!isExist) {
-        dStorage.wsListeners.set(lName, listener);
-      } else {
-        throw new Error(`Websocket listener with "${lName}" has been exists.`);
-      }
-    }
-  }
-
-  public setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
-    const dStorage = this._domains.get(domain);
-    if (!dStorage) {
-      this.setDomain(domain);
-      this.setStore(domain, stores);
+      this._setDomain(domain);
+      this._setStore(domain, stores);
       return;
     }
 
@@ -180,11 +211,11 @@ export class SchemaLoader implements ISchemaLoader {
     }
   }
 
-  public setViews(domain: string, views: ViewStructure): void {
+  private _setView(domain: string, views: ViewStructure): void {
     const dStorage = this._domains.get(domain);
     if (!dStorage) {
-      this.setDomain(domain);
-      this.setViews(domain, views);
+      this._setDomain(domain);
+      this._setView(domain, views);
       return;
     }
     const isExist = dStorage.views.get(views.name);
@@ -192,6 +223,15 @@ export class SchemaLoader implements ISchemaLoader {
       dStorage.views.set(views.name, views.View);
     } else {
       throw new Error(`View with "${views.name}" has been exists.`);
+    }
+  }
+
+  private _setDataMapper(domain: string, mapping: any): void {
+    const dStorage = this._domains.get(domain);
+    if (!dStorage) {
+      this._setDomain(domain);
+      this._setView(domain, mapping);
+      return;
     }
   }
 }

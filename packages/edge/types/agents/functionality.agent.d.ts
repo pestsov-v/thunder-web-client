@@ -1,6 +1,6 @@
 import { NGetawayService } from '../services';
 import { INavigatorProvider, IStorageProvider } from '../providers';
-import { HttpMethod } from '../../common';
+import { HttpMethod } from '../utility';
 
 export interface IFunctionalityAgent {
   readonly schema: NFunctionalityAgent.Schema;
@@ -11,15 +11,15 @@ export interface IFunctionalityAgent {
 export namespace NFunctionalityAgent {
   export type Schema = {
     sendRequest: <
-      Route extends string = string,
       Service extends string = string,
       Domain extends string = string,
+      Route extends string = string,
       Data = any,
       Result = void,
     >(
-      route: Route,
       service: Service,
       domain: Domain,
+      route: Route,
       method: HttpMethod,
       config?: NGetawayService.SchemaRequestOptions<Data>
     ) => Promise<NGetawayService.ResponsePayload<Result>>;

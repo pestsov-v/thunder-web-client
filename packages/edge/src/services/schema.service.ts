@@ -1,9 +1,10 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@Edge/Symbols';
+import { SCHEMA_SERVICES } from '../common';
 
 import { AbstractService } from './abstract.service';
 
-import type { IDiscoveryService, ISchemaService, NSchemaService } from '@Edge/Types';
+import type { ISchemaLoader, ISchemaService, NSchemaService, ServiceStructure } from '@Edge/Types';
 
 @injectable()
 export class SchemaService extends AbstractService implements ISchemaService {
@@ -11,8 +12,8 @@ export class SchemaService extends AbstractService implements ISchemaService {
   private _SCHEMA: NSchemaService.Services | undefined;
 
   constructor(
-    @inject(EdgeSymbols.DiscoveryService)
-    private readonly _discoveryService: IDiscoveryService
+    @inject(EdgeSymbols.SchemaLoader)
+    private readonly _schemaLoader: ISchemaLoader
   ) {
     super();
   }
@@ -25,9 +26,20 @@ export class SchemaService extends AbstractService implements ISchemaService {
     return this._SCHEMA;
   }
 
+  private get _schemaServices(): ServiceStructure[] {
+    if (!SCHEMA_SERVICES || SCHEMA_SERVICES.length === 0) {
+      throw new Error('Schema service array is empty');
+    }
+
+    return SCHEMA_SERVICES;
+  }
+
   protected init(): boolean {
     try {
-      console.log('WEB_CLIENT_SERVICES', this._SCHEMA);
+      this._schemaLoader.init();
+      this._schemaLoader.setBusinessLogic(this._schemaServices);
+
+      this._SCHEMA = this._schemaLoader.services;
 
       return true;
     } catch (e) {
@@ -38,5 +50,6 @@ export class SchemaService extends AbstractService implements ISchemaService {
 
   protected destroy(): void {
     this._SCHEMA = undefined;
+    this._schemaLoader.destroy();
   }
 }

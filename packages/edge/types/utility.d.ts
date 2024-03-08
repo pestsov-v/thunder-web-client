@@ -1,6 +1,7 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'TRACE' | 'HEAD';
 export type EnvironmentKind = 'edge' | 'server' | 'all';
 export type StrSym = string | symbol;
+export type ExtendedRecordObject = Record<string, ExtendedObject | string>;
 
 export type StringObject = Record<string, string>;
 export type NestedObject = Record<string, NestedObject | string>;
@@ -22,5 +23,13 @@ export type KeyConfigLiteralBuilder<T, F extends string | boolean | number> = T 
         : K extends string
           ? `${string & K}.${KeyConfigLiteralBuilder<T[K], F>}`
           : never;
+    }[keyof T]
+  : string;
+
+export type KeyStringLiteralBuilder<T> = T extends Record<string, unknown>
+  ? {
+      [K in keyof T]: T[K] extends Record<string, unknown>
+        ? `${string & K}.${KeyStringLiteralBuilder<T[K]>}`
+        : `${string & K}`;
     }[keyof T]
   : string;

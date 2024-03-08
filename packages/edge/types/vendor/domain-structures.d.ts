@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import type { NSchemaService, NSessionService } from '../services';
 import type { EnvironmentKind, HttpMethod, UnknownObject } from '../../common';
+import { EntryPointStructure } from '../setters';
 
 export type RouterStructure<T extends string> = {
   [key in T]: {
@@ -43,19 +44,10 @@ export type ControllerStructure<T extends string> = {
   [key in T]: NSchemaService.ControllerHandler;
 };
 
-export type DomainDocuments = {
-  router?: RouterStructure<string>;
-  controller?: ControllerStructure<string>;
-  wsListeners?: WsListenerStructure<string>;
-  dictionaries?: AliasDictionaryStructure | AliasDictionaryStructures;
-  views?: AliasViewStructure | AliasViewStructures;
-};
-
-export type CollectorStructure = {
-  domain: string;
-  documents: DomainDocuments;
-};
-
 export type StoreStructure<T extends string> = {
   [key in T]: NSchemaService.Store;
+};
+
+export type ServiceDocStructure<E extends string> = {
+  release: E;
 };

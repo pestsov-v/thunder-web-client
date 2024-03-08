@@ -1,14 +1,17 @@
 import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@Edge/Symbols';
-import {
+import type {
   IDiscoveryService,
-  ISessionService,
+  IFunctionalityAgent,
+  ISchemaAgent,
+  ISchemaService,
   IStorageProvider,
   IWsAdapter,
-  type NSessionService,
+  NSchemaService,
+  NSessionService,
   NWsAdapter,
 } from '@Edge/Types';
-import { ErrorCode, LocalStorageKeys } from '../common';
+import { ErrorCode } from '../common';
 import { Guards } from '../utils';
 import { container } from '@Edge/Container';
 
@@ -20,8 +23,8 @@ export class WsAdapter implements IWsAdapter {
   constructor(
     @inject(EdgeSymbols.DiscoveryService)
     private readonly _discoveryService: IDiscoveryService,
-    @inject(EdgeSymbols.SessionService)
-    private readonly _sessionService: ISessionService
+    @inject(EdgeSymbols.SchemaService)
+    private readonly _schemaService: ISchemaService
   ) {}
 
   private _setConfig() {
@@ -43,7 +46,7 @@ export class WsAdapter implements IWsAdapter {
     return this._CONFIG;
   }
 
-  private get _socket() {
+  public get socket() {
     if (!this._SOCKET) {
       throw new Error(`Websocket connection is undefined.`);
     }
@@ -104,9 +107,78 @@ export class WsAdapter implements IWsAdapter {
     }
 
     if (Guards.isEventStructure(data)) {
-      if (Guards.isCorrectEvent(data.event)) {
+      if (Guards.isCorrectEvent(data.type)) {
+        const sStorage = this._schemaService.services.get(data.service);
+        if (!sStorage) {
+          this._send('session:to:session.error', {
+            type: 'EXCEPTION',
+            code: ErrorCode.type.UNKNOWN_SERVICE,
+            message: `Service "${data.service}" not found.`,
+          });
+          return;
+        }
+
+        const dStorage = sStorage.get(data.domain);
+        if (!dStorage) {
+          this._send('session:to:session.error', {
+            type: 'EXCEPTION',
+            code: ErrorCode.type.UNKNOWN_DOMAIN,
+            message: `Domain "${data.domain}" not found in service "${data.service}".`,
+          });
+          return;
+        }
+
+        const eStorage = dStorage.events.get(data.event);
+        if (!eStorage) {
+          this._send('session:to:session.error', {
+            type: 'EXCEPTION',
+            code: ErrorCode.type.UNKNOWN_EVENT,
+            message: `Event "${data.event}" not found in domain "${data.domain}" in service "${data.service}".`,
+          });
+          return;
+        }
+
+        if (eStorage.scope === 'private:user') {
+          const ioc = container.get<IStorageProvider>(EdgeSymbols.StorageProvider);
+          const token = ioc.localStorage.getString('x-user-access-token', '');
+          if (token && token.length > 0) {
+            return;
+          }
+        }
+
+        const agents: NSchemaService.Agents = {
+          fnAgent: container.get<IFunctionalityAgent>(EdgeSymbols.FunctionalityAgent),
+          schemaAgent: container.get<ISchemaAgent>(EdgeSymbols.SchemaAgent),
+        };
+
         try {
-          await this._sessionService.useMediator(this._socket, data.event, data.payload);
+          switch (eStorage.event) {
+            case 'session:to:session':
+              if (Guards.isSessionToSessionEvent(data.payload)) {
+                await eStorage.handler(agents, {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  data: data.payload,
+                  sessionId: data.payload.sessionId,
+                });
+              } else {
+                this._send('session:to:session.error', {
+                  type: 'ERROR',
+                  code: ErrorCode.session.toSession.INVALID_EVENT_STRUCTURE,
+                  message:
+                    'Payload structure for session:to:session event type is invalid. SessionId is required. ',
+                });
+              }
+              break;
+            case 'session:to:session.error':
+              break;
+            case 'broadcast:to:service':
+              break;
+            case 'broadcast:to:service.error':
+              break;
+            default:
+            // Helpers.switchCaseChecker(eStorage.type);
+          }
         } catch (e) {
           console.error(e);
           throw e;
@@ -129,6 +201,6 @@ export class WsAdapter implements IWsAdapter {
     event: E,
     payload: NSessionService.EventPayload<E>
   ): void {
-    this._socket.send(JSON.stringify({ event, payload }));
+    this.socket.send(JSON.stringify({ event, payload }));
   }
 }

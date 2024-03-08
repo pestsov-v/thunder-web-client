@@ -3,7 +3,7 @@ import { EdgeSymbols } from '@Edge/Symbols';
 
 import { Initiator } from '../initiator';
 import { SchemaLoader } from '../loaders';
-import { FunctionalityAgent } from '../agents';
+import { FunctionalityAgent, SchemaAgent } from '../agents';
 import { SentryIntegration } from '../integrations';
 import { NavigatorProvider, StorageProvider } from '../providers';
 import { StorageFactory } from '../factories';
@@ -24,6 +24,7 @@ import type {
   IInitiator,
   ILocalizationService,
   INavigatorProvider,
+  ISchemaAgent,
   ISchemaLoader,
   ISchemaService,
   ISessionService,
@@ -74,6 +75,7 @@ export const EdgeModule = new ContainerModule((bind) => {
   bind<IFunctionalityAgent>(EdgeSymbols.FunctionalityAgent)
     .to(FunctionalityAgent)
     .inTransientScope();
+  bind<ISchemaAgent>(EdgeSymbols.SchemaAgent).to(SchemaAgent).inTransientScope();
 
   // Initiator
   bind<IInitiator>(EdgeSymbols.Initiator).to(Initiator).inSingletonScope();

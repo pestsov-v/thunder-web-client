@@ -64,5 +64,13 @@ export namespace NDiscoveryService {
         };
       };
     };
+    strategies: {
+      database: {
+        enable: boolean;
+        type: string;
+        name: string;
+        defaultVersion: number;
+      };
+    };
   };
 }

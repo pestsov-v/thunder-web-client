@@ -7,6 +7,7 @@ import type {
   ISessionService,
   NSessionService,
   IStorageProvider,
+  IWsAdapter,
 } from '@Edge/Types';
 import { container } from '@Edge/Container';
 
@@ -18,7 +19,9 @@ export class SessionService extends AbstractService implements ISessionService {
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService,
     @inject(EdgeSymbols.StorageProvider)
-    private readonly _storagePort: IStorageProvider
+    private readonly _storagePort: IStorageProvider,
+    @inject(EdgeSymbols.WsAdapter)
+    private readonly _wsAdapter: IWsAdapter
   ) {
     super();
   }
@@ -33,29 +36,6 @@ export class SessionService extends AbstractService implements ISessionService {
   }
 
   protected destroy(): void {}
-
-  private _events: NSessionService.Events = {
-    handshake: async (socket, payload) => this._handshake(socket, payload),
-    'handshake.error': async (socket, payload) => this._handshakeError(socket, payload),
-    authenticate: async (socket, payload) => this._authenticate(socket, payload),
-    'authenticate.error': async (socket, payload) => this._authenticateError(socket, payload),
-    'upload:page': async (socket, payload) => this._uploadPage(socket, payload),
-    'session:to:session': async (socket, payload) => this._sessionToSession(socket, payload),
-    'broadcast:to:service': async (socket, payload) => this._broadcastToService(socket, payload),
-  };
-
-  public async useMediator<E extends NSessionService.ClientEvent = NSessionService.ClientEvent>(
-    socket: WebSocket,
-    event: E,
-    payload: NSessionService.EventPayload<E>
-  ): Promise<void> {
-    try {
-      await this._events[event](socket, payload);
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  }
 
   private async _handshake(
     socket: WebSocket,
@@ -101,18 +81,45 @@ export class SessionService extends AbstractService implements ISessionService {
     console.log('_uploadPage', payload);
   }
 
-  private async _sessionToSession(
-    socket: WebSocket,
-    payload: NSessionService.SessionToSessionPayload
-  ): Promise<void> {
-    console.log('_sessionToSession', payload);
+  public async sessionToSession<
+    P = never,
+    S extends string = string,
+    D extends string = string,
+    E extends string = string,
+  >(service: S, domain: D, event: E, sessionId: string, payload?: P): Promise<void> {
+    this._send(this._wsAdapter.socket, 'session:to:session', {
+      service,
+      domain,
+      event,
+      data: {
+        sessionId,
+        payload,
+      },
+    });
+  }
+
+  public async sessionToSessionError<
+    P = never,
+    S extends string = string,
+    D extends string = string,
+    E extends string = string,
+  >(service: S, domain: D, event: E, sessionId: string, payload?: P): Promise<void> {
+    this._send(this._wsAdapter.socket, 'session:to:session.error', {
+      service,
+      domain,
+      event,
+      data: {
+        sessionId,
+        payload,
+      },
+    });
   }
 
   private async _broadcastToService(socket: WebSocket, payload: any): Promise<void> {
     console.log('_broadcastToService', payload);
   }
 
-  private _send<E extends NSessionService.ServerEvent>(
+  private _send<E extends NSessionService.ClientEvent>(
     socket: WebSocket,
     event: E,
     payload: any
