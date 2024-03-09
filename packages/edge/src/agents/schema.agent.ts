@@ -7,11 +7,14 @@ import type { FC } from 'react';
 import type {
   ExtendedRecordObject,
   HttpMethod,
+  IAuthService,
   IFunctionalityAgent,
   ILocalizationService,
   ISchemaAgent,
   ISchemaService,
+  IStoreService,
   KeyStringLiteralBuilder,
+  NSchemaAgent,
   NSchemaService,
 } from '@Edge/Types';
 
@@ -21,7 +24,11 @@ export class SchemaAgent implements ISchemaAgent {
     @inject(EdgeSymbols.SchemaService)
     private readonly _schemaService: ISchemaService,
     @inject(EdgeSymbols.LocalizationService)
-    private readonly _localizationService: ILocalizationService
+    private readonly _localizationService: ILocalizationService,
+    @inject(EdgeSymbols.StoreService)
+    private readonly _storeService: IStoreService,
+    @inject(EdgeSymbols.AuthService)
+    private readonly _authService: IAuthService
   ) {}
 
   public getListener<
@@ -76,7 +83,11 @@ export class SchemaAgent implements ISchemaAgent {
       schemaAgent: container.get<ISchemaAgent>(EdgeSymbols.SchemaAgent),
     };
 
-    return vStorage(agents, props);
+    const content: NSchemaAgent.ViewContext = {
+      rootStore: this._storeService.rootStore,
+    };
+
+    return vStorage(agents, content, props);
   }
 
   public getRoute<
@@ -111,23 +122,42 @@ export class SchemaAgent implements ISchemaAgent {
       schemaAgent: container.get<ISchemaAgent>(EdgeSymbols.SchemaAgent),
     };
 
-    let context: NSchemaService.RouteContext<NSchemaService.AuthScope>;
+    const context = this._getContext(rStorage.scope) as NSchemaService.RouteContext<
+      any,
+      any,
+      'private:organization'
+    >;
+    return rStorage.handler(agents, context, payload) as E;
+  }
 
-    switch (rStorage.scope) {
+  private _getContext(
+    scope: NSchemaService.AuthScope
+  ): NSchemaService.RouteContext<any, any, NSchemaService.AuthScope> {
+    let context: NSchemaService.RouteContext<any, any, NSchemaService.AuthScope> = {
+      rootStore: this._storeService.rootStore,
+    };
+
+    switch (scope) {
       case 'public:route':
-        context = { l1: 1 };
         break;
       case 'private:user':
-        context = { l2: '' };
+        context = {
+          ...context,
+          user: this._authService.getUserJWTPayload().payload,
+        };
         break;
       case 'private:organization':
-        context = { l3: true };
+        context = {
+          ...context,
+          user: this._authService.getUserJWTPayload().payload,
+          organization: this._authService.getOrgJWTPayload().payload,
+        };
         break;
       default:
-        throw Helpers.switchCaseChecker(rStorage.scope);
+        throw Helpers.switchCaseChecker(scope);
     }
 
-    return rStorage.handler(agents, context, payload) as E;
+    return context;
   }
 
   public getDictionary<
@@ -178,5 +208,12 @@ export class SchemaAgent implements ISchemaAgent {
       substitutions,
       language
     );
+  }
+
+  public getStore<SER extends string = string, D extends string = string, STO = any>(
+    service: SER,
+    domain: D
+  ): () => STO {
+    return this._storeService.getStore<STO>(service, domain);
   }
 }

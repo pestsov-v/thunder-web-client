@@ -1,4 +1,4 @@
-import { NSchemaService } from '../services';
+import { IStoreService, NSchemaService } from '../services';
 import { ExtendedRecordObject, type HttpMethod, KeyStringLiteralBuilder } from '../utility';
 
 import type { FC } from 'react';
@@ -68,6 +68,14 @@ export interface ISchemaAgent {
     substitutions?: SUBS,
     language?: L
   ): string;
+  getStore<SER extends string = string, D extends string = string, STO = any>(
+    service: SER,
+    domain: D
+  ): () => STO;
 }
 
-export namespace NSchemaAgent {}
+export namespace NSchemaAgent {
+  export type ViewContext = {
+    rootStore: IStoreService['rootStore'];
+  };
+}

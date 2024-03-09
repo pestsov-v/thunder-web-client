@@ -63,6 +63,9 @@ export namespace NDiscoveryService {
           baseExceptionUrl: string;
         };
       };
+      auth: {
+        checkAccessDiff: number;
+      };
     };
     strategies: {
       database: {

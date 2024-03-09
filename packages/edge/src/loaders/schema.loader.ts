@@ -90,7 +90,6 @@ export class SchemaLoader implements ISchemaLoader {
         routes: new Map<string, NSchemaService.RouteStructure>(),
         dictionaries: new Map<string, NSchemaService.Dictionary>(),
         views: new Map<string, NSchemaService.View<string>>(),
-        store: new Map<string, NSchemaService.Store>(),
         validators: new Map<string, NSchemaService.Validator>(),
         events: new Map<string, NSchemaService.EventStructure>(),
       });
@@ -190,24 +189,18 @@ export class SchemaLoader implements ISchemaLoader {
     dStorage.dictionaries.set(dictionaries.language, dictionaries.dictionary);
   }
 
-  private _setStore(domain: string, stores: StoreStructure<string, AnyObject, AnyObject>): void {
+  private _setStore(domain: string, store: StoreStructure<AnyObject, AnyObject>): void {
     const dStorage = this._domains.get(domain);
     if (!dStorage) {
       this._setDomain(domain);
-      this._setStore(domain, stores);
+      this._setStore(domain, store);
       return;
     }
 
-    for (const sName in stores) {
-      const store = stores[sName];
-      if (!store) return;
-
-      const isExist = dStorage.store.get(sName);
-      if (!isExist) {
-        dStorage.store.set(sName, store);
-      } else {
-        throw new Error(`Zustand store with "${sName}" has been exists.`);
-      }
+    if (dStorage.store) {
+      throw new Error(`Zustand store with has been exists.`);
+    } else {
+      dStorage.store = store;
     }
   }
 
@@ -220,18 +213,9 @@ export class SchemaLoader implements ISchemaLoader {
     }
     const isExist = dStorage.views.get(views.name);
     if (!isExist) {
-      dStorage.views.set(views.name, views.View);
+      dStorage.views.set(views.name, views.view);
     } else {
       throw new Error(`View with "${views.name}" has been exists.`);
-    }
-  }
-
-  private _setDataMapper(domain: string, mapping: any): void {
-    const dStorage = this._domains.get(domain);
-    if (!dStorage) {
-      this._setDomain(domain);
-      this._setView(domain, mapping);
-      return;
     }
   }
 }

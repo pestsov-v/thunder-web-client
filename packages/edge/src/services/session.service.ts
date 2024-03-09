@@ -2,13 +2,7 @@ import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@Edge/Symbols';
 import { AbstractService } from './abstract.service';
 
-import type {
-  ISchemaService,
-  ISessionService,
-  NSessionService,
-  IStorageProvider,
-  IWsAdapter,
-} from '@Edge/Types';
+import type { ISessionService, NSessionService, IStorageProvider, IWsAdapter } from '@Edge/Types';
 import { container } from '@Edge/Container';
 
 @injectable()
@@ -16,10 +10,6 @@ export class SessionService extends AbstractService implements ISessionService {
   protected _SERVICE_NAME = SessionService.name;
 
   constructor(
-    @inject(EdgeSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService,
-    @inject(EdgeSymbols.StorageProvider)
-    private readonly _storagePort: IStorageProvider,
     @inject(EdgeSymbols.WsAdapter)
     private readonly _wsAdapter: IWsAdapter
   ) {

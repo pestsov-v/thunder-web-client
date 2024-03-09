@@ -9,6 +9,7 @@ import { NavigatorProvider, StorageProvider } from '../providers';
 import { StorageFactory } from '../factories';
 import { LocalStorageStrategy, SessionStorageStrategy } from '../strategies/storage';
 import {
+  AuthService,
   DiscoveryService,
   GetawayService,
   LocalizationService,
@@ -18,9 +19,11 @@ import {
 } from '../services';
 
 import type {
+  IAuthService,
   IDiscoveryService,
   IFunctionalityAgent,
   IGetawayService,
+  IHttpAdapter,
   IInitiator,
   ILocalizationService,
   INavigatorProvider,
@@ -34,7 +37,7 @@ import type {
   IStoreService,
   IWsAdapter,
 } from '@Edge/Types';
-import { WsAdapter } from '../adapters';
+import { HttpAdapter, WsAdapter } from '../adapters';
 
 export const EdgeModule = new ContainerModule((bind) => {
   // Services
@@ -46,11 +49,13 @@ export const EdgeModule = new ContainerModule((bind) => {
   bind<ILocalizationService>(EdgeSymbols.LocalizationService)
     .to(LocalizationService)
     .inSingletonScope();
+  bind<IAuthService>(EdgeSymbols.AuthService).to(AuthService).inSingletonScope();
 
   // Loaders
   bind<ISchemaLoader>(EdgeSymbols.SchemaLoader).to(SchemaLoader).inSingletonScope();
 
   // Adapters
+  bind<IHttpAdapter>(EdgeSymbols.HttpAdapter).to(HttpAdapter).inSingletonScope();
   bind<IWsAdapter>(EdgeSymbols.WsAdapter).to(WsAdapter).inSingletonScope();
 
   // Strategies

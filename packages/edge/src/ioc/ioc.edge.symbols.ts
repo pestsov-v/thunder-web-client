@@ -6,8 +6,10 @@ export const EdgeSymbols = {
   SchemaService: Symbol('SchemaService'),
   LocalizationService: Symbol('LocalizationService'),
   StoreService: Symbol('StoreService'),
+  AuthService: Symbol('AuthService'),
 
   // Adapters
+  HttpAdapter: Symbol('HttpAdapter'),
   WsAdapter: Symbol('WsAdapter'),
 
   // Loaders

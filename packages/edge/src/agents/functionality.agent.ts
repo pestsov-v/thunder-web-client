@@ -4,19 +4,23 @@ import { EdgeSymbols } from '@Edge/Symbols';
 
 import type {
   HttpMethod,
+  IAuthService,
   IFunctionalityAgent,
-  IGetawayService,
+  IHttpAdapter,
   INavigatorProvider,
   IStorageProvider,
   NFunctionalityAgent,
   NGetawayService,
+  NSessionService,
 } from '@Edge/Types';
 
 @injectable()
 export class FunctionalityAgent implements IFunctionalityAgent {
   constructor(
-    @inject(EdgeSymbols.GetawayService)
-    private readonly _getawayService: IGetawayService
+    @inject(EdgeSymbols.HttpAdapter)
+    private readonly _httpAdapter: IHttpAdapter,
+    @inject(EdgeSymbols.AuthService)
+    private readonly _authService: IAuthService
   ) {}
 
   public get schema(): NFunctionalityAgent.Schema {
@@ -34,7 +38,7 @@ export class FunctionalityAgent implements IFunctionalityAgent {
         method: HttpMethod,
         config?: NGetawayService.SchemaRequestOptions<Data>
       ): Promise<NGetawayService.ResponsePayload<Result>> => {
-        return this._getawayService.schemaRequest<Route, Service, Domain, Data, Result>(
+        return this._httpAdapter.sendRequest<Route, Service, Domain, Data, Result>(
           route,
           service,
           domain,
@@ -66,6 +70,39 @@ export class FunctionalityAgent implements IFunctionalityAgent {
       supportedLanguages: provider.supportedLanguages,
       useCoordinates: (successCallback, errorCallback) => {
         return provider.useCoordinates(successCallback, errorCallback);
+      },
+    };
+  }
+
+  public get auth(): NFunctionalityAgent.Auth {
+    return {
+      getUserJWTPayload: <
+        T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
+      >() => {
+        return this._authService.getUserJWTPayload<T>();
+      },
+      getOrgJWTPayload: <
+        T extends NSessionService.OrganizationIdentifiers = NSessionService.OrganizationIdentifiers,
+      >() => {
+        return this._authService.getOrgJWTPayload<T>();
+      },
+      resolveUserAccessExp: () => {
+        return this._authService.resolveUserAccessExp();
+      },
+      resolveOrgAccessExp: () => {
+        return this._authService.resolveOrgAccessExp();
+      },
+      setUserAuthJWTPayload: (access: string, refresh: string) => {
+        return this._authService.setUserAuthJWTPayload(access, refresh);
+      },
+      setOrgAuthJWTPayload: (access: string, refresh: string) => {
+        return this._authService.setOrgAuthJWTPayload(access, refresh);
+      },
+      updateUserAccessToken: (token) => {
+        return this._authService.updateUserAccessToken(token);
+      },
+      updateOrgAccessToken: (token) => {
+        return this._authService.updateOrgAccessToken(token);
       },
     };
   }

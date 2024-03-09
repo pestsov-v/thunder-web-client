@@ -1,30 +1,9 @@
 import type { Axios } from '../packages/packages';
-import type { HttpMethod } from '../../common';
 import type { IAbstractService } from './abstract.service';
-import { NSentryIntegration } from '../integrations';
+import type { NSentryIntegration } from '../integrations';
+import type { HttpMethod } from '../utility';
 
-export interface IGetawayService extends IAbstractService {
-  readonly schemaRequest<
-    Route extends string = string,
-    SERVICES extends string = string,
-    Domain extends string = string,
-    Data = any,
-    Result = void,
-  >(
-    route: Route,
-    service: SERVICES,
-    domain: Domain,
-    method: HttpMethod,
-    config?: NGetawayService.SchemaRequestOptions<Data>
-  ): Promise<NGetawayService.ResponsePayload<Result>>
-
-  readonly baseRequest<T, R>(
-    config: Axios.AxiosRequestConfig<T>
-  ): Promise<NGetawayService.ResponsePayload<R>>;
-  readonly sendWebClientError<D extends string = string, P extends string = string>(
-    exception: NGetawayService.WebClientErrorOptions<D, P>
-  ): Promise<void>
-}
+export type IGetawayService = IAbstractService;
 
 export namespace NGetawayService {
   export type Config = {
@@ -41,7 +20,7 @@ export namespace NGetawayService {
   };
 
   export type ResponsePayload<R> = {
-    data: Axios.AxiosResponse<R>['data'];
+    body: Axios.AxiosResponse<R>['data'];
     status: Axios.AxiosResponse<R>['status'];
     headers: Axios.AxiosResponse<R>['headers'];
     request: Axios.AxiosResponse<R>['request'];

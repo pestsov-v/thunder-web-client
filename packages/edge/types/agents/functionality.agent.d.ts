@@ -1,4 +1,4 @@
-import { NGetawayService } from '../services';
+import { IAuthService, NGetawayService } from '../services';
 import { INavigatorProvider, IStorageProvider } from '../providers';
 import { HttpMethod } from '../utility';
 
@@ -6,6 +6,7 @@ export interface IFunctionalityAgent {
   readonly schema: NFunctionalityAgent.Schema;
   readonly storage: NFunctionalityAgent.Storage;
   readonly navigator: NFunctionalityAgent.Navigator;
+  readonly auth: NFunctionalityAgent.Auth;
 }
 
 export namespace NFunctionalityAgent {
@@ -39,5 +40,16 @@ export namespace NFunctionalityAgent {
     readonly supportedLanguages: INavigatorProvider['supportedLanguages'];
 
     readonly useCoordinates: INavigatorProvider['useCoordinates'];
+  };
+
+  export type Auth = {
+    readonly getUserJWTPayload: IAuthService['getUserJWTPayload'];
+    readonly getOrgJWTPayload: IAuthService['getOrgJWTPayload'];
+    readonly resolveUserAccessExp: IAuthService['resolveUserAccessExp'];
+    readonly resolveOrgAccessExp: IAuthService['resolveOrgAccessExp'];
+    readonly setUserAuthJWTPayload: IAuthService['setUserAuthJWTPayload'];
+    readonly setOrgAuthJWTPayload: IAuthService['setOrgAuthJWTPayload'];
+    readonly updateUserAccessToken: IAuthService['updateUserAccessToken'];
+    readonly updateOrgAccessToken: IAuthService['updateOrgAccessToken'];
   };
 }

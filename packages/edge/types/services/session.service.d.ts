@@ -28,6 +28,16 @@ export interface ISessionService extends IAbstractService {
 }
 
 export namespace NSessionService {
+  export type OrganizationIdentifiers = {
+    sessionId: string;
+    organizationId: string;
+  };
+
+  export type SessionIdentifiers = {
+    sessionId: string;
+    userId: string;
+  };
+
   export type ErrorType = 'EXCEPTION' | 'ERROR' | 'VALIDATION';
 
   export type Config = {
@@ -110,6 +120,4 @@ export namespace NSessionService {
                 : E extends 'upload:page'
                   ? UploadPagePayload
                   : never;
-
-  // for schemas
 }

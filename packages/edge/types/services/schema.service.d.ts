@@ -3,44 +3,61 @@ import type { Zustand, Zod } from '../packages/packages';
 import type { HttpMethod } from '../../common';
 
 import type { IAbstractService } from './abstract.service';
-import type { IFunctionalityAgent, ISchemaAgent } from '../agents';
+import { IFunctionalityAgent, ISchemaAgent, NSchemaAgent } from '../agents';
 import { NSessionService } from './session.service';
 import { ExtendedRecordObject } from '../utility';
+import { IStoreService } from './store.service';
 
 export interface ISchemaService extends IAbstractService {
   readonly services: NSchemaService.Services;
 }
 
 export namespace NSchemaService {
-  export type RouteContext<K extends AuthScope> = K extends 'public:route'
-    ? { l1: number }
+  export type BaseContext = {
+    rootStore: IStoreService['rootStore'];
+  };
+
+  export type PrivateUserContext<U> = BaseContext & {
+    user: U;
+  };
+
+  export type PrivateOrgContext<U, O> = BaseContext & {
+    user: U;
+    organization: O;
+  };
+
+  export type RouteContext<U = any, O = any, K extends AuthScope> = K extends 'public:route'
+    ? BaseContext
     : K extends 'private:user'
-      ? { l2: string }
+      ? PrivateUserContext<U>
       : K extends 'private:organization'
-        ? { l3: boolean }
+        ? PrivateOrgContext<U, O>
         : never;
 
-  export type Handler<P = any, R = any, T extends AuthScope> = (
+  export type Handler<P = any, R = any, U = any, O = any, T extends AuthScope> = (
     agents: Agents,
-    context: context<T>,
+    context: RouteContext<U, O, T>,
     payload: P
   ) => R;
 
-  export interface AbstractRouteScope<P = any, R = any, T extends AuthScope> extends BaseScope {
+  export interface AbstractRouteScope<P = any, R = any, U = any, O = any, T extends AuthScope>
+    extends BaseScope {
     scope: T;
-    handler: Handler<P, R, T>;
+    handler: Handler<P, R, U, O, T>;
   }
 
   export type Controller<
     P = any,
     R = void,
+    U = any,
+    O = any,
     A extends AuthScope = AuthScope,
   > = A extends 'public:route'
-    ? AbstractRouteScope<P, R, 'public:route'>
+    ? AbstractRouteScope<P, R, U, O, 'public:route'>
     : A extends 'private:user'
-      ? AbstractRouteScope<P, R, 'private:user'>
+      ? AbstractRouteScope<P, R, U, O, 'private:user'>
       : A extends 'private:organization'
-        ? AbstractRouteScope<P, R, 'private:organization'>
+        ? AbstractRouteScope<P, R, U, O, 'private:organization'>
         : never;
 
   export type RouterSimple<E extends string> = {
@@ -71,7 +88,11 @@ export namespace NSchemaService {
           : never;
 
   export type Dictionary = Record<string, Dictionary | string>;
-  export type View<P> = (agents: Agents, props?: P) => JSX.Element<P>;
+  export type View<P> = (
+    agents: Agents,
+    content: NSchemaAgent.ViewContext,
+    props?: P
+  ) => JSX.Element<P>;
 
   export type Agents = {
     fnAgent: IFunctionalityAgent;
@@ -191,7 +212,7 @@ export namespace NSchemaService {
     events: Map<string, EventStructure>;
     dictionaries: Map<string, ExtendedRecordObject>;
     views: Map<string, NSchemaService.View<any>>;
-    store: Map<string, Store>;
+    store?: Store;
     validators: Map<string, Validator>;
   };
   export type Domains = Map<string, Domain>;

@@ -47,9 +47,9 @@ export const setRouter = <
   return structure;
 };
 
-export const setStore = <T extends string, B = AnyObject, A = AnyObject>(
-  structure: StoreStructure<T, B, A>
-): StoreStructure<T, B, A> => {
+export const setStore = <B = AnyObject, A = AnyObject>(
+  structure: StoreStructure<B, A>
+): StoreStructure<B, A> => {
   return structure;
 };
 
@@ -65,6 +65,7 @@ export const setView = <
 export const setService = <S extends string = string>(
   service: S,
   domains: EntryPointStructure[],
+
   documentation?: ServiceDocStructure<string> | ServiceDocStructure<string>[] | null
 ): ServiceStructure => {
   return { service, domains, documentation };

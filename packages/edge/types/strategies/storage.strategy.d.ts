@@ -24,7 +24,7 @@ export interface IStorageStrategy {
 }
 
 export namespace NStorageStrategy {
-  export type StorageConfig<T> = {
+  export type StorageConfig = {
     'websocket-connection-id': string;
     'websocket-auth-connection-id': string;
     'session-id': string;

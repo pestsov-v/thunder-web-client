@@ -1,4 +1,4 @@
-import { NSessionService } from '@Edge/Types';
+import { NAuthService, NSessionService } from '@Edge/Types';
 
 export class Guards {
   public static isEventStructure = (x: unknown): x is NSessionService.EventStructure<any> => {
@@ -19,5 +19,9 @@ export class Guards {
     x: unknown
   ): x is NSessionService.SessionToSessionPayload => {
     return typeof x === 'object' && x !== null && 'sessionId' in x;
+  };
+
+  public static isJwtAuthPayload = (x: unknown): x is NAuthService.JwtAuthStructure => {
+    return typeof x === 'object' && x !== null && 'iat' in x && 'exp' in x;
   };
 }

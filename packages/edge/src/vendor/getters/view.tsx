@@ -1,10 +1,12 @@
 import { ReactElement } from 'react';
 import { EdgeSymbols } from '@Edge/Symbols';
 import { container } from '@Edge/Container';
-import type {
+import {
   IFunctionalityAgent,
   ISchemaAgent,
   ISchemaService,
+  IStoreService,
+  NSchemaAgent,
   NSchemaService,
 } from '@Edge/Types';
 
@@ -22,6 +24,7 @@ export type ViewProps<
 
 export const View = ({ service, domain, view, props }: ViewProps): ReactElement => {
   const services = container.get<ISchemaService>(EdgeSymbols.SchemaService).services;
+  const rootStore = container.get<IStoreService>(EdgeSymbols.StoreService).rootStore;
 
   const dStorage = services.get(service);
   if (!dStorage) {
@@ -46,5 +49,9 @@ export const View = ({ service, domain, view, props }: ViewProps): ReactElement 
     schemaAgent: container.get<ISchemaAgent>(EdgeSymbols.SchemaAgent),
   };
 
-  return el(agents, props);
+  const context: NSchemaAgent.ViewContext = {
+    rootStore: rootStore,
+  };
+
+  return el(agents, context, props);
 };
