@@ -31,20 +31,39 @@ export class SchemaAgent implements ISchemaAgent {
     private readonly _authService: IAuthService
   ) {}
 
-  public getListener<
-    S extends string = string,
-    D extends string = string,
-    E extends string = string,
-  >(service: S, domain: D, event: E, scope: NSchemaService.AuthScope): void {
+  public get services(): NSchemaService.Services {
+    return this._schemaService.services;
+  }
+
+  public getServiceDomains<S extends string = string>(service: S): NSchemaService.Domains {
     const sStorage = this._schemaService.services.get(service);
     if (!sStorage) {
       throw new Error(`Service "${service}" not found.`);
     }
 
+    return sStorage;
+  }
+
+  public getDomainsDocuments<S extends string = string, D extends string = string>(
+    service: S,
+    domain: D
+  ): NSchemaService.Domain {
+    const sStorage = this.getServiceDomains(service);
+
     const dStorage = sStorage.get(domain);
     if (!dStorage) {
       throw new Error(`Domain "${domain}" in service "${service}" not found.`);
     }
+
+    return dStorage;
+  }
+
+  public getListener<
+    S extends string = string,
+    D extends string = string,
+    E extends string = string,
+  >(service: S, domain: D, event: E, scope: NSchemaService.AuthScope): void {
+    const dStorage = this.getDomainsDocuments<S, D>(service, domain);
 
     const name = event + '{{' + scope + '}}';
     const eStorage = dStorage.events.get(name);
@@ -62,15 +81,7 @@ export class SchemaAgent implements ISchemaAgent {
     V extends string = string,
     P = undefined,
   >(service: S, domain: D, view: V, props?: P): FC<P> {
-    const sStorage = this._schemaService.services.get(service);
-    if (!sStorage) {
-      throw new Error(`Service "${service}" not found.`);
-    }
-
-    const dStorage = sStorage.get(domain);
-    if (!dStorage) {
-      throw new Error(`Domain "${domain}" in service "${service}" not found.`);
-    }
+    const dStorage = this.getDomainsDocuments<S, D>(service, domain);
 
     const vStorage = dStorage.views.get(view);
 
@@ -99,15 +110,7 @@ export class SchemaAgent implements ISchemaAgent {
     P = any,
     E = any,
   >(service: S, domain: D, route: R, method: HttpMethod, payload?: P): E {
-    const sStorage = this._schemaService.services.get(service);
-    if (!sStorage) {
-      throw new Error(`Service "${service}" not found.`);
-    }
-
-    const dStorage = sStorage.get(domain);
-    if (!dStorage) {
-      throw new Error(`Domain "${domain}" in service "${service}" not found.`);
-    }
+    const dStorage = this.getDomainsDocuments<S, D>(service, domain);
 
     const rStorage = dStorage.routes.get(route + '{{' + method.toUpperCase() + '}}');
 

@@ -2,6 +2,7 @@ import { injectable, inject } from '@Edge/Package';
 import { EdgeSymbols } from '@Edge/Symbols';
 
 import type {
+  IAuthService,
   IDiscoveryService,
   IGetawayService,
   IInitiator,
@@ -25,7 +26,9 @@ export class Initiator implements IInitiator {
     @inject(EdgeSymbols.SessionService)
     private readonly _sessionService: ISessionService,
     @inject(EdgeSymbols.StoreService)
-    private readonly _storeService: IStoreService
+    private readonly _storeService: IStoreService,
+    @inject(EdgeSymbols.AuthService)
+    private readonly _authService: IAuthService
   ) {}
 
   public start(): void {
@@ -35,9 +38,11 @@ export class Initiator implements IInitiator {
     this._localizationService.start();
     this._sessionService.start();
     this._storeService.start();
+    this._authService.start();
   }
 
   public stop(): void {
+    this._authService.stop();
     this._storeService.stop();
     this._sessionService.stop();
     this._localizationService.stop();

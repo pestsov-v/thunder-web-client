@@ -1,16 +1,25 @@
-import { IAuthService, NGetawayService } from '../services';
+import { IAuthService, IDiscoveryService, NGetawayService } from '../services';
 import { INavigatorProvider, IStorageProvider } from '../providers';
 import { HttpMethod } from '../utility';
 
 export interface IFunctionalityAgent {
-  readonly schema: NFunctionalityAgent.Schema;
+  readonly auth: NFunctionalityAgent.Auth;
+  readonly discovery: NFunctionalityAgent.Discovery;
+  readonly getaway: NFunctionalityAgent.getaway;
   readonly storage: NFunctionalityAgent.Storage;
   readonly navigator: NFunctionalityAgent.Navigator;
-  readonly auth: NFunctionalityAgent.Auth;
 }
 
 export namespace NFunctionalityAgent {
-  export type Schema = {
+  export type Discovery = {
+    getMandatory: IDiscoveryService['getSchemaMandatory'];
+    getString: IDiscoveryService['getSchemaString'];
+    getNumber: IDiscoveryService['getSchemaNumber'];
+    getBoolean: IDiscoveryService['getSchemaBoolean'];
+    getArray: IDiscoveryService['getSchemaArray'];
+  };
+
+  export type getaway = {
     sendRequest: <
       Service extends string = string,
       Domain extends string = string,

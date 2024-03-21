@@ -13,10 +13,10 @@ export type AnyFnWithArgs = (...args: any[]) => void;
 export type AnyFnWithoutArgs = (...args: any[]) => void;
 export type AnyFunction = AnyFnWithArgs | AnyFnWithoutArgs;
 
-export type KeyConfigLiteralBuilder<T, F extends string | boolean | number> = T extends Record<
-  string,
-  unknown
->
+export type KeyConfigLiteralBuilder<
+  T,
+  F extends string | boolean | number | (string | boolean | number)[],
+> = T extends Record<string, unknown>
   ? {
       [K in keyof T]: T[K] extends F
         ? `${string & K}`

@@ -4,6 +4,13 @@ import { ExtendedRecordObject, type HttpMethod, KeyStringLiteralBuilder } from '
 import type { FC } from 'react';
 
 export interface ISchemaAgent {
+  readonly services: NSchemaService.Services;
+
+  getServiceDomains<S extends string = string>(service: S): NSchemaService.Domains;
+  getDomainsDocuments<S extends string = string, D extends string = string>(
+    service: S,
+    domain: D
+  ): NSchemaService.Domain;
   getListener<S extends string = string, D extends string = string, E extends string = string>(
     service: S,
     domain: D,

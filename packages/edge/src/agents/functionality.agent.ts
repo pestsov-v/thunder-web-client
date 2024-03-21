@@ -3,12 +3,15 @@ import { container } from '@Edge/Container';
 import { EdgeSymbols } from '@Edge/Symbols';
 
 import type {
+  AnyObject,
   HttpMethod,
   IAuthService,
+  IDiscoveryService,
   IFunctionalityAgent,
   IHttpAdapter,
   INavigatorProvider,
   IStorageProvider,
+  KeyConfigLiteralBuilder,
   NFunctionalityAgent,
   NGetawayService,
   NSessionService,
@@ -17,13 +20,49 @@ import type {
 @injectable()
 export class FunctionalityAgent implements IFunctionalityAgent {
   constructor(
+    @inject(EdgeSymbols.DiscoveryService)
+    private readonly _discoveryService: IDiscoveryService,
     @inject(EdgeSymbols.HttpAdapter)
     private readonly _httpAdapter: IHttpAdapter,
     @inject(EdgeSymbols.AuthService)
     private readonly _authService: IAuthService
   ) {}
 
-  public get schema(): NFunctionalityAgent.Schema {
+  public get discovery(): NFunctionalityAgent.Discovery {
+    return {
+      getMandatory: <T extends string | number | boolean, C extends AnyObject>(
+        name: KeyConfigLiteralBuilder<C, T>
+      ) => {
+        return this._discoveryService.getSchemaMandatory<T, C>(name);
+      },
+      getString: <C extends AnyObject>(
+        name: KeyConfigLiteralBuilder<C, string>,
+        def: string
+      ): string => {
+        return this._discoveryService.getSchemaString<C>(name, def);
+      },
+      getNumber: <C extends AnyObject>(
+        name: KeyConfigLiteralBuilder<C, number>,
+        def: number
+      ): number => {
+        return this._discoveryService.getSchemaNumber<C>(name, def);
+      },
+      getBoolean: <C extends AnyObject>(
+        name: KeyConfigLiteralBuilder<C, boolean>,
+        def: boolean
+      ): boolean => {
+        return this._discoveryService.getSchemaBoolean<C>(name, def);
+      },
+      getArray: <T extends string | number | boolean, C extends AnyObject>(
+        name: KeyConfigLiteralBuilder<C, Array<T>>,
+        def: Array<T>
+      ): Array<T> => {
+        return this._discoveryService.getSchemaArray<T, C>(name, def);
+      },
+    };
+  }
+
+  public get getaway(): NFunctionalityAgent.getaway {
     return {
       sendRequest: <
         Route extends string = string,
