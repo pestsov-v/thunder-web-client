@@ -1,12 +1,8 @@
 import React from 'react';
-import { setServices, setService } from '../packages/edge/dist';
+import { setService, setServices } from '../src/src';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const TestService = setService({
-    service: 'SysLoacla',
-    domains: [],
-  });
-
+  const TestService = setService('SysLoacla', []);
   setServices([TestService]);
 
   return (

@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "module": "CommonJS",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "newLine": "lf",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "paths": {
+      "~symbols": ["./src/ioc/ioc.edge.symbols.ts"],
+      "~package": ["./src/packages/packages.ts"],
+      "~container": ["./src/ioc/ioc.edge.ts"],
+      "~types": ["./types/index.d.ts"]
+    },
+    "noEmit": false
+  },
+  "include": [
+    "next-env.d.ts",
+    "./src/**/*",
+    "./server/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/pages"
+  ],
+}
