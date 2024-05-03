@@ -1,23 +1,20 @@
 import { HttpMethod } from '../utility';
-import { NGetawayService } from '../services';
+import type { Axios } from '../packages';
 
 export interface IHttpAdapter {
   init(): boolean;
   destroy(): void;
 
-  sendRequest<
-    SERVICES extends string = string,
-    DOMAIN extends string = string,
-    ROUTE extends string = string,
-    DATA = any,
-    RESULT = void,
+  request<
+    R extends string = string,
+    S extends string = string,
+    D extends string = string,
+    DA = any,
+    RES = any,
   >(
-    service: SERVICES,
-    domain: DOMAIN,
-    route: ROUTE,
-    method: HttpMethod,
-    config?: NGetawayService.SchemaRequestOptions<DATA>
-  ): Promise<NGetawayService.ResponsePayload<RESULT>>;
+    route: R,
+    options: NHttpAdapter.RequestOptions<S, D, DA>
+  ): Promise<NHttpAdapter.Response<RES>>;
 }
 
 export namespace NHttpAdapter {
@@ -29,5 +26,33 @@ export namespace NHttpAdapter {
       baseApiUrl: string;
       baseExceptionUrl: string;
     };
+  };
+
+  export type QueryParameter =
+    | 'string'
+    | 'string[]'
+    | 'number'
+    | 'number[]'
+    | 'boolean'
+    | 'boolean[]';
+
+  export type AuthScope = 'public:route' | 'private:route';
+  export type RequestOptions<S extends string = string, D extends string = string, DA = any> = {
+    service: S;
+    domain: D;
+    version?: string;
+    scope?: AuthScope;
+    method?: HttpMethod;
+    data?: DA | null;
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    queries?: Record<string, QueryParameter>;
+  };
+
+  export type Response<R> = {
+    body: Axios.AxiosResponse<R>['data'];
+    status: Axios.AxiosResponse<R>['status'];
+    headers: Axios.AxiosResponse<R>['headers'];
+    request: Axios.AxiosResponse<R>['request'];
   };
 }

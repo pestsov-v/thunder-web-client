@@ -1,11 +1,12 @@
-import { IAuthService, IDiscoveryService, NGetawayService } from '../services';
+import { IAuthService, IDiscoveryService } from '../services';
 import { INavigatorProvider, IStorageProvider } from '../providers';
-import { HttpMethod } from '../utility';
+import { IHttpAdapter, IWsAdapter } from '../adapters';
 
 export interface IFunctionalityAgent {
   readonly auth: NFunctionalityAgent.Auth;
   readonly discovery: NFunctionalityAgent.Discovery;
-  readonly getaway: NFunctionalityAgent.getaway;
+  readonly event: NFunctionalityAgent.Event;
+  readonly route: NFunctionalityAgent.Route;
   readonly storage: NFunctionalityAgent.Storage;
   readonly navigator: NFunctionalityAgent.Navigator;
 }
@@ -19,25 +20,19 @@ export namespace NFunctionalityAgent {
     getArray: IDiscoveryService['getSchemaArray'];
   };
 
-  export type getaway = {
-    sendRequest: <
-      Service extends string = string,
-      Domain extends string = string,
-      Route extends string = string,
-      Data = any,
-      Result = void,
-    >(
-      service: Service,
-      domain: Domain,
-      route: Route,
-      method: HttpMethod,
-      config?: NGetawayService.SchemaRequestOptions<Data>
-    ) => Promise<NGetawayService.ResponsePayload<Result>>;
+  export type Route = {
+    request: IHttpAdapter['request'];
   };
 
   export type Storage = {
     readonly localStorage: IStorageProvider['localStorage'];
     readonly sessionStorage: IStorageProvider['sessionStorage'];
+  };
+
+  export type Event = {
+    once: IWsAdapter['once'];
+    subscribe: IWsAdapter['subscribe'];
+    publish: IWsAdapter['publish'];
   };
 
   export type Navigator = {

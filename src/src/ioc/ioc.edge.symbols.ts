@@ -1,7 +1,7 @@
 export const CoreSymbols = {
   // Services
   DiscoveryService: Symbol('DiscoveryService'),
-  GetawayService: Symbol('GetawayService'),
+  CombinationService: Symbol('CombinationService'),
   SessionService: Symbol('SessionService'),
   SchemaService: Symbol('SchemaService'),
   LocalizationService: Symbol('LocalizationService'),
@@ -14,6 +14,7 @@ export const CoreSymbols = {
 
   // Loaders
   SchemaLoader: Symbol('SchemaLoader'),
+  StorybookLoader: Symbol('StorybookLoader'),
 
   // Strategies
   LocalStorageStrategy: Symbol('LocalStorageStrategy'),
@@ -29,6 +30,7 @@ export const CoreSymbols = {
   // Agents
   FunctionalityAgent: Symbol('FunctionalityAgent'),
   SchemaAgent: Symbol('SchemaAgent'),
+  StorybookAgent: Symbol('StorybookAgent'),
 
   // Initiator
   Initiator: Symbol('Initiator'),

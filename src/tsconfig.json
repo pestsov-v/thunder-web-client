@@ -24,8 +24,9 @@
     "rootDir": "./src",
     "paths": {
       "~symbols": ["./src/ioc/ioc.edge.symbols.ts"],
-      "~package": ["./src/packages/packages.ts"],
-      "~container": ["./src/ioc/ioc.edge.ts"],
+      "~container": ["./src/ioc/ioc.ts"],
+      "~common": ["./src/common/index.ts"],
+      "~packages": ["./src/packages.ts"],
       "~types": ["./types/index.d.ts"]
     },
     "noEmit": false

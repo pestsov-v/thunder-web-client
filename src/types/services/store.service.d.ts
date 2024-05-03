@@ -12,6 +12,9 @@ export interface IStoreService extends IAbstractService {
 }
 
 export namespace NStoreService {
+  export type StorageKind = 'localStorage' | 'sessionStorage';
+  export type MemoryKind = 'persist' | 'vanish';
+
   export type i18nConfig = {
     defaultLanguage: string;
     fallbackLanguage: string;
@@ -30,4 +33,6 @@ export namespace NStoreService {
     string,
     Zustand.StateCreator<T> | Zustand.PersistStateCreator<T>
   >;
+
+  // new
 }

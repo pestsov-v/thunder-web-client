@@ -3,7 +3,7 @@ import type { IAbstractService } from './abstract.service';
 import type { NSentryIntegration } from '../integrations';
 import type { HttpMethod } from '../utility';
 
-export type IGetawayService = IAbstractService;
+export type ICombinationService = IAbstractService;
 
 export namespace NGetawayService {
   export type Config = {

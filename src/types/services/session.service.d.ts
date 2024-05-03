@@ -1,30 +1,7 @@
 import type { IAbstractService } from './abstract.service';
 
 export interface ISessionService extends IAbstractService {
-  sessionToSession<
-    P = never,
-    S extends string = string,
-    D extends string = string,
-    E extends string = string,
-  >(
-    service: S,
-    domain: D,
-    event: E,
-    sessionId: string,
-    payload?: P
-  ): Promise<void>;
-  sessionToSessionError<
-    P = never,
-    S extends string = string,
-    D extends string = string,
-    E extends string = string,
-  >(
-    service: S,
-    domain: D,
-    event: E,
-    sessionId: string,
-    payload?: P
-  ): Promise<void>;
+  getSession(sessionId: string): any;
 }
 
 export namespace NSessionService {

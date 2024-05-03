@@ -1,46 +1,27 @@
 import { IStoreService, NSchemaService } from '../services';
-import { ExtendedRecordObject, type HttpMethod, KeyStringLiteralBuilder } from '../utility';
+import { ExtendedRecordObject, KeyStringLiteralBuilder } from '../utility';
 
 import type { FC } from 'react';
 
 export interface ISchemaAgent {
-  readonly services: NSchemaService.Services;
+  readonly services: NSchemaService.BusinessScheme;
 
   getServiceDomains<S extends string = string>(service: S): NSchemaService.Domains;
   getDomainsDocuments<S extends string = string, D extends string = string>(
     service: S,
     domain: D
   ): NSchemaService.Domain;
-  getListener<S extends string = string, D extends string = string, E extends string = string>(
-    service: S,
-    domain: D,
-    event: E,
-    scope: NSchemaService.AuthScope
-  ): void;
   getView<
     S extends string = string,
     D extends string = string,
     V extends string = string,
-    P = undefined,
+    P = never,
   >(
     service: S,
     domain: D,
     view: V,
     props?: P
   ): FC<P>;
-  getRoute<
-    S extends string = string,
-    D extends string = string,
-    R extends string = string,
-    P = any,
-    E = any,
-  >(
-    service: S,
-    domain: D,
-    route: R,
-    method: HttpMethod,
-    payload?: P
-  ): E;
   getDictionary<
     S extends string = string,
     DOM extends string = string,

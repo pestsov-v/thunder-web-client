@@ -6,3 +6,4 @@ export type * from './gewatay.service';
 export type * from './session.service';
 export type * from './store.service';
 export type * from './auth.service';
+export type * from './storybook.service';

@@ -1,28 +1,38 @@
-import { ContainerModule } from '~package';
+import { inversify } from '~packages';
 import { CoreSymbols } from '~symbols';
 
 import { Initiator } from '../initiator';
-import { SchemaLoader } from '../loaders';
-import { FunctionalityAgent, SchemaAgent } from '../agents';
-import { NavigatorProvider, StorageProvider } from '../providers';
-import { StorageFactory } from '../factories';
-import { LocalStorageStrategy, SessionStorageStrategy } from '../strategies/storage';
+
 import {
-  AuthService,
+  HttpAdapter,
+  WsAdapter,
+  StorageFactory,
+  StorageProvider,
+  NavigatorProvider,
   DiscoveryService,
-  GetawayService,
-  LocalizationService,
   SchemaService,
+  CombinationService,
+  LocalizationService,
   SessionService,
   StoreService,
-} from '../services';
+  AuthService,
+  LocalStorageStrategy,
+  SessionStorageStrategy,
+} from '../fn-components';
+import {
+  SchemaLoader,
+  StorybookLoader,
+  FunctionalityAgent,
+  SchemaAgent,
+} from '../ba-communication';
 
 import type {
+  IHttpAdapter,
+  IWsAdapter,
   IAuthService,
   IDiscoveryService,
   IFunctionalityAgent,
-  IGetawayService,
-  IHttpAdapter,
+  ICombinationService,
   IInitiator,
   ILocalizationService,
   INavigatorProvider,
@@ -34,14 +44,15 @@ import type {
   IStorageProvider,
   IStorageStrategy,
   IStoreService,
-  IWsAdapter,
+  IStorybookLoader,
 } from '~types';
-import { HttpAdapter, WsAdapter } from '../adapters';
 
-export const EdgeModule = new ContainerModule((bind) => {
+export const EdgeModule = new inversify.ContainerModule((bind) => {
   // Services
   bind<IDiscoveryService>(CoreSymbols.DiscoveryService).to(DiscoveryService).inSingletonScope();
-  bind<IGetawayService>(CoreSymbols.GetawayService).to(GetawayService).inSingletonScope();
+  bind<ICombinationService>(CoreSymbols.CombinationService)
+    .to(CombinationService)
+    .inSingletonScope();
   bind<ISessionService>(CoreSymbols.SessionService).to(SessionService).inSingletonScope();
   bind<IStoreService>(CoreSymbols.StoreService).to(StoreService).inSingletonScope();
   bind<ISchemaService>(CoreSymbols.SchemaService).to(SchemaService).inSingletonScope();
@@ -52,6 +63,7 @@ export const EdgeModule = new ContainerModule((bind) => {
 
   // Loaders
   bind<ISchemaLoader>(CoreSymbols.SchemaLoader).to(SchemaLoader).inSingletonScope();
+  bind<IStorybookLoader>(CoreSymbols.StorybookLoader).to(StorybookLoader).inSingletonScope();
 
   // Adapters
   bind<IHttpAdapter>(CoreSymbols.HttpAdapter).to(HttpAdapter).inSingletonScope();

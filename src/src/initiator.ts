@@ -1,10 +1,10 @@
-import { injectable, inject } from '~package';
+import { injectable, inject } from '~packages';
 import { CoreSymbols } from '~symbols';
 
 import type {
   IAuthService,
   IDiscoveryService,
-  IGetawayService,
+  ICombinationService,
   IInitiator,
   ILocalizationService,
   ISchemaService,
@@ -19,8 +19,8 @@ export class Initiator implements IInitiator {
     private readonly _discoveryService: IDiscoveryService,
     @inject(CoreSymbols.SchemaService)
     private readonly _schemaService: ISchemaService,
-    @inject(CoreSymbols.GetawayService)
-    private readonly _getawayService: IGetawayService,
+    @inject(CoreSymbols.CombinationService)
+    private readonly _combinationService: ICombinationService,
     @inject(CoreSymbols.LocalizationService)
     private readonly _localizationService: ILocalizationService,
     @inject(CoreSymbols.SessionService)
@@ -34,7 +34,7 @@ export class Initiator implements IInitiator {
   public start(): void {
     this._discoveryService.start();
     this._schemaService.start();
-    this._getawayService.start();
+    this._combinationService.start();
     this._localizationService.start();
     this._sessionService.start();
     this._storeService.start();
@@ -46,7 +46,7 @@ export class Initiator implements IInitiator {
     this._storeService.stop();
     this._sessionService.stop();
     this._localizationService.stop();
-    this._getawayService.stop();
+    this._combinationService.stop();
     this._schemaService.stop();
     this._discoveryService.stop();
   }
