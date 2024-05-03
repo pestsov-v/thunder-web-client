@@ -1,36 +1,17 @@
 {
-  "name": "thunder-web-client",
-  "version": "1.0.0",
-  "description": "Web-client for thunder platform",
-  "main": "index.js",
-  "scripts": {
-    "next:dev": "NODE_ENV=development SCHEMA_PROFILE=thunder ts-node -r tsconfig-paths/register --files ./src/server/server.ts"
+  "keywords": [
+    "@chaminjector",
+    "web-client-machine",
+    "core",
+    "compute-schema-resolver"
+  ],
+  "author": {
+    "email": "vladyslav.pestsov@gmail.com",
+    "name": "Vladyslav Pestsov"
   },
-  "keywords": [],
-  "author": "Vladyslav Pestsov<vladyslav.pestsov@gmail.com>",
   "license": "ISC",
-  "dependencies": {
-    "@hookform/resolvers": "^3.3.2",
-    "@nextui-org/react": "^2.2.9",
-    "axios": "^1.6.2",
-    "config": "^3.3.9",
-    "express": "^4.18.2",
-    "framer-motion": "^10.16.16",
-    "fs-extra": "^11.2.0",
-    "inversify": "^6.0.2",
-    "next": "14.0.3",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-hook-form": "^7.49.2",
-    "reflect-metadata": "^0.2.1",
-    "zod": "^3.22.4",
-    "zustand": "^4.4.7"
-  },
   "devDependencies": {
-    "@types/config": "^3.3.3",
-    "@types/express": "^4.17.21",
-    "@types/fs-extra": "^11.0.4",
-    "@types/react": "^18.2.45",
+    "@types/react": "^18.2.60",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.0.1",
@@ -38,10 +19,14 @@
     "eslint-config-next": "14.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
+    "next": "^14.1.0",
     "postcss": "^8",
     "prettier": "^3.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
   }
