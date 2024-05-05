@@ -1,7 +1,7 @@
-import type { Axios } from '../packages/packages';
+import type { Axios } from '../packages';
 import type { IAbstractService } from './abstract.service';
-import type { NSentryIntegration } from '../integrations';
 import type { HttpMethod } from '../utility';
+import type { NHttpAdapter } from '../adapters';
 
 export type ICombinationService = IAbstractService;
 
@@ -16,6 +16,12 @@ export namespace NGetawayService {
     };
   };
   export type SchemaRequestOptions<D = any> = {
+    version?: string
+    method?: HttpMethod
+    scope?: NHttpAdapter.AuthScope
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    queries?: Record<string, NHttpAdapter.QueryParameter>;
     data?: D;
   };
 
@@ -24,20 +30,5 @@ export namespace NGetawayService {
     status: Axios.AxiosResponse<R>['status'];
     headers: Axios.AxiosResponse<R>['headers'];
     request: Axios.AxiosResponse<R>['request'];
-  };
-
-  export type WebClientErrorOptions<D extends string = string, P extends string = string> = {
-    service: string;
-    domain: D;
-    action: P;
-    method: HttpMethod;
-    isPrivateUser?: boolean;
-    isPrivateOrganization?: boolean;
-    userId?: string;
-    sessionId?: string;
-    connectionId?: string;
-    level: NSentryIntegration.LogLevels;
-    stack: string;
-    timestamp?: number;
   };
 }

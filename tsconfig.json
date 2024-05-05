@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "module": "ES2020",
+    "module": "CommonJS",
     "allowJs": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -17,42 +17,27 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "./",
+    "rootDir": "./src",
     "paths": {
-      // Edge
-      "@Edge/Symbols": [
-        "src/edge/ioc/ioc.edge.symbols.ts"
-      ],
-      "@Edge/Container": [
-        "src/edge/ioc/ioc.edge.ts"
-      ],
-      "@Edge/Package": [
-        "src/edge/packages/packages.ts"
-      ],
-      "@Edge/Types": [
-        "types/edge/index.d.ts"
-      ]
+      "~symbols": ["./src/ioc/ioc.edge.symbols.ts"],
+      "~container": ["./src/ioc/ioc.ts"],
+      "~common": ["./src/common/index.ts"],
+      "~packages": ["./src/packages.ts"],
+      "~types": ["./types/index.d.ts"]
     },
-    "noEmit": false,
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "noEmit": false
   },
   "include": [
     "next-env.d.ts",
-    "./src/packages/server/**/*",
-    "./types/**/*.d.ts",
-    ".next/types/**/*.ts"
+    "./src/**/*",
+    "./server/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "visualizer",
     "src/pages"
-  ]
+  ],
 }

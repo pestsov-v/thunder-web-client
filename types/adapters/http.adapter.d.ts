@@ -6,14 +6,16 @@ export interface IHttpAdapter {
   destroy(): void;
 
   request<
-    R extends string = string,
     S extends string = string,
     D extends string = string,
+    R extends string = string,
     DA = any,
     RES = any,
   >(
+    service: S,
+    domain: D,
     route: R,
-    options: NHttpAdapter.RequestOptions<S, D, DA>
+    options: NHttpAdapter.RequestOptions<DA>
   ): Promise<NHttpAdapter.Response<RES>>;
 }
 
@@ -37,9 +39,7 @@ export namespace NHttpAdapter {
     | 'boolean[]';
 
   export type AuthScope = 'public:route' | 'private:route';
-  export type RequestOptions<S extends string = string, D extends string = string, DA = any> = {
-    service: S;
-    domain: D;
+  export type RequestOptions<DA = any> = {
     version?: string;
     scope?: AuthScope;
     method?: HttpMethod;

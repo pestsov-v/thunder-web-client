@@ -47,13 +47,9 @@ export namespace NFunctionalityAgent {
   };
 
   export type Auth = {
-    readonly getUserJWTPayload: IAuthService['getUserJWTPayload'];
-    readonly getOrgJWTPayload: IAuthService['getOrgJWTPayload'];
-    readonly resolveUserAccessExp: IAuthService['resolveUserAccessExp'];
-    readonly resolveOrgAccessExp: IAuthService['resolveOrgAccessExp'];
-    readonly setUserAuthJWTPayload: IAuthService['setUserAuthJWTPayload'];
-    readonly setOrgAuthJWTPayload: IAuthService['setOrgAuthJWTPayload'];
-    readonly updateUserAccessToken: IAuthService['updateUserAccessToken'];
-    readonly updateOrgAccessToken: IAuthService['updateOrgAccessToken'];
+    readonly getJWTPayload: IAuthService['getJWTPayload'];
+    readonly setAuthJWTPayload: IAuthService['setJWTPayload'];
+    readonly resolveAccessExp: IAuthService['resolveAccessExp'];
+    readonly updateAccessToken: IAuthService['updateAccessToken'];
   };
 }

@@ -3,20 +3,13 @@ import { NSessionService } from './session.service';
 
 export interface IAuthService extends IAbstractService {
   readonly userTokens: NAuthService.Tokens;
-  readonly orgTokens: NAuthService.Tokens;
 
-  getUserJWTPayload<
+  getJWTPayload<
     T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
   >(): NAuthService.AuthJWTPayload<T>;
-  getOrgJWTPayload<
-    T extends NSessionService.OrganizationIdentifiers = NSessionService.OrganizationIdentifiers,
-  >(): NAuthService.AuthJWTPayload<T>;
-  resolveUserAccessExp(): NAuthService.AuthStage;
-  resolveOrgAccessExp(): NAuthService.AuthStage;
-  setUserAuthJWTPayload(access: string, refresh: string): void;
-  setOrgAuthJWTPayload(access: string, refresh: string): void;
-  updateUserAccessToken(token: string): void;
-  updateOrgAccessToken(token: string): void;
+  setJWTPayload(access: string, refresh: string): void;
+  resolveAccessExp(): NAuthService.AuthStage;
+  updateAccessToken(token: string): void;
 }
 
 export namespace NAuthService {
@@ -67,9 +60,7 @@ export namespace NAuthService {
 
   export type Tokens = ActualAccessTokens | AccessExpiredTokens | RefreshExpiredTokens;
 
-  export type JwtAuthStructure<
-    T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
-  > = {
+  export type JwtAuthStructure<T> = {
     exp: number;
     iat: number;
     jti: string;

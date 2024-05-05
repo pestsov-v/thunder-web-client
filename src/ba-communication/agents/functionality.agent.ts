@@ -4,7 +4,6 @@ import { CoreSymbols } from '~symbols';
 
 import type {
   AnyObject,
-  HttpMethod,
   IAuthService,
   IDiscoveryService,
   IFunctionalityAgent,
@@ -86,15 +85,41 @@ export class FunctionalityAgent implements IFunctionalityAgent {
         D extends string = string,
         RO extends string = string,
         DA = any,
-        RE = void,
+        RE = any,
       >(
         service: S,
         domain: D,
-        method: HttpMethod,
         route: RO,
         config?: NGetawayService.SchemaRequestOptions<DA>
       ): Promise<NGetawayService.ResponsePayload<RE>> => {
-        return this._httpAdapter.request<S, D, RO, DA, RE>(service, domain, method, route, config);
+        const options: NGetawayService.SchemaRequestOptions<DA> = {
+          scope: 'public:route',
+          method: 'GET',
+          version: 'v1',
+          data: undefined,
+          headers: undefined,
+          params: undefined,
+          queries: undefined
+        }
+
+        if (config) {
+          if (config.scope) options.scope = config.scope
+          if (config.version) options.version = config.version
+          if (config.data) options.data = config.data
+          if (config.headers) options.headers = config.headers
+          if (config.params) options.params = config.params
+          if (config.queries) options.queries = config.queries
+        }
+
+        return this._httpAdapter.request<S, D, RO, DA, RE>(service, domain, route, {
+          method: options.method,
+          scope: options.scope,
+          version: options.version,
+          params: options.params,
+          headers: options.headers,
+          queries: options.queries,
+          data: options.data
+        })
       },
     };
   }
@@ -126,33 +151,19 @@ export class FunctionalityAgent implements IFunctionalityAgent {
 
   public get auth(): NFunctionalityAgent.Auth {
     return {
-      getUserJWTPayload: <
+      getJWTPayload: <
         T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
       >() => {
-        return this._authService.getUserJWTPayload<T>();
+        return this._authService.getJWTPayload<T>();
       },
-      getOrgJWTPayload: <
-        T extends NSessionService.OrganizationIdentifiers = NSessionService.OrganizationIdentifiers,
-      >() => {
-        return this._authService.getOrgJWTPayload<T>();
+      resolveAccessExp: () => {
+        return this._authService.resolveAccessExp();
       },
-      resolveUserAccessExp: () => {
-        return this._authService.resolveUserAccessExp();
+      setAuthJWTPayload: (access: string, refresh: string) => {
+        return this._authService.setJWTPayload(access, refresh);
       },
-      resolveOrgAccessExp: () => {
-        return this._authService.resolveOrgAccessExp();
-      },
-      setUserAuthJWTPayload: (access: string, refresh: string) => {
-        return this._authService.setUserAuthJWTPayload(access, refresh);
-      },
-      setOrgAuthJWTPayload: (access: string, refresh: string) => {
-        return this._authService.setOrgAuthJWTPayload(access, refresh);
-      },
-      updateUserAccessToken: (token) => {
-        return this._authService.updateUserAccessToken(token);
-      },
-      updateOrgAccessToken: (token) => {
-        return this._authService.updateOrgAccessToken(token);
+      updateAccessToken: (token) => {
+        return this._authService.updateAccessToken(token);
       },
     };
   }

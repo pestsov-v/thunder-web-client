@@ -2,7 +2,7 @@ import { injectable, inject, axios } from '~packages';
 import { CoreSymbols } from '~symbols';
 
 import type {
-  Axios,
+  Axios, HttpMethod,
   IAuthService,
   IDiscoveryService,
   IHttpAdapter,
@@ -77,15 +77,15 @@ export class HttpAdapter implements IHttpAdapter {
   }
 
   public async request<
-    R extends string = string,
     S extends string = string,
     D extends string = string,
+    R extends string = string,
     DA = any,
     RES = any,
-  >(route: R, options: NHttpAdapter.RequestOptions<S, D, DA>): Promise<NHttpAdapter.Response<RES>> {
+  >(service: S,
+    domain: D,
+    route: R, options: NHttpAdapter.RequestOptions<DA>): Promise<NHttpAdapter.Response<RES>> {
     const config: NHttpAdapter.RequestOptions = {
-      service: options.service,
-      domain: options.domain,
       method: options.method ?? 'GET',
       version: options.version ?? 'v1',
       scope: options.scope ?? 'public:route',
@@ -95,7 +95,7 @@ export class HttpAdapter implements IHttpAdapter {
       queries: options.queries ?? undefined,
     };
 
-    const sStorage = this._schemaService.services.get(config.service);
+    const sStorage = this._schemaService.services.get(service);
     if (!sStorage) {
       const services = Array.from(this._schemaService.services.keys());
       let msg: string;
@@ -105,10 +105,10 @@ export class HttpAdapter implements IHttpAdapter {
         msg = `Available next services: ${services.join(', ')}. `;
       }
 
-      throw new Error(`Service storage "${config.service}" not found. ${msg}`);
+      throw new Error(`Service storage "${service}" not found. ${msg}`);
     }
 
-    const dStorage = sStorage.get(config.domain);
+    const dStorage = sStorage.get(domain);
     if (!dStorage) {
       const domains = Array.from(sStorage.keys());
       let msg: string;
@@ -119,7 +119,7 @@ export class HttpAdapter implements IHttpAdapter {
       }
 
       throw new Error(
-        `Domain storage "${config.domain}" in service "${config.service}" not found. ${msg}`
+        `Domain storage "${domain}" in service "${service}" not found. ${msg}`
       );
     }
 
@@ -142,7 +142,7 @@ export class HttpAdapter implements IHttpAdapter {
       }
 
       const response = await this._requester.request<RES>({
-        url: `${protocol}://${host}:${port}${this._config.urls.baseApiUrl}/${config.service}${config.domain}/${config.version}/${route}${queries}`,
+        url: `${protocol}://${host}:${port}${this._config.urls.baseApiUrl}/${service}${domain}/${config.version}/${route}${queries}`,
         headers: config.headers,
         method: options.method,
         data: options.data,

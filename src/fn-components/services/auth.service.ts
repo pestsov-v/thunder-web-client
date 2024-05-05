@@ -21,8 +21,6 @@ export class AuthService extends AbstractService implements IAuthService {
   constructor(
     @inject(CoreSymbols.DiscoveryService)
     private readonly _discoveryService: IDiscoveryService,
-    @inject(CoreSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService
   ) {
     super();
   }
@@ -55,10 +53,6 @@ export class AuthService extends AbstractService implements IAuthService {
     return this._getTokens('user');
   }
 
-  public get orgTokens(): NAuthService.Tokens {
-    return this._getTokens('org');
-  }
-
   private _getTokens(type: 'user' | 'org'): NAuthService.Tokens {
     const tokens: {
       access: NAuthService.AuthTokens;
@@ -70,13 +64,13 @@ export class AuthService extends AbstractService implements IAuthService {
 
     const storage = container.get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy);
 
-    if (this._checkAuthExp(tokens.access)) {
+    if (this._isTokenExpired(tokens.access)) {
       return {
         status: 'access:actual',
         access: storage.getString(tokens.access, ''),
       };
     } else {
-      if (this._checkAuthExp(tokens.refresh)) {
+      if (this._isTokenExpired(tokens.refresh)) {
         return {
           status: 'access:expired',
           refresh: storage.getString(tokens.refresh, ''),
@@ -89,16 +83,10 @@ export class AuthService extends AbstractService implements IAuthService {
     }
   }
 
-  public getUserJWTPayload<
+  public getJWTPayload<
     T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
   >(): NAuthService.AuthJWTPayload<T> {
     return this._getJWTPayload('user');
-  }
-
-  public getOrgJWTPayload<
-    T extends NSessionService.OrganizationIdentifiers = NSessionService.OrganizationIdentifiers,
-  >(): NAuthService.AuthJWTPayload<T> {
-    return this._getJWTPayload('org');
   }
 
   private _getJWTPayload<
@@ -113,7 +101,7 @@ export class AuthService extends AbstractService implements IAuthService {
       refresh: type === 'org' ? 'x-organization-refresh-token' : 'x-user-refresh-token',
     };
 
-    if (this._checkAuthExp(tokens.access)) {
+    if (this._isTokenExpired(tokens.access)) {
       const accessToken = container
         .get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy)
         .getString(tokens.access, '');
@@ -137,7 +125,7 @@ export class AuthService extends AbstractService implements IAuthService {
         }
       }
     } else {
-      if (this._checkAuthExp(tokens.refresh)) {
+      if (this._isTokenExpired(tokens.refresh)) {
         const token = container
           .get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy)
           .getString(tokens.refresh, '');
@@ -157,42 +145,29 @@ export class AuthService extends AbstractService implements IAuthService {
     }
   }
 
-  public setUserAuthJWTPayload(access: string, refresh: string): void {
+  public setJWTPayload(access: string, refresh: string): void {
     const storage = container.get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy);
 
     storage.setItem<string>('x-user-access-token', access);
     storage.setItem<string>('x-user-refresh-token', refresh);
   }
 
-  public updateUserAccessToken(token: string): void {
+  public updateAccessToken(token: string): void {
     container
       .get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy)
       .setItem<string>('x-user-access-token', token);
   }
 
-  public updateOrgAccessToken(token: string): void {
-    container
-      .get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy)
-      .setItem<string>('x-organization-access-token', token);
-  }
-
-  public setOrgAuthJWTPayload(access: string, refresh: string): void {
+  public resolveAccessExp(): NAuthService.AuthStage {
     const storage = container.get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy);
 
-    storage.setItem<string>('x-organization-access-token', access);
-    storage.setItem<string>('x-organization-refresh-token', refresh);
-  }
-
-  public resolveUserAccessExp(): NAuthService.AuthStage {
-    const storage = container.get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy);
-
-    if (this._checkAuthExp('x-user-access-token')) {
+    if (this._isTokenExpired('x-user-access-token')) {
       return {
         status: 'access:actual',
         token: storage.getString('x-user-access-token', ''),
       };
     } else {
-      if (this._checkAuthExp('x-user-refresh-token')) {
+      if (this._isTokenExpired('x-user-refresh-token')) {
         return {
           status: 'access:expired',
           token: storage.getString('x-user-refresh-token', ''),
@@ -205,46 +180,22 @@ export class AuthService extends AbstractService implements IAuthService {
     }
   }
 
-  public resolveOrgAccessExp(): NAuthService.AuthStage {
-    const storage = container.get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy);
-
-    if (this._checkAuthExp('x-organization-access-token')) {
-      return {
-        status: 'access:actual',
-        token: storage.getString('x-organization-access-token', ''),
-      };
-    } else {
-      if (this._checkAuthExp('x-organization-refresh-token')) {
-        return {
-          status: 'access:expired',
-          token: storage.getString('x-organization-refresh-token', ''),
-        };
-      } else {
-        return {
-          status: 'refresh:expired',
-        };
-      }
-    }
-  }
-
-  private _checkAuthExp(type: NAuthService.AuthTokens): boolean {
+  private _isTokenExpired(type: NAuthService.AuthTokens): boolean | null {
     const token = container
       .get<IStorageStrategy>(CoreSymbols.LocalStorageStrategy)
       .getString(type, '');
 
-    if (token.length > 0) {
+    if (token.length === 0) return null
+
       const { exp } = this._decodeJWT(token);
       const current = Math.round(Date.now() / 1000);
       const diff = exp - (current + this._config.checkAccessDiff);
 
       return diff < 0;
-    } else {
-      return false;
-    }
   }
 
   private _decodeJWT<T>(token: string): { exp: number; iat: number; diff: number; payload: T } {
-    const payload = jwt.decode<NAuthService.JwtAuthStructure>(token);
+    const payload = jwt.decode<NAuthService.JwtAuthStructure<T>>(token);
 
     if (!Guards.isJwtAuthPayload(payload)) {
       throw new Error('JWt token has invalid structure. ');
@@ -254,7 +205,7 @@ export class AuthService extends AbstractService implements IAuthService {
       exp: payload.exp,
       iat: payload.iat,
       diff: payload.exp - payload.iat,
-      payload: payload.payload as T,
+      payload: payload.payload
     };
   }
 }
