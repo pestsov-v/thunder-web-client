@@ -19,6 +19,9 @@ export class SessionService extends AbstractService implements ISessionService {
       return false;
     }
   }
+  public getSession<P>(): P {
+    return '' as P
+  }
 
   protected destroy(): void {
     console.log('');

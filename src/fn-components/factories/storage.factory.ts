@@ -1,7 +1,7 @@
-import { injectable } from '~package';
+import { injectable } from '~packages';
 import { container } from '~container';
 import { CoreSymbols } from '~symbols';
-import { Helpers } from '../utils';
+import { Helpers } from '~utils';
 
 import type { IStorageFactory, NStorageFactory, IStorageStrategy } from '~types';
 

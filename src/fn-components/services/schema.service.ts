@@ -3,10 +3,10 @@ import { CoreSymbols } from '~symbols';
 import { SCHEME_SERVICES } from '~common';
 import { AbstractService } from './abstract.service';
 
-import { ISchemaLoader, ISchemaService, NSchemaService } from '~types';
+import type { ISchemaLoader, ISchemeService, NSchemaService } from '~types';
 
 @injectable()
-export class SchemaService extends AbstractService implements ISchemaService {
+export class SchemaService extends AbstractService implements ISchemeService {
   protected _SERVICE_NAME = SchemaService.name;
   private _SCHEME: NSchemaService.BusinessScheme | undefined;
 

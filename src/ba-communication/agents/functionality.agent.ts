@@ -4,17 +4,16 @@ import { CoreSymbols } from '~symbols';
 
 import type {
   AnyObject,
-  IAuthService,
+  IAuthProvider,
   IDiscoveryService,
   IFunctionalityAgent,
   IHttpAdapter,
   INavigatorProvider,
   IStorageProvider,
   IWsAdapter,
-  KeyConfigLiteralBuilder,
+  NDiscoveryService,
   NFunctionalityAgent,
-  NGetawayService,
-  NSessionService,
+  NHttpAdapter,
 } from '~types';
 
 @injectable()
@@ -26,37 +25,37 @@ export class FunctionalityAgent implements IFunctionalityAgent {
     private readonly _httpAdapter: IHttpAdapter,
     @inject(CoreSymbols.WsAdapter)
     private readonly _wsAdapter: IWsAdapter,
-    @inject(CoreSymbols.AuthService)
-    private readonly _authService: IAuthService
+    @inject(CoreSymbols.AuthProvider)
+    private readonly _authService: IAuthProvider
   ) {}
 
   public get discovery(): NFunctionalityAgent.Discovery {
     return {
       getMandatory: <T extends string | number | boolean, C extends AnyObject>(
-        name: KeyConfigLiteralBuilder<C, T>
+        name: NDiscoveryService.KeyBuilder<C, T>
       ) => {
         return this._discoveryService.getSchemaMandatory<T, C>(name);
       },
       getString: <C extends AnyObject>(
-        name: KeyConfigLiteralBuilder<C, string>,
+        name: NDiscoveryService.KeyBuilder<C, string>,
         def: string
       ): string => {
         return this._discoveryService.getSchemaString<C>(name, def);
       },
       getNumber: <C extends AnyObject>(
-        name: KeyConfigLiteralBuilder<C, number>,
+        name: NDiscoveryService.KeyBuilder<C, number>,
         def: number
       ): number => {
         return this._discoveryService.getSchemaNumber<C>(name, def);
       },
       getBoolean: <C extends AnyObject>(
-        name: KeyConfigLiteralBuilder<C, boolean>,
+        name: NDiscoveryService.KeyBuilder<C, boolean>,
         def: boolean
       ): boolean => {
         return this._discoveryService.getSchemaBoolean<C>(name, def);
       },
       getArray: <T extends string | number | boolean, C extends AnyObject>(
-        name: KeyConfigLiteralBuilder<C, Array<T>>,
+        name: NDiscoveryService.KeyBuilder<C, Array<T>>,
         def: Array<T>
       ): Array<T> => {
         return this._discoveryService.getSchemaArray<T, C>(name, def);
@@ -90,9 +89,9 @@ export class FunctionalityAgent implements IFunctionalityAgent {
         service: S,
         domain: D,
         route: RO,
-        config?: NGetawayService.SchemaRequestOptions<DA>
-      ): Promise<NGetawayService.ResponsePayload<RE>> => {
-        const options: NGetawayService.SchemaRequestOptions<DA> = {
+        config?: NHttpAdapter.RequestOptions<DA>
+      ): Promise<NHttpAdapter.Response<RE>> => {
+        const options: NHttpAdapter.RequestOptions<DA> = {
           scope: 'public:route',
           method: 'GET',
           version: 'v1',
@@ -151,19 +150,11 @@ export class FunctionalityAgent implements IFunctionalityAgent {
 
   public get auth(): NFunctionalityAgent.Auth {
     return {
-      getJWTPayload: <
-        T extends NSessionService.SessionIdentifiers = NSessionService.SessionIdentifiers,
-      >() => {
-        return this._authService.getJWTPayload<T>();
+      getTokenPayload: <P>() => {
+        return this._authService.getTokenPayload<P>();
       },
-      resolveAccessExp: () => {
-        return this._authService.resolveAccessExp();
-      },
-      setAuthJWTPayload: (access: string, refresh: string) => {
-        return this._authService.setJWTPayload(access, refresh);
-      },
-      updateAccessToken: (token) => {
-        return this._authService.updateAccessToken(token);
+      setTokens: (access: string, refresh: string) => {
+        return this._authService.setTokens(access, refresh);
       },
     };
   }

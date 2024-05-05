@@ -4,4 +4,4 @@ export * from './localization.service';
 export * from './combination.service';
 export * from './session.service';
 export * from './store.service';
-export * from './auth.service';
+export * from './storybook.service'

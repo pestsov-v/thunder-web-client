@@ -2,11 +2,9 @@ import { injectable } from '~packages';
 import { AbstractService } from './abstract.service';
 
 import type {
-  NestedObject,
   IDiscoveryService,
   NDiscoveryService,
-  KeyConfigLiteralBuilder,
-  AnyObject,
+  AnyObject, ExtendedRecordObject
 } from '~types';
 
 @injectable()
@@ -19,7 +17,7 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public get nodeEnv(): string {
-    return process.env.NODE_ENV ?? '';
+    return process.env.NODE_ENV ?? 'development';
   }
 
   protected destroy(): void {
@@ -34,19 +32,19 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public getMandatory<T extends string | number | boolean>(
-    name: KeyConfigLiteralBuilder<NDiscoveryService.EnvsConfig, T>
+    name: NDiscoveryService.KeyBuilder<NDiscoveryService.EnvsConfig, T>
   ): T {
     return this._getMandatory<T, NDiscoveryService.EnvsConfig>(name, 'core');
   }
 
   public getSchemaMandatory<T extends string | number | boolean, C extends AnyObject>(
-    name: KeyConfigLiteralBuilder<C, T>
+    name: NDiscoveryService.KeyBuilder<C, T>
   ): T {
     return this._getMandatory<T, C>(name, 'schema');
   }
 
   private _getMandatory<T extends string | number | boolean, C extends AnyObject>(
-    name: KeyConfigLiteralBuilder<C, T>,
+    name: NDiscoveryService.KeyBuilder<C, T>,
     scope: 'core' | 'schema'
   ): T {
     const variable = this._get<T>(name, scope);
@@ -58,21 +56,21 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public getString(
-    name: KeyConfigLiteralBuilder<NDiscoveryService.EnvsConfig, string>,
+    name: NDiscoveryService.KeyBuilder<NDiscoveryService.EnvsConfig, string>,
     def: string
   ): string {
     return this._getString<NDiscoveryService.EnvsConfig>(name, def, 'core');
   }
 
   public getSchemaString<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, string>,
+    name: NDiscoveryService.KeyBuilder<T, string>,
     def: string
   ): string {
     return this._getString<T>(name, def, 'schema');
   }
 
   private _getString<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, string>,
+    name: NDiscoveryService.KeyBuilder<T, string>,
     def: string,
     scope: 'core' | 'schema'
   ): string {
@@ -88,21 +86,21 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public getNumber(
-    name: KeyConfigLiteralBuilder<NDiscoveryService.EnvsConfig, number>,
+    name: NDiscoveryService.KeyBuilder<NDiscoveryService.EnvsConfig, number>,
     def: number
   ): number {
     return this._getNumber<NDiscoveryService.EnvsConfig>(name, def, 'core');
   }
 
   public getSchemaNumber<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, number>,
+    name: NDiscoveryService.KeyBuilder<T, number>,
     def: number
   ): number {
     return this._getNumber<T>(name, def, 'schema');
   }
 
   private _getNumber<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, number>,
+    name: NDiscoveryService.KeyBuilder<T, number>,
     def: number,
     scope: 'core' | 'schema'
   ): number {
@@ -119,21 +117,21 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public getBoolean(
-    name: KeyConfigLiteralBuilder<NDiscoveryService.EnvsConfig, boolean>,
+    name: NDiscoveryService.KeyBuilder<NDiscoveryService.EnvsConfig, boolean>,
     def: boolean
   ): boolean {
     return this._getBoolean<NDiscoveryService.EnvsConfig>(name, def, 'core');
   }
 
   public getSchemaBoolean<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, boolean>,
+    name: NDiscoveryService.KeyBuilder<T, boolean>,
     def: boolean
   ): boolean {
     return this._getBoolean<T>(name, def, 'schema');
   }
 
   private _getBoolean<T extends AnyObject>(
-    name: KeyConfigLiteralBuilder<T, boolean>,
+    name: NDiscoveryService.KeyBuilder<T, boolean>,
     def: boolean,
     scope: 'core' | 'schema'
   ): boolean {
@@ -149,21 +147,21 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
   }
 
   public getArray<T extends string | number | boolean>(
-    name: KeyConfigLiteralBuilder<NDiscoveryService.EnvsConfig, Array<T>>,
+    name: NDiscoveryService.KeyBuilder<NDiscoveryService.EnvsConfig, Array<T>>,
     def: Array<T>
   ): Array<T> {
     return this._getArray<T, NDiscoveryService.EnvsConfig>(name, def, 'core');
   }
 
   public getSchemaArray<T extends string | number | boolean, C extends AnyObject>(
-    name: KeyConfigLiteralBuilder<C, Array<T>>,
+    name: NDiscoveryService.KeyBuilder<C, Array<T>>,
     def: Array<T>
   ): Array<T> {
     return this._getArray<T, C>(name, def, 'core');
   }
 
   private _getArray<T extends string | number | boolean, C extends AnyObject>(
-    name: KeyConfigLiteralBuilder<C, Array<T>>,
+    name: NDiscoveryService.KeyBuilder<C, Array<T>>,
     def: Array<T>,
     scope: 'core' | 'schema'
   ): Array<T> {
@@ -183,7 +181,7 @@ export class DiscoveryService extends AbstractService implements IDiscoveryServi
     name = scope === 'schema' ? `applications.${name}` : name;
     const names = name.split('.');
 
-    let record: NestedObject | string = this._config;
+    let record: ExtendedRecordObject | string = this._config;
     for (const key of names) {
       if (record && typeof record === 'object') {
         record = record[key];

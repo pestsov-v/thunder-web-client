@@ -47,7 +47,7 @@ export class SchemaLoader implements ISchemaLoader {
 
     const documents: NSchemaService.Documents = {
       controller: new Map<string, NSchemaService.ControllerHandler>(),
-      subscriber: new Map<string, NSchemaService.SubscriberHandler>(),
+      emitter: new Map<string, NSchemaService.EmitterEvent>(),
       dictionaries: new Map<string, ExtendedRecordObject>(),
       store: null,
       views: new Map<string, NSchemaService.ViewHandler<'public:route'>>(),
@@ -58,8 +58,8 @@ export class SchemaLoader implements ISchemaLoader {
     if (structure.documents.controller) {
       documents.controller = this._setController(structure.documents.controller);
     }
-    if (structure.documents.subscriber) {
-      documents.subscriber = this._setSubscriber(structure.documents.subscriber);
+    if (structure.documents.emitter) {
+      documents.emitter = this._setSubscriber(structure.documents.emitter);
     }
     if (structure.documents.dictionary) {
       documents.dictionaries = this._setDictionary(structure.documents.dictionary);
@@ -92,9 +92,9 @@ export class SchemaLoader implements ISchemaLoader {
   }
 
   private _setSubscriber(
-    structure: NSchemaLoader.SubscriberStructure<Record<string, unknown>>
-  ): Map<string, NSchemaService.SubscriberHandler> {
-    const collection = new Map<string, NSchemaService.SubscriberHandler>();
+    structure: NSchemaLoader.EmitterStructure
+  ): Map<string, NSchemaService.EmitterEvent> {
+    const collection = new Map<string, NSchemaService.EmitterEvent>();
 
     for (const name in structure) {
       const handler = structure[name];

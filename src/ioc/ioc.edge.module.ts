@@ -15,9 +15,9 @@ import {
   LocalizationService,
   SessionService,
   StoreService,
-  AuthService,
+  AuthProvider,
   LocalStorageStrategy,
-  SessionStorageStrategy,
+  SessionStorageStrategy, StorybookService,
 } from '../fn-components';
 import {
   SchemaLoader,
@@ -29,7 +29,7 @@ import {
 import type {
   IHttpAdapter,
   IWsAdapter,
-  IAuthService,
+  IAuthProvider,
   IDiscoveryService,
   IFunctionalityAgent,
   ICombinationService,
@@ -38,28 +38,28 @@ import type {
   INavigatorProvider,
   ISchemaAgent,
   ISchemaLoader,
-  ISchemaService,
+  ISchemeService,
   ISessionService,
   IStorageFactory,
   IStorageProvider,
   IStorageStrategy,
   IStoreService,
-  IStorybookLoader,
+  IStorybookLoader, IStorybookService,
 } from '~types';
 
 export const EdgeModule = new inversify.ContainerModule((bind) => {
   // Services
   bind<IDiscoveryService>(CoreSymbols.DiscoveryService).to(DiscoveryService).inSingletonScope();
+  bind<IStorybookService>(CoreSymbols.StorybookService).to(StorybookService).inSingletonScope()
+  bind<ISchemeService>(CoreSymbols.SchemeService).to(SchemaService).inSingletonScope();
   bind<ICombinationService>(CoreSymbols.CombinationService)
     .to(CombinationService)
     .inSingletonScope();
   bind<ISessionService>(CoreSymbols.SessionService).to(SessionService).inSingletonScope();
   bind<IStoreService>(CoreSymbols.StoreService).to(StoreService).inSingletonScope();
-  bind<ISchemaService>(CoreSymbols.SchemaService).to(SchemaService).inSingletonScope();
   bind<ILocalizationService>(CoreSymbols.LocalizationService)
     .to(LocalizationService)
     .inSingletonScope();
-  bind<IAuthService>(CoreSymbols.AuthService).to(AuthService).inSingletonScope();
 
   // Loaders
   bind<ISchemaLoader>(CoreSymbols.SchemaLoader).to(SchemaLoader).inSingletonScope();
@@ -83,6 +83,7 @@ export const EdgeModule = new inversify.ContainerModule((bind) => {
   // Providers
   bind<IStorageProvider>(CoreSymbols.StorageProvider).to(StorageProvider).inTransientScope();
   bind<INavigatorProvider>(CoreSymbols.NavigatorProvider).to(NavigatorProvider).inTransientScope();
+  bind<IAuthProvider>(CoreSymbols.AuthProvider).to(AuthProvider).inTransientScope();
 
   // Agents
   bind<IFunctionalityAgent>(CoreSymbols.FunctionalityAgent)

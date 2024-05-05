@@ -1,12 +1,12 @@
 export const CoreSymbols = {
   // Services
   DiscoveryService: Symbol('DiscoveryService'),
+  StorybookService: Symbol('StorybookService'),
+  SchemeService: Symbol('SchemeService'),
+  StoreService: Symbol('StoreService'),
   CombinationService: Symbol('CombinationService'),
   SessionService: Symbol('SessionService'),
-  SchemaService: Symbol('SchemaService'),
   LocalizationService: Symbol('LocalizationService'),
-  StoreService: Symbol('StoreService'),
-  AuthService: Symbol('AuthService'),
 
   // Adapters
   HttpAdapter: Symbol('HttpAdapter'),
@@ -26,6 +26,8 @@ export const CoreSymbols = {
   // Providers
   StorageProvider: Symbol('StorageProvider'),
   NavigatorProvider: Symbol('NavigatorProvider'),
+  AuthProvider: Symbol('AuthProvider'),
+
 
   // Agents
   FunctionalityAgent: Symbol('FunctionalityAgent'),

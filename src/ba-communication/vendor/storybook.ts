@@ -1,8 +1,8 @@
-import type { NStorybookLoader } from '~types';
+import { NStorybookLoader, NStorybookService } from '~types';
 
 export const setComponent = <N extends string>(
   name: N,
-  component: NStorybookLoader.Component
+  component: NStorybookService.Component
 ): NStorybookLoader.ComponentStructure => {
   return { name, component };
 };

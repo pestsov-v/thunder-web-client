@@ -27,6 +27,7 @@
       "~container": ["./src/ioc/ioc.ts"],
       "~common": ["./src/common/index.ts"],
       "~packages": ["./src/packages.ts"],
+      "~utils": ["./src/fn-components/utils/index.ts"],
       "~types": ["./types/index.d.ts"]
     },
     "noEmit": false

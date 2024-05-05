@@ -1,4 +1,4 @@
-import { NAuthService, NSchemaService, NSessionService, NWsAdapter, NWsAdapter } from '~types';
+import { NAuthProvider, NSessionService, NWsAdapter } from '~types';
 
 export class Guards {
   public static isEventStructure = (x: unknown): x is NWsAdapter.Event => {
@@ -15,7 +15,7 @@ export class Guards {
     );
   };
 
-  public static isJwtAuthPayload = (x: unknown): x is NAuthService.JwtAuthStructure => {
+  public static isJwtAuthPayload = (x: unknown): x is NAuthProvider.JwtAuthStructure<unknown> => {
     return typeof x === 'object' && x !== null && 'iat' in x && 'exp' in x;
   };
 }

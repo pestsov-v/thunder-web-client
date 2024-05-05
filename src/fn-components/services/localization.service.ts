@@ -5,7 +5,7 @@ import { AbstractService } from './abstract.service';
 import type {
   IDiscoveryService,
   ILocalizationService,
-  ISchemaService,
+  ISchemeService,
   NLocalizationService,
   NSchemaService,
   KeyStringLiteralBuilder,
@@ -20,8 +20,8 @@ export class LocalizationService extends AbstractService implements ILocalizatio
   constructor(
     @inject(CoreSymbols.DiscoveryService)
     private readonly _discoveryService: IDiscoveryService,
-    @inject(CoreSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService
+    @inject(CoreSymbols.SchemeService)
+    private readonly _schemaService: ISchemeService
   ) {
     super();
 

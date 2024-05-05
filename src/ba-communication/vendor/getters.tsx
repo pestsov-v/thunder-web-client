@@ -5,7 +5,7 @@ import { CoreSymbols } from '~symbols';
 import type {
   IFunctionalityAgent,
   ISchemaAgent,
-  ISchemaService,
+  ISchemeService,
   IStoreService,
   IStorybookLoader,
   NSchemaAgent,
@@ -89,7 +89,7 @@ export const View = <
 ): ReactElement => {
   const { service, domain, props, view } = viewProps;
 
-  const services = container.get<ISchemaService>(CoreSymbols.SchemaService).services;
+  const services = container.get<ISchemeService>(CoreSymbols.SchemeService).services;
 
   const dStorage = services.get(service);
   if (!dStorage) {

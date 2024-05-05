@@ -1,61 +1,88 @@
 import { injectable, inject, axios } from '~packages';
 import { CoreSymbols } from '~symbols';
+import { AuthHeaders } from '~common';
+import { AbstractAdapter } from './abstract.adapter';
 
-import type {
+import type{
   Axios, HttpMethod,
-  IAuthService,
   IDiscoveryService,
   IHttpAdapter,
-  ISchemaService,
-  NGetawayService,
+  ISchemeService,
+  NAbstractAdapter,
   NHttpAdapter,
 } from '~types';
 
+
 @injectable()
-export class HttpAdapter implements IHttpAdapter {
-  private _CONFIG: NHttpAdapter.Config | undefined;
-  private _REQUESTER: Axios.AxiosInstance | undefined;
+export class HttpAdapter extends AbstractAdapter<'http'> implements IHttpAdapter {
+  protected _config: NAbstractAdapter.HttpConfig
+  protected _requester: Axios.AxiosInstance
 
   constructor(
     @inject(CoreSymbols.DiscoveryService)
-    private readonly _discoveryService: IDiscoveryService,
-    @inject(CoreSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService,
-    @inject(CoreSymbols.AuthService)
-    private readonly _authService: IAuthService
-  ) {}
+    protected readonly _discoveryService: IDiscoveryService,
+    @inject(CoreSymbols.SchemeService)
+    private readonly _schemaService: ISchemeService,
+  ) {
+    super()
+    this._requester = axios.create();
 
-  private _setConfig(): void {
-    this._CONFIG = {
-      protocol: this._discoveryService.getString('services.getaway.protocol', 'http'),
-      host: this._discoveryService.getString('services.getaway.host', '0.0.0.0'),
-      port: this._discoveryService.getNumber('services.getaway.port', 11000),
-      urls: {
-        baseApiUrl: this._discoveryService.getString(
-          'services.getaway.urls.baseApiUrl',
-          '/v1/call/api'
-        ),
-        baseExceptionUrl: this._discoveryService.getString(
-          'services.getaway.urls.baseExceptionUrl',
-          'v1/exception-tunnel'
-        ),
+    this._config = {
+      enable: false,
+      connect: {
+        protocol: 'http',
+        host: '0.0.0.0',
+        port: 11000
       },
-    };
+      urls: {
+        api:  'v1/call/api',
+        exception: 'v1/exception-tunnel'
+      },
+      refresh: {
+        url: 'v1/update-token',
+        method: 'PATCH'
+      }
+    }
   }
 
-  private get _config(): NGetawayService.Config {
-    if (!this._CONFIG) {
-      throw new Error('Configuration not set.');
+  private _setConfig(): NAbstractAdapter.HttpConfig {
+    return {
+      enable: this._discoveryService.getBoolean('adapters.http.enable', this._config.enable),
+      connect: {
+        protocol: this._discoveryService.getString('adapters.http.connect.protocol', this._config.connect.protocol),
+        host: this._discoveryService.getString('adapters.http.connect.host', this._config.connect.host),
+        port: this._discoveryService.getNumber('adapters.http.connect.port', this._config.connect.port),
+      },
+      urls: {
+        api: this._discoveryService.getString(
+          'adapters.http.urls.api',
+          this._config.urls.api
+        ),
+        exception: this._discoveryService.getString(
+          'adapters.http.urls.exception',
+          this._config.urls.api
+        ),
+      },
+      refresh: {
+        url: this._discoveryService.getString(
+          'adapters.http.urls.api',
+          this._config.refresh.url
+        ),
+        method: this._discoveryService.getString(
+          'adapters.http.urls.api',
+          this._config.refresh.method
+        ) as HttpMethod,
+      }
     }
-
-    return this._CONFIG;
   }
 
   public init(): boolean {
-    try {
-      this._setConfig();
+    if (!this._config.enable) return false
 
-      this._REQUESTER = axios.create();
+    // TODO: implement _requester 401 / 403 interceptor
+
+    try {
+      this._config = this._setConfig()
 
       return true;
     } catch (e) {
@@ -65,15 +92,7 @@ export class HttpAdapter implements IHttpAdapter {
   }
 
   public destroy(): void {
-    this._CONFIG = undefined;
-    this._REQUESTER = undefined;
-  }
-
-  private get _requester(): Axios.AxiosInstance {
-    if (!this._REQUESTER) {
-      throw new Error('Axios instance not initialize.');
-    }
-    return this._REQUESTER;
+    this._requester = undefined;
   }
 
   public async request<
@@ -123,8 +142,7 @@ export class HttpAdapter implements IHttpAdapter {
       );
     }
 
-    const { protocol, host, port } = this._config;
-    try {
+    const { protocol, host, port } = this._config.connect;
       let queries = '';
       if (config.queries && Object.keys(config.queries).length > 0) {
         queries =
@@ -138,12 +156,22 @@ export class HttpAdapter implements IHttpAdapter {
         case 'public:route':
           break;
         case 'private:route':
-          break;
+          const token = await this.resolveAuthScope()
+          if (token) {
+            if (!options.headers) {
+              options.headers = { [AuthHeaders.ACCESS_TOKEN]: token }
+            } else {
+              options.headers[AuthHeaders.ACCESS_TOKEN] = token
+            }
+          } else {
+            throw new Error('Token expired');
+          }
       }
 
+    try {
       const response = await this._requester.request<RES>({
-        url: `${protocol}://${host}:${port}${this._config.urls.baseApiUrl}/${service}${domain}/${config.version}/${route}${queries}`,
-        headers: config.headers,
+        url: `${protocol}://${host}:${port}${this._config.urls.api}/${service}${domain}/${config.version}/${route}${queries}`,
+        headers: options.headers,
         method: options.method,
         data: options.data,
         params: options.params,

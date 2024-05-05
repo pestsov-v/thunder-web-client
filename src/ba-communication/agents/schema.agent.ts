@@ -5,11 +5,11 @@ import { container } from '~container';
 import type { FC } from 'react';
 import type {
   ExtendedRecordObject,
-  IAuthService,
+  IAuthProvider,
   IFunctionalityAgent,
   ILocalizationService,
   ISchemaAgent,
-  ISchemaService,
+  ISchemeService,
   IStoreService,
   KeyStringLiteralBuilder,
   NSchemaAgent,
@@ -19,14 +19,14 @@ import type {
 @injectable()
 export class SchemaAgent implements ISchemaAgent {
   constructor(
-    @inject(CoreSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService,
+    @inject(CoreSymbols.SchemeService)
+    private readonly _schemaService: ISchemeService,
     @inject(CoreSymbols.LocalizationService)
     private readonly _localizationService: ILocalizationService,
     @inject(CoreSymbols.StoreService)
     private readonly _storeService: IStoreService,
-    @inject(CoreSymbols.AuthService)
-    private readonly _authService: IAuthService
+    @inject(CoreSymbols.AuthProvider)
+    private readonly _authService: IAuthProvider
   ) {}
 
   public get services(): NSchemaService.BusinessScheme {

@@ -2,7 +2,9 @@ import { injectable, inject, events } from '~packages';
 import { container } from '~container';
 import { CoreSymbols } from '~symbols';
 import { ErrorCode } from '~common';
-import { Guards } from '../utils';
+import { Guards } from '~utils';
+
+import { AbstractAdapter } from './abstract.adapter';
 
 import type {
   AnyFunction,
@@ -11,34 +13,79 @@ import type {
   IFunctionalityAgent,
   IWsAdapter,
   NWsAdapter,
-  ISchemaService,
+  ISchemeService,
   NSchemaService,
-  NSessionService,
+  NSessionService, IStoreService, NAbstractAdapter, IDiscoveryService, HttpMethod,
 } from '~types';
 
 @injectable()
-export class WsAdapter implements IWsAdapter {
-  private readonly _emitter = new events.EventEmitter();
+export class WsAdapter extends AbstractAdapter<'ws'> implements IWsAdapter {
+  protected _config: NAbstractAdapter.WsConfig
 
+  private readonly _emitter = new events.EventEmitter();
   private _CONNECTION: WebSocket | undefined;
-  private readonly _options: NWsAdapter.Config;
 
   constructor(
-    @inject(CoreSymbols.SchemaService)
-    private readonly _schemaService: ISchemaService
+    @inject(CoreSymbols.DiscoveryService)
+    protected readonly _discoveryService: IDiscoveryService,
+    @inject(CoreSymbols.SchemeService)
+    private readonly _schemaService: ISchemeService,
+    @inject(CoreSymbols.StoreService)
+    private readonly _storeService: IStoreService,
   ) {
-    this._options = {
+    super()
+
+
+    this._config = {
       enable: false,
-      host: 'ws',
-      protocol: '0.0.0.0',
-      port: 11001,
-    };
+      connect: {
+        host: '0.0.0.0',
+        protocol: 'ws',
+        port: 11001,
+      },
+      refresh: {
+        url: 'v1/update-token',
+        method: 'PATCH'
+      },
+      http: {
+        protocol: 'http',
+        host: '0.0.0.0',
+        port: 11000
+      }
+    }
+  }
+
+  private _setConfig(): NAbstractAdapter.WsConfig {
+    return {
+      enable: this._discoveryService.getBoolean('adapters.http.enable', this._config.enable),
+      connect: {
+        protocol: this._discoveryService.getString('adapters.ws.connect.protocol', this._config.connect.protocol) as 'ws' | 'wss',
+        host: this._discoveryService.getString('adapters.ws.connect.host', this._config.connect.host),
+        port: this._discoveryService.getNumber('adapters.ws.connect.port', this._config.connect.port),
+      },
+      refresh: {
+        url: this._discoveryService.getString(
+          'adapters.http.urls.api',
+          this._config.refresh.url
+        ),
+        method: this._discoveryService.getString(
+          'adapters.http.urls.api',
+          this._config.refresh.method
+        ) as HttpMethod,
+      },
+      http: {
+        protocol: this._discoveryService.getString('adapters.http.connect.protocol', this._config.connect.protocol),
+        host: this._discoveryService.getString('adapters.http.connect.host', this._config.connect.host),
+        port: this._discoveryService.getNumber('adapters.http.connect.port', this._config.connect.port),
+      }
+    }
   }
 
   public init(): boolean {
-    if (!this._options.enable) return false;
+    if (!this._config.enable) return false;
+    this._config = this._setConfig()
 
-    const { protocol, port, host } = this._options;
+    const { protocol, port, host } = this._config.connect;
 
     if (protocol !== 'ws' && protocol !== 'wss') {
       throw new Error(`Websocket protocol must be "ws" or "wss" but define - "${protocol}"`);
@@ -101,6 +148,9 @@ export class WsAdapter implements IWsAdapter {
 
     if (Guards.isEventStructure(data)) {
       if (Guards.isCorrectEvent(data.type)) {
+
+        // TODO: implement auth interceptor
+
         const sStorage = this._schemaService.services.get(data.service);
         if (!sStorage) {
           this.connection.send(
@@ -145,7 +195,7 @@ export class WsAdapter implements IWsAdapter {
         }
 
         const context: NSchemaService.Context = {
-          store: {},
+          store: this._storeService.rootStore,
           user: {},
         };
 
